@@ -21,12 +21,12 @@ public class Runner {
         // add edges
         g.addEdge(new Edge(new Node(1), new Node(2), 11));
         g.addEdge(new Edge(new Node(3), new Node(1), 2));
-        g.addEdge(new Edge(new Node(4), new Node(4), 21));
+        g.addEdge(new Edge(new Node(4), new Node(4), 21)); // self loop edge
         g.addEdge(new Edge(new Node(2), new Node(4), 7));
         g.addEdge(new Edge(new Node(2), new Node(3), 15));
         g.addEdge(new Edge(new Node(6), new Node(1), 33));
         g.addEdge(new Edge(new Node(6), new Node(5), 66));
-        g.addEdge(new Edge(new Node(6), new Node(6), 55));
+        g.addEdge(new Edge(new Node(6), new Node(6), 55)); // self loop edge
         g.addEdge(new Edge(new Node(7), new Node(1), 69));
 
         // testing out the addEdges() method

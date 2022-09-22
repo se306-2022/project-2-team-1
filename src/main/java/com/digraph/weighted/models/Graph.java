@@ -1,5 +1,6 @@
 package com.digraph.weighted.models;
 
+import com.digraph.weighted.exceptions.CycleException;
 import com.digraph.weighted.exceptions.InvalidEdgeWeightException;
 import com.digraph.weighted.exceptions.NonExistingNodeException;
 import org.slf4j.Logger;
@@ -70,12 +71,18 @@ public class Graph {
                 if (edge.getWeight() < 1) {
                     throw new InvalidEdgeWeightException("The edge weight cannot be negative or zero.");
                 }
+
+                if (edge.getSrc().equals(edge.getDest())){
+                    throw new CycleException("The source and destination node of the edge are the same.");
+                }
                 adjacencyList.get(edge.getSrc().getValue()).add(edge);
             }
         } catch (InvalidEdgeWeightException e){
             LOGGER.info("<<<<INVALID>>> invalid edge entry: " + edge);
         } catch (NonExistingNodeException e) {
             LOGGER.info("<<<<INVALID>>> src or dest node does not exist for: " + edge);
+        } catch (CycleException e) {
+            LOGGER.info("<<<<INVALID>>> self-loop edge: src and dest the same: " + edge);
         }
     }
 
