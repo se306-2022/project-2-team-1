@@ -21,7 +21,7 @@ public class GraphLogger {
             System.out.print(entry.getKey() + ": ");
 
             for (Edge edge : entry.getValue()){
-                System.out.print(" "+ edge.getSrc().getValue()+"->"+edge.getDest().getValue()+"("+edge.getWeight()+")");
+                System.out.print(" "+ edge.getSource().getValue()+"->"+edge.getTarget().getValue()+"("+edge.getWeight()+")");
             }
             System.out.println();
         }

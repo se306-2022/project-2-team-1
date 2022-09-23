@@ -7,6 +7,7 @@ public class Edge {
     private Node src;
     private Node dest;
     private int weight;
+    private Edge next;
 
     public Edge(Node src, Node dest, int weight) {
         this.src = src;
@@ -14,7 +15,21 @@ public class Edge {
         this.weight = weight;
     }
 
-    public Node getSrc() {
+    public Edge(Node src, Node dest) {
+        this.src = src;
+        this.dest = dest;
+        this.weight = 0;
+    }
+
+    public void setNext(Edge next) {
+        this.next = next;
+    }
+
+    public Edge getNext() {
+        return this.next;
+    }
+
+    public Node getSource() {
         return src;
     }
 
@@ -22,7 +37,7 @@ public class Edge {
         this.src = src;
     }
 
-    public Node getDest() {
+    public Node getTarget() {
         return dest;
     }
 
@@ -53,10 +68,9 @@ public class Edge {
 
     @Override
     public String toString() {
-        return "Edge{" +
-                "src=" + src +
-                ", dest=" + dest +
-                ", weight=" + weight +
-                '}';
+        final StringBuilder sb = new StringBuilder("Edge{src= ");
+        sb.append(src.toString()).append(", dest=").append(dest.toString());
+        sb.append(", weight=").append(weight).append("}");
+        return sb.toString();
     }
 }

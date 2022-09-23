@@ -1,123 +1,78 @@
 package com.digraph.weighted.models;
 
-import com.digraph.weighted.exceptions.CycleException;
-import com.digraph.weighted.exceptions.InvalidEdgeWeightException;
-import com.digraph.weighted.exceptions.NonExistingNodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Graph {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Graph.class);
 
-    // Adjacency List
-    private Map<Node,ArrayList<Edge>> adjacencyList;
+    // Adjacency Map
+    private Map<Node, EdgesLinkedList> adjacencyMap;
 
-    public Graph(){
-        adjacencyList = new HashMap<>();
-    }
+    // Root Node
+    private Node root;
 
-    public Map<Node, ArrayList<Edge>> getAdjacencyList() {
-        return adjacencyList;
-    }
+    // List of Nodes
+    private List<Node> nodes;
 
-    /**
-     * Add nodes to adjacency list
-     */
-    public void addNodes(Node ...nodes){
-        for (Node node : nodes){
-            if(isExistNode(node)){
-                continue;
-            } else {
-                adjacencyList.put(node,new ArrayList<Edge>());
-            }
+    // List of Edges
+    private List<Edge> edges;
+
+    public Graph(List<Edge> edges, List<Node> nodes) {
+        if (edges.isEmpty() || nodes.isEmpty()) {
+            throw new IllegalArgumentException("Edges or Nodes Empty");
         }
-    }
 
-    /**
-     * Add single node to the adjacency list
-     * @param node
-     */
-    public void addNode(Node node){
-        if(!isExistNode(node)){
-            adjacencyList.put(node,new ArrayList<Edge>());
-        }
-    }
+        this.nodes = nodes;
+        this.edges = edges;
 
-    /**
-     * check that node doesn't already exist
-     */
-    private boolean isExistNode(Node node){
-        if (adjacencyList.containsKey(node)){
-            return true;
-        }
-        return false;
-    }
+        // Create adjacency map
+        adjacencyMap = new HashMap<>();
+        int i = 0;
+        for (Edge edge : edges) {
 
-    /**
-     * Add edge to the adjacencyList
-     */
-    public void addEdge(Edge edge){
-        try {
-            if (!isNodeValid(edge.getSrc()) || !isNodeValid(edge.getDest())){
-                throw new NonExistingNodeException("The node does not exist");
+            Node source = edge.getSource();
+
+            if (!adjacencyMap.containsKey(source)) {
+                adjacencyMap.put(source, new EdgesLinkedList());
             }
 
-            if (!isExistEdge(edge)) {
-                if (edge.getWeight() < 1) {
-                    throw new InvalidEdgeWeightException("The edge weight cannot be negative or zero.");
-                }
+            adjacencyMap.get(source).append(edge);
 
-                if (edge.getSrc().equals(edge.getDest())){
-                    throw new CycleException("The source and destination node of the edge are the same.");
-                }
-                adjacencyList.get(edge.getSrc()).add(edge);
+            if (i == 0) {
+                root = source;
             }
-        } catch (InvalidEdgeWeightException e){
-            LOGGER.info("<<<<INVALID>>> invalid edge entry: " + edge);
-        } catch (NonExistingNodeException e) {
-            LOGGER.info("<<<<INVALID>>> src or dest node does not exist for: " + edge);
-        } catch (CycleException e) {
-            LOGGER.info("<<<<INVALID>>> self-loop edge: src and dest the same: " + edge);
+
+            i++;
         }
     }
 
     /**
-     * Add collection of edges to the adjacency list
-     * @param edges
+     * Method to return Graph in as an Adjacency Map
+     * @return the Adjacency Map containing the graph
      */
-    public void addEdges(Edge ...edges){
-        for (Edge e : edges){
-            addEdge(e);
-        }
+    public Map<Node, EdgesLinkedList> getGraph() {
+        return this.adjacencyMap;
     }
 
-    private boolean isExistEdge(Edge edge){
-        ArrayList<Edge> edges = adjacencyList.get(edge.getSrc());
-        if (edges.contains(edge)){
-            LOGGER.info("<<<DUPLICATE>>> graph already contains: " + edge);
-            return true;
-        } else {
-            //LOGGER.info("<<<VALID ENTRY>>> graph doesnt contain: " + edge);
-            return false;
-        }
+    /**
+     * Method to return list of Nodes in the graph
+     * @return list of Nodes
+     */
+    public List<Node> getNodes() {
+        return this.nodes;
     }
 
-    public boolean isNodeValid(Node node){
-        if (adjacencyList.containsKey(node)){
-            return true;
-        } else {
-            return false;
-        }
+    /**
+     * Method to return list of Edges in the graph
+     * @return list of Edges
+     */
+    public List<Edge> getEdges() {
+        return this.edges;
     }
 
-    @Override
-    public String toString() {
-        return "Graph{" +
-                "adjacencyList=" + adjacencyList +
-                '}';
-    }
 }

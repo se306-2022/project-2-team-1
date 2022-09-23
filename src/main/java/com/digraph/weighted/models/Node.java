@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Node implements Comparable<Node>{
     private Integer value;
     private String name;
+    private Node next;
 
     public String getName() {
         return name;
@@ -14,9 +15,17 @@ public class Node implements Comparable<Node>{
         this.name = name;
     }
 
-    public Node(int value, String name){
+    public Node(String name, int value){
         this.value = value;
         this.name = name;
+    }
+
+    public void setNext(Node next) {
+        this.next = next;
+    }
+
+    public Node getNext() {
+        return this.next;
     }
 
     public Integer getValue() {
@@ -37,12 +46,14 @@ public class Node implements Comparable<Node>{
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, name);
+        return Objects.hash(value, name, next);
     }
 
     @Override
     public String toString() {
-        return "{ name: " + name + " value: " + value + " }";
+        final StringBuilder sb = new StringBuilder("{Name: ");
+        sb.append(name).append(" value: ").append(value).append("}");
+        return sb.toString();
     }
 
     /**
