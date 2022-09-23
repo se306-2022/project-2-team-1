@@ -32,17 +32,17 @@ public class Node implements Comparable<Node>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
-        return value == node.value;
+        return Objects.equals(value, node.value) && Objects.equals(name, node.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(value, name);
     }
 
     @Override
     public String toString() {
-        return "" + value + "";
+        return "{ name: " + name + " value: " + value + " }";
     }
 
     /**

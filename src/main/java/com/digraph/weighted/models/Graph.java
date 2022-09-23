@@ -5,7 +5,6 @@ import com.digraph.weighted.exceptions.InvalidEdgeWeightException;
 import com.digraph.weighted.exceptions.NonExistingNodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,13 +14,13 @@ public class Graph {
     private static final Logger LOGGER = LoggerFactory.getLogger(Graph.class);
 
     // Adjacency List
-    private Map<Integer,ArrayList<Edge>> adjacencyList;
+    private Map<Node,ArrayList<Edge>> adjacencyList;
 
     public Graph(){
         adjacencyList = new HashMap<>();
     }
 
-    public Map<Integer, ArrayList<Edge>> getAdjacencyList() {
+    public Map<Node, ArrayList<Edge>> getAdjacencyList() {
         return adjacencyList;
     }
 
@@ -33,7 +32,7 @@ public class Graph {
             if(isExistNode(node)){
                 continue;
             } else {
-                adjacencyList.put(node.getValue(),new ArrayList<Edge>());
+                adjacencyList.put(node,new ArrayList<Edge>());
             }
         }
     }
@@ -44,7 +43,7 @@ public class Graph {
      */
     public void addNode(Node node){
         if(!isExistNode(node)){
-            adjacencyList.put(node.getValue(),new ArrayList<Edge>());
+            adjacencyList.put(node,new ArrayList<Edge>());
         }
     }
 
@@ -75,7 +74,7 @@ public class Graph {
                 if (edge.getSrc().equals(edge.getDest())){
                     throw new CycleException("The source and destination node of the edge are the same.");
                 }
-                adjacencyList.get(edge.getSrc().getValue()).add(edge);
+                adjacencyList.get(edge.getSrc()).add(edge);
             }
         } catch (InvalidEdgeWeightException e){
             LOGGER.info("<<<<INVALID>>> invalid edge entry: " + edge);
@@ -97,7 +96,7 @@ public class Graph {
     }
 
     private boolean isExistEdge(Edge edge){
-        ArrayList<Edge> edges = adjacencyList.get(edge.getSrc().getValue());
+        ArrayList<Edge> edges = adjacencyList.get(edge.getSrc());
         if (edges.contains(edge)){
             LOGGER.info("<<<DUPLICATE>>> graph already contains: " + edge);
             return true;
@@ -108,7 +107,7 @@ public class Graph {
     }
 
     public boolean isNodeValid(Node node){
-        if (adjacencyList.containsKey(node.getValue())){
+        if (adjacencyList.containsKey(node)){
             return true;
         } else {
             return false;
