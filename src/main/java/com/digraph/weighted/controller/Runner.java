@@ -5,50 +5,32 @@ import com.digraph.weighted.models.Graph;
 import com.digraph.weighted.models.Node;
 import com.digraph.weighted.util.GraphLogger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Runner {
 
     public static void main(String[] args) {
 
-        Graph g = new Graph();
+        List<Node> nodes = new ArrayList<>();
+        Node a = new Node("a", 2);
+        Node b = new Node("b", 3);
+        Node c = new Node("c", 1);
+        Node d = new Node("d", 2);
+        nodes.add(a);
+        nodes.add(b);
+        nodes.add(c);
+        nodes.add(d);
 
-        /*
-        // add nodes
-        g.addNode(new Node(1));
-        g.addNode(new Node(2));
-        g.addNode(new Node(3));
-        g.addNode(new Node(4));
-        g.addNodes(new Node(6), new Node(7));
+        List<Edge> edges = new ArrayList<>();
+        edges.add(new Edge(a, b, 1));
+        edges.add(new Edge(a, c, 2));
+        edges.add(new Edge(b, d, 2));
+        edges.add(new Edge(c, d,1));
 
-        // add edges
-        g.addEdge(new Edge(new Node(1), new Node(2), 11));
-        g.addEdge(new Edge(new Node(3), new Node(1), 2));
-        g.addEdge(new Edge(new Node(4), new Node(4), 21)); // self loop edge
-        g.addEdge(new Edge(new Node(2), new Node(4), 7));
-        g.addEdge(new Edge(new Node(2), new Node(3), 15));
-        g.addEdge(new Edge(new Node(6), new Node(1), 33));
-        g.addEdge(new Edge(new Node(6), new Node(5), 66));
-        g.addEdge(new Edge(new Node(6), new Node(6), 55)); // self loop edge
-        g.addEdge(new Edge(new Node(7), new Node(1), 69));
+        Graph graph = new Graph(edges, nodes);
 
-        // testing out the addEdges() method
-        g.addEdges(new Edge(new Node(7), new Node(1), 69),
-                   new Edge(new Node(4), new Node(2), 38),
-                   new Edge(new Node(1), new Node(4), 77));
+        System.out.println(graph);
 
-        // testing adding a duplicate edge
-        g.addEdge(new Edge(new Node(2), new Node(3), 15));
-        g.addEdge(new Edge(new Node(2), new Node(3), 15));
-
-        // testing an edge with 0 or negative weight
-        g.addEdge(new Edge(new Node(7), new Node(3), -11));
-        g.addEdge(new Edge(new Node(7), new Node(1), 0));
-
-        // testing adding edge for node that doesnt exist
-        g.addEdge(new Edge(new Node(10), new Node(1), 11));
-
-        // print graph to console
-        GraphLogger logger = new GraphLogger(g.getAdjacencyList());
-        logger.log();
-        */
     }
 }
