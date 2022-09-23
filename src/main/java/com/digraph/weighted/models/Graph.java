@@ -15,13 +15,13 @@ public class Graph {
     private static final Logger LOGGER = LoggerFactory.getLogger(Graph.class);
 
     // Adjacency List
-    private Map<Integer,ArrayList<Edge>> adjacencyList;
+    private Map<Node,ArrayList<Edge>> adjacencyList;
 
     public Graph(){
         adjacencyList = new HashMap<>();
     }
 
-    public Map<Integer, ArrayList<Edge>> getAdjacencyList() {
+    public Map<Node, ArrayList<Edge>> getAdjacencyList() {
         return adjacencyList;
     }
 
@@ -33,7 +33,7 @@ public class Graph {
             if(isExistNode(node)){
                 continue;
             } else {
-                adjacencyList.put(node.getValue(),new ArrayList<Edge>());
+                adjacencyList.put(node,new ArrayList<Edge>());
             }
         }
     }
@@ -44,7 +44,7 @@ public class Graph {
      */
     public void addNode(Node node){
         if(!isExistNode(node)){
-            adjacencyList.put(node.getValue(),new ArrayList<Edge>());
+            adjacencyList.put(node,new ArrayList<Edge>());
         }
     }
 
