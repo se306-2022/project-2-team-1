@@ -4,9 +4,19 @@ import java.util.Objects;
 
 public class Node implements Comparable<Node>{
     private Integer value;
+    private String name;
 
-    public Node(int value){
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Node(int value, String name){
         this.value = value;
+        this.name = name;
     }
 
     public Integer getValue() {

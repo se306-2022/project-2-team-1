@@ -11,6 +11,7 @@ public class Runner {
 
         Graph g = new Graph();
 
+        /*
         // add nodes
         g.addNode(new Node(1));
         g.addNode(new Node(2));
@@ -48,6 +49,6 @@ public class Runner {
         // print graph to console
         GraphLogger logger = new GraphLogger(g.getAdjacencyList());
         logger.log();
-
+        */
     }
 }
