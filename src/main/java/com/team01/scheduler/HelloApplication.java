@@ -58,10 +58,9 @@ public class HelloApplication extends Application {
             public void run(Graph graph) {
                 for (EdgesLinkedList currentList: graph.getGraph().values()) {
                     int listSize = currentList.size();
-                    Edge currentEdge = currentList.get(0);
 
                     for (int i = 0; i < listSize; i++) {
-                        currentEdge = currentList.get(i);
+                        Edge currentEdge = currentList.get(i);
 
                         System.out.println(currentEdge.toString());
                     }

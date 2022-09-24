@@ -33,14 +33,16 @@ public class Graph {
         // Create adjacency map
         adjacencyMap = new HashMap<>();
         int i = 0;
+
+        // Add an empty list for every node
+        for (Node node: nodes) {
+            adjacencyMap.put(node, new EdgesLinkedList());
+        }
+
+        // Add edges to each node's adjacency list
         for (Edge edge : edges) {
 
             Node source = edge.getSource();
-
-            if (!adjacencyMap.containsKey(source)) {
-                adjacencyMap.put(source, new EdgesLinkedList());
-            }
-
             adjacencyMap.get(source).append(edge);
 
             if (i == 0) {
