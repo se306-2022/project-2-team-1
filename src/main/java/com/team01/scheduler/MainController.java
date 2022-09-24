@@ -4,7 +4,6 @@ import com.team01.scheduler.algorithm.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -12,7 +11,7 @@ import javafx.scene.control.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelloController {
+public class MainController {
 
     private TaskRunner taskRunner;
     private ObservableList<IRunnable> taskList;
@@ -50,7 +49,7 @@ public class HelloController {
         });
     }
 
-    public HelloController() {
+    public MainController() {
 
         // Create runner
         taskRunner = new TaskRunner();
