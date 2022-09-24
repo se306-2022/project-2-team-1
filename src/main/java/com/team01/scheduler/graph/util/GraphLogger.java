@@ -1,7 +1,7 @@
-package com.digraph.weighted.util;
+package com.team01.scheduler.graph.util;
 
-import com.digraph.weighted.models.Edge;
-import com.digraph.weighted.models.Node;
+import com.team01.scheduler.graph.models.Edge;
+import com.team01.scheduler.graph.models.Node;
 
 import java.util.ArrayList;
 import java.util.Map;

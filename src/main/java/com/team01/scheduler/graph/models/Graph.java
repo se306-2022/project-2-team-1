@@ -1,4 +1,4 @@
-package com.digraph.weighted.models;
+package com.team01.scheduler.graph.models;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

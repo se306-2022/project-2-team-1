@@ -1,6 +1,6 @@
-package com.digraph.weighted.io;
+package com.team01.scheduler.graph.io;
 
-import com.digraph.weighted.exceptions.InvalidInputException;
+import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import com.google.devtools.common.options.OptionsParser;
 
 import java.util.Collections;

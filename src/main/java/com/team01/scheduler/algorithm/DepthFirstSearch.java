@@ -1,23 +1,32 @@
 package com.team01.scheduler.algorithm;
 
 import com.team01.scheduler.graph.exceptions.InvalidInputException;
+import com.team01.scheduler.graph.models.Edge;
+import com.team01.scheduler.graph.models.EdgesLinkedList;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.models.Node;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class DepthFirstSearch implements IRunnable {
 
-    private Graph graph;
-
-    public DepthFirstSearch(Graph graph) {
-        this.graph = graph;
+    public DepthFirstSearch() {
     }
 
     @Override
-    public void run(Node startNode) {
+    public String getTaskName() {
+        return "Depth First Search";
+    }
 
-        if (!graph.isNodeValid(startNode))
+    @Override
+    public void run(Graph graph) {
+
+        Map<Node, EdgesLinkedList> map = graph.getGraph();
+        Node startNode = graph.getNodes().get(0);
+
+        if (!map.containsKey(startNode))
             throw new InvalidInputException("Starting node must be part of graph");
 
         var stack = new Stack<Node>();
@@ -27,7 +36,13 @@ public class DepthFirstSearch implements IRunnable {
             Node iter = stack.pop();
 
             // Visit the node (preorder)
-            // System.out.println(n);
+            System.out.println(iter);
+
+            // Loop over children
+            for (Edge edge : map.get(iter)) {
+                // Add destination nodes to stack
+                stack.push(edge.getTarget());
+            }
         }
     }
 }

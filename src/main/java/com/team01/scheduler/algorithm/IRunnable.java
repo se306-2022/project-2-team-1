@@ -1,7 +1,8 @@
 package com.team01.scheduler.algorithm;
 
-import com.team01.scheduler.graph.models.Node;
+import com.team01.scheduler.graph.models.Graph;
 
 public interface IRunnable {
-    void run(Node startNode);
+    String getTaskName();
+    void run(Graph graph);
 }

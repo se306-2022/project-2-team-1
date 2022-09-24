@@ -1,9 +1,8 @@
-package com.digraph.weighted.controller;
+package com.team01.scheduler.graph.controller;
 
-import com.digraph.weighted.models.Edge;
-import com.digraph.weighted.models.Graph;
-import com.digraph.weighted.models.Node;
-import com.digraph.weighted.util.GraphLogger;
+import com.team01.scheduler.graph.models.Edge;
+import com.team01.scheduler.graph.models.Graph;
+import com.team01.scheduler.graph.models.Node;
 
 import java.util.ArrayList;
 import java.util.List;
