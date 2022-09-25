@@ -43,7 +43,7 @@ public class HelloApplication extends Application {
 
                 System.out.println(currentEdge.toString());
             }
-        }*/
+        }
         ExportToDotFile ex = new ExportToDotFile(graph);
         ex.writeDot();
         launch();
