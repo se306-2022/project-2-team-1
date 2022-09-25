@@ -29,11 +29,11 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InvalidInputException {
         List<Node> nodes = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
 
-        GraphController graphController = new GraphController("src/main/resources/graph.dot");
+        GraphController graphController = new GraphController("graph.dot");
         Graph graph = graphController.getGraph();
 
         Map<Node, EdgesLinkedList> graphStructure;
