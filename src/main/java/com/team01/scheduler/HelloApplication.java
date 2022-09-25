@@ -1,5 +1,10 @@
 package com.team01.scheduler;
 
+import com.digraph.weighted.models.Edge;
+import com.digraph.weighted.models.EdgesLinkedList;
+import com.digraph.weighted.models.Graph;
+import com.digraph.weighted.models.Node;
+import com.digraph.weighted.util.ExportToDotFile;
 
 import com.digraph.weighted.exceptions.InvalidInputException;
 import com.digraph.weighted.io.InputController;
@@ -24,28 +29,30 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) throws IOException, InvalidInputException {
-        // "src/main/resources/graph.dot"
+    public static void main(String[] args) throws IOException {
+        List<Node> nodes = new ArrayList<>();
+        List<Edge> edges = new ArrayList<>();
 
-        /*
-            List<Node> nodes = new ArrayList<>();
-            Node a = new Node("a", 2);
-            Node b = new Node("b", 3);
-            Node c = new Node("c", 1);
-            Node d = new Node("d", 2);
-            nodes.add(a);
-            nodes.add(b);
-            nodes.add(c);
-            nodes.add(d);
+        GraphController graphController = new GraphController("src/main/resources/graph.dot");
+        Graph graph = graphController.getGraph();
 
-            List<Edge> edges = new ArrayList<>();
-            edges.add(new Edge(a, b, 1));
-            edges.add(new Edge(a, c, 2));
-            edges.add(new Edge(b, d, 2));
-            edges.add(new Edge(c, d,1));
-        */
+        Map<Node, EdgesLinkedList> graphStructure;
+        graphStructure = graph.getGraph();
 
+        for (EdgesLinkedList currentList: graphStructure.values()) {
+            int listSize = currentList.size();
+            Edge currentEdge = currentList.get(0);
+
+            for (int i = 0; i < listSize; i++) {
+                currentEdge = currentList.get(i);
+
+                System.out.println(currentEdge.toString());
+            }
+        }
+  
         InputController ic = InputController.getInstance();
         ic.run(args);
+  
+        launch();
     }
 }

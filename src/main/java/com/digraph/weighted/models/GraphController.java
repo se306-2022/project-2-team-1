@@ -38,7 +38,6 @@ public class GraphController {
                 Optional<Node> tempSource = Node.containsName(nodes, split[0]);
                 if (tempSource.isPresent()) {
                     source = tempSource.get();
-                    nodes.add(source);
                 } else {
                     source = new Node(split[0], 0);
                     nodes.add(source);
@@ -48,7 +47,6 @@ public class GraphController {
                 Optional<Node> tempTarget = Node.containsName(nodes, split[2]);
                 if (tempTarget.isPresent()) {
                     target = tempTarget.get();
-                    nodes.add(target);
                 } else {
                     target = new Node(split[2], 0);
                     nodes.add(target);

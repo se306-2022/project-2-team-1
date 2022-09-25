@@ -16,6 +16,7 @@ import java.util.Set;
 public class ExportToDotFile {
     private Graph g;
     private String outputFileName;
+  
     public ExportToDotFile(Graph g, String outputFileName) {
         this.g = g;
         this.outputFileName = outputFileName;
@@ -30,7 +31,7 @@ public class ExportToDotFile {
                 out.newLine();
             }
             for(Edge edge: g.getEdges()){
-                out.write(" "+edge.getSource().getValue()+" -> "+edge.getTarget().getValue()+" [weight="+edge.getWeight()+"]");
+                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"]");
                 out.newLine();
             }
             out.write("}");
