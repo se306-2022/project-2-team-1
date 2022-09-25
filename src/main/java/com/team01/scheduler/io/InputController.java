@@ -13,44 +13,37 @@ import static javafx.application.Application.launch;
 public class InputController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InputController.class);
-    private static final InputController instance = new InputController();
     private CommandLineParser commandLineParser;
     private Graph graph;
 
     private ExportToDotFile export;
+
+    public enum InvocationType {
+        VISUALIZATION,
+        HEADLESS,
+        DEBUG
+    }
+
     /**
-     * private constructor for singleton design pattern
+     * Create a new InputController for the given arguments
+     * @param args Args to parse
      */
-    private InputController(){
+    public InputController(String args[]) {
         commandLineParser = CommandLineParser.getInstance();
-    }
-
-    /**
-     * Use this getter to use static object of class, as the constructor
-     * is private.
-     * @return InputController
-     */
-
-    public static InputController getInstance(){
-        return instance;
-    }
-
-    public void run(String[] args) throws InvalidInputException {
         commandLineParser.parseInputArguments(args);
-
-        // check if visualization is enabled or disabled
-        if (commandLineParser.isVisualize()){
-            initiateScheduler();
-            launch();
-        } else{
-            // run just the scheduler without no visualization
-            initiateScheduler();
-        }
     }
 
+    public InvocationType getInvocationType() {
+        if (commandLineParser.isDebugGui())
+            return InvocationType.DEBUG;
 
+        if (commandLineParser.isVisualize())
+            return InvocationType.VISUALIZATION;
 
-    private void initiateScheduler(){
+        return InvocationType.HEADLESS;
+    }
+
+    public void runScheduler() {
         try {
             GraphController gc = new GraphController(commandLineParser.getInputFileName());
             graph = gc.getGraph();

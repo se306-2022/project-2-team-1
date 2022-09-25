@@ -2,6 +2,7 @@ package com.team01.scheduler;
 
 import com.team01.scheduler.io.InputController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -19,8 +20,29 @@ public class MainApplication extends Application {
         stage.show();
     }
 
+    public static void attachVisualisation(String[] args) {
+        launch(args);
+    }
+
     public static void main(String[] args) {
-        InputController ic = InputController.getInstance();
-        ic.run(args);
+        InputController ic = new InputController(args);
+
+        switch (ic.getInvocationType())
+        {
+            case DEBUG:
+                launch(args);
+                break;
+
+            case VISUALIZATION:
+                attachVisualisation(args);
+                ic.runScheduler();
+                break;
+
+            case HEADLESS:
+                ic.runScheduler();
+                break;
+        }
+
+        Platform.exit();
     }
 }

@@ -14,11 +14,10 @@ public class GraphController {
     private Graph graph;
 
     public GraphController(String fileName) throws IOException {
-        String filePath = "src/main/resources/" + fileName;
         List<Node> nodes = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
 
-        File file = new File(filePath);
+        File file = new File(fileName);
         BufferedReader br = new BufferedReader(new FileReader(file));
         String input;
 

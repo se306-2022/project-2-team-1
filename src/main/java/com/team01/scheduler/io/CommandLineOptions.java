@@ -39,4 +39,12 @@ public class CommandLineOptions extends OptionsBase{
             defaultValue = "false"
     )
     public boolean help;
+
+    @Option(
+            name = "debugGui",
+            abbrev = 'd',
+            help = "Launches the debug GUI. This will not run the scheduler.",
+            defaultValue = "false"
+    )
+    public boolean debugGui;
 }
