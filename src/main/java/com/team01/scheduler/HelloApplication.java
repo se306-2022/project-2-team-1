@@ -5,7 +5,12 @@ import com.digraph.weighted.models.EdgesLinkedList;
 import com.digraph.weighted.models.Graph;
 import com.digraph.weighted.models.Node;
 import com.digraph.weighted.util.ExportToDotFile;
+
+import com.digraph.weighted.exceptions.InvalidInputException;
+import com.digraph.weighted.io.InputController;
 import com.digraph.weighted.models.*;
+import com.digraph.weighted.util.ExportToDotFile;
+import com.digraph.weighted.io.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -44,8 +49,10 @@ public class HelloApplication extends Application {
                 System.out.println(currentEdge.toString());
             }
         }
-        ExportToDotFile ex = new ExportToDotFile(graph);
-        ex.writeDot();
+  
+        InputController ic = InputController.getInstance();
+        ic.run(args);
+  
         launch();
     }
 }

@@ -1,15 +1,16 @@
 package com.digraph.weighted.util;
 
 import com.digraph.weighted.models.Edge;
+import com.digraph.weighted.models.EdgesLinkedList;
 import com.digraph.weighted.models.Node;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public class GraphLogger {
-    private Map<Node, ArrayList<Edge>> graph;
+    private Map<Node, EdgesLinkedList> graph;
 
-    public GraphLogger(Map<Node, ArrayList<Edge>> graph) {
+    public GraphLogger(Map<Node, EdgesLinkedList> graph) {
         this.graph = graph;
     }
 
@@ -17,13 +18,15 @@ public class GraphLogger {
      * Log the graph to console
      */
     public void log(){
-        for (Map.Entry<Node,ArrayList<Edge>> entry : graph.entrySet()){
-            System.out.print(entry.getKey() + ": ");
+        for (EdgesLinkedList currentList: graph.values()) {
+            int listSize = currentList.size();
+            Edge currentEdge = currentList.get(0);
 
-            for (Edge edge : entry.getValue()){
-                System.out.print(" "+ edge.getSource().getValue()+"->"+edge.getTarget().getValue()+"("+edge.getWeight()+")");
+            for (int i = 0; i < listSize; i++) {
+                currentEdge = currentList.get(i);
+
+                System.out.println(currentEdge.toString());
             }
-            System.out.println();
         }
     }
 

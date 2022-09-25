@@ -15,13 +15,15 @@ import java.util.Set;
 
 public class ExportToDotFile {
     private Graph g;
-
-    public ExportToDotFile(Graph g) {
+    private String outputFileName;
+  
+    public ExportToDotFile(Graph g, String outputFileName) {
         this.g = g;
+        this.outputFileName = outputFileName;
     }
 
     public void writeDot() throws IOException {
-        try(BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream("exampleOutput.dot")))){
+        try(BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)))){
             out.write("digraph \"OutputExample\" {");
             out.newLine();
             for(Node node: g.getNodes()){

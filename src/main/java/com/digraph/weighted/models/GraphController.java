@@ -9,8 +9,8 @@ public class GraphController {
 
     private Graph graph;
 
-    public GraphController(String filePath) throws IOException {
-
+    public GraphController(String fileName) throws IOException {
+        String filePath = "src/main/resources/" + fileName;
         List<Node> nodes = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
 
