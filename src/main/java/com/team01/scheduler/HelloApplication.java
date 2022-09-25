@@ -47,6 +47,9 @@ public class HelloApplication extends Application {
         Map<Node, EdgesLinkedList> graphStructure = new HashMap<>();
         graphStructure = graph.getGraph();
 
+        Scheduler scheduler = new Scheduler(graph);
+        scheduler.scheduleNodes();
+
         for (EdgesLinkedList currentList: graphStructure.values()) {
             int listSize = currentList.size();
             Edge currentEdge = currentList.get(0);
