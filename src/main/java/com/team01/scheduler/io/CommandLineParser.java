@@ -1,4 +1,4 @@
-package com.team01.scheduler.graph.io;
+package com.team01.scheduler.io;
 
 import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import com.google.devtools.common.options.OptionsParser;

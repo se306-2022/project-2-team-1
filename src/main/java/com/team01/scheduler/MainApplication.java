@@ -1,5 +1,6 @@
 package com.team01.scheduler;
 
+import com.team01.scheduler.io.InputController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,7 +20,7 @@ public class MainApplication extends Application {
     }
 
     public static void main(String[] args) {
-
-        launch();
+        InputController ic = InputController.getInstance();
+        ic.run(args);
     }
 }

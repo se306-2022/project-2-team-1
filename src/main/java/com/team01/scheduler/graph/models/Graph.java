@@ -32,6 +32,12 @@ public class Graph {
 
         // Create adjacency map
         adjacencyMap = new HashMap<>();
+
+        // populate the adjacency map
+        this.populateAdjacencyMap();
+    }
+
+    public void populateAdjacencyMap(){
         int i = 0;
 
         // Add an empty list for every node

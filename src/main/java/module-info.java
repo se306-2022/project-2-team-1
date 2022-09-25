@@ -6,5 +6,6 @@ module com.team01.scheduler {
 
     opens com.team01.scheduler to javafx.fxml;
     opens com.team01.scheduler.gui to javafx.fxml;
+    opens com.team01.scheduler.io to google.options;
     exports com.team01.scheduler;
 }
