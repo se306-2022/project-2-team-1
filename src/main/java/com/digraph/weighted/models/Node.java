@@ -1,6 +1,8 @@
 package com.digraph.weighted.models;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Node implements Comparable<Node>{
     private Integer value;
@@ -67,5 +69,9 @@ public class Node implements Comparable<Node>{
         if (this.value == o.value)
             return 0;
         return (this.value > o.value) ? 1 : -1;
+    }
+
+    static public Optional<Node> containsName(final List<Node> list, final String name) {
+        return list.stream().filter(o -> o.getName().equals(name)).findFirst();
     }
 }
