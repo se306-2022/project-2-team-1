@@ -29,7 +29,7 @@ public class ExportToDotFile {
                 out.newLine();
             }
             for(Edge edge: g.getEdges()){
-                out.write(" "+edge.getSource().getValue()+" -> "+edge.getTarget().getValue()+" [weight="+edge.getWeight()+"]");
+                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"]");
                 out.newLine();
             }
             out.write("}");
