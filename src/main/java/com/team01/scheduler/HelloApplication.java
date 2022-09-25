@@ -1,5 +1,10 @@
 package com.team01.scheduler;
 
+import com.digraph.weighted.models.Edge;
+import com.digraph.weighted.models.EdgesLinkedList;
+import com.digraph.weighted.models.Graph;
+import com.digraph.weighted.models.Node;
+import com.digraph.weighted.util.ExportToDotFile;
 import com.digraph.weighted.models.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +25,8 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) throws IOException {
+        List<Node> nodes = new ArrayList<>();
+        List<Edge> edges = new ArrayList<>();
 
         GraphController graphController = new GraphController("src/main/resources/graph.dot");
         Graph graph = graphController.getGraph();
@@ -36,8 +43,9 @@ public class HelloApplication extends Application {
 
                 System.out.println(currentEdge.toString());
             }
-        }
-
+        }*/
+        ExportToDotFile ex = new ExportToDotFile(graph);
+        ex.writeDot();
         launch();
     }
 }
