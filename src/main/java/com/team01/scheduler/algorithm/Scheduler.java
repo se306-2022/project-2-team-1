@@ -1,4 +1,4 @@
-package com.team01.scheduler;
+package com.team01.scheduler.algorithm;
 
 import com.digraph.weighted.models.Edge;
 import com.digraph.weighted.models.EdgesLinkedList;
@@ -7,19 +7,25 @@ import com.digraph.weighted.models.Node;
 
 import java.util.Objects;
 
-public class Scheduler {
+public class Scheduler implements IRunnable {
 
-    private Graph graph;
+    public Scheduler() {
 
-    public Graph getGraph() {
-        return graph;
     }
 
-    public Scheduler(Graph graph) {
-        this.graph = graph;
+    @Override
+    public String getTaskName() {
+        return "Scheduling Algorithm";
     }
 
-    public void scheduleNodes() {
+    @Override
+    public void run(Graph graph) {
+
+        Map<Node, EdgesLinkedList> map = graph.getGraph();
+        Node startNode = graph.getNodes().get(0);
+
+        if (!map.containsKey(startNode))
+            throw new InvalidInputException("Starting node must be part of graph");
 
         int iTime = 0;
         int jTime = 0;
@@ -31,12 +37,12 @@ public class Scheduler {
             if (processor1) {
 
                 System.out.println("Node " + node.getName() + " being processed in processor 1 at time " + iTime);
-                iTime >= jTime + node.getInteger();
+                iTime = jTime + node.getInteger();
 
             } else {
 
                 System.out.println("Node " + node.getName() + " being processed in processor 2 at time " + jTime);
-                jTime >= iTime + node.getInteger();
+                jTime = iTime + node.getInteger();
             }
 
         }

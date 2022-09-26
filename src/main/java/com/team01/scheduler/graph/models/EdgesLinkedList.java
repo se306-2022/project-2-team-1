@@ -1,8 +1,10 @@
-package com.digraph.weighted.models;
+package com.team01.scheduler.graph.models;
 
-import com.digraph.weighted.exceptions.InvalidPositionException;
+import com.team01.scheduler.graph.exceptions.InvalidPositionException;
 
-public class EdgesLinkedList {
+import java.util.Iterator;
+
+public class EdgesLinkedList implements Iterable<Edge> {
 
     private Edge head;
 
@@ -126,4 +128,41 @@ public class EdgesLinkedList {
         return count;
     }
 
+    /**
+     * Allows using EdgesLinkedList in a for/foreach loop.
+     *
+     * @return New iterator instance
+     */
+    @Override
+    public Iterator<Edge> iterator() {
+        return new EdgeIterator();
+    }
+
+    /**
+     * Iterator implementation for EdgesLinkedList
+     */
+    class EdgeIterator implements Iterator<Edge> {
+
+        private int index = 0;
+
+        /**
+         * Checks if there is another item in the iterable
+         *
+         * @return True if not the last item
+         */
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        /**
+         * Get the next item in the iterable
+         *
+         * @return The next edge
+         */
+        @Override
+        public Edge next() {
+            return get(index++);
+        }
+    }
 }
