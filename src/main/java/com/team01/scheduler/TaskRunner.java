@@ -1,5 +1,6 @@
 package com.team01.scheduler;
 
+import com.team01.scheduler.algorithm.INotifyCompletion;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.graph.models.Edge;
 import com.team01.scheduler.graph.models.Node;
@@ -18,14 +19,14 @@ public class TaskRunner {
      * @param graph The input graph
      * @return Status code of task
      */
-    public boolean safeRun(IRunnable runnable, Graph graph) {
+    public boolean safeRun(IRunnable runnable, Graph graph, INotifyCompletion notifyCompletion) {
 
         System.out.println("Running task: " + runnable.getTaskName());
 
         System.out.println("\nTASK START\n");
 
         try {
-            runnable.run(graph);
+            runnable.run(graph, notifyCompletion);
         }
         catch (Exception e) {
             e.printStackTrace();

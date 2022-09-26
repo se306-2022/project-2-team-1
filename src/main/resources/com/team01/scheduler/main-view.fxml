@@ -13,7 +13,7 @@
 <SplitPane orientation="VERTICAL" xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.team01.scheduler.MainController"
            fx:id="splitPane">
-    <TabPane>
+    <TabPane fx:id="tabPane">
         <Tab text="Debug GUI" closable="false">
             <VBox>
                 <ToolBar>

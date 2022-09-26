@@ -22,30 +22,12 @@ public class BranchAndBound implements IRunnable {
         final int numProcessors;
         final Map<Node, EdgesLinkedList> map;
         int currentShortestPath;
+        ScheduledTask currentShortestPathTask;
 
         private State(int numProcessors, Map<Node, EdgesLinkedList> map) {
             this.numProcessors = numProcessors;
             this.map = map;
             this.currentShortestPath = Integer.MAX_VALUE;
-        }
-    }
-
-    class ScheduledTask {
-        int startTime;
-        int processorId;
-        Node node;
-        ScheduledTask parent;
-
-        public ScheduledTask(ScheduledTask parent, int startTime, int processorId, Node node) {
-            this.startTime = startTime;
-            this.processorId = processorId;
-            this.node = node;
-            this.parent = parent;
-        }
-
-        @Override
-        public String toString() {
-            return processorId + " | " + startTime + " | " + node.getName();
         }
     }
 
@@ -160,6 +142,7 @@ public class BranchAndBound implements IRunnable {
         if (current.queuedChildren.size() == 0) {
             if (nodeFinishTime < state.currentShortestPath) {
                 state.currentShortestPath = nodeFinishTime;
+                state.currentShortestPathTask = task;
 
                 // Notify success
                 printPath(task);
@@ -211,7 +194,7 @@ public class BranchAndBound implements IRunnable {
     }
 
     @Override
-    public void run(Graph graph) {
+    public void run(Graph graph, INotifyCompletion notifyCompletion) {
 
         var startNode = graph.getNodes().get(0);
 
@@ -222,6 +205,18 @@ public class BranchAndBound implements IRunnable {
         // Add children to DFS solution tree
         ScheduledTask newTask = new ScheduledTask(null, 0, 0, startNode);
         doBranchAndBoundRecursive(state, new PartialSolution(newTask, numProcessors));
+
+        // Report results
+        List<ScheduledTask> taskList = new ArrayList<>();
+
+        ScheduledTask iter = state.currentShortestPathTask;
+        while (iter != null) {
+            taskList.add(0, iter);
+            iter = iter.parent;
+        }
+
+        var schedule = new Schedule(taskList, numProcessors);
+        notifyCompletion.notifyComplete(schedule);
 
         /*Map<Node, EdgesLinkedList> map = graph.getGraph();
 
