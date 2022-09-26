@@ -8,15 +8,21 @@
 <?import javafx.scene.control.ListView?>
 <?import com.team01.scheduler.gui.Console?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
 <SplitPane orientation="VERTICAL" xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.team01.scheduler.MainController"
            fx:id="splitPane">
-    <VBox>
-        <ToolBar>
-            <Button text="Run Task" onAction="#onRunTask"/>
-            <Button text="Toggle Console" onAction="#onToggleConsole"/>
-        </ToolBar>
-        <ListView fx:id="listView" VBox.vgrow="ALWAYS" />
-    </VBox>
+    <TabPane>
+        <Tab text="Debug GUI" closable="false">
+            <VBox>
+                <ToolBar>
+                    <Button text="Run Task" onAction="#onRunTask"/>
+                    <Button text="Toggle Console" onAction="#onToggleConsole"/>
+                </ToolBar>
+                <ListView fx:id="listView" VBox.vgrow="ALWAYS" />
+            </VBox>
+        </Tab>
+    </TabPane>
     <Console fx:id="console" />
 </SplitPane>
