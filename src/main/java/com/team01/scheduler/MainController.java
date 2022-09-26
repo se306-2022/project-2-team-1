@@ -2,6 +2,7 @@ package com.team01.scheduler;
 
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
+import com.team01.scheduler.gui.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.gui.Console;
@@ -128,13 +129,15 @@ public class MainController {
         });
     }
 
-    private void addTab(Tab tab, String title, Node content) {
+    private void addTab(String title, Node content) {
         Tab newTab = new Tab(title, content);
+        newTab.setClosable(true);
         tabPane.getTabs().add(newTab);
     }
 
     private void showResults(Schedule schedule) {
-
+        var schedulerView = new ScheduleView(schedule);
+        addTab("Job Results", schedulerView);
     }
 
     public MainController() {

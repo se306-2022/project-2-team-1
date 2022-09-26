@@ -4,7 +4,6 @@ import com.team01.scheduler.graph.models.Edge;
 import com.team01.scheduler.graph.models.EdgesLinkedList;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.models.Node;
-import javafx.util.Pair;
 
 import java.util.*;
 
@@ -49,7 +48,7 @@ public class BranchAndBound implements IRunnable {
             this.task = task;
 
             // Add the current node to visited as an optimisation
-            this.visitedChildren.add(task.node);
+            this.visitedChildren.add(task.getNode());
         }
 
         private PartialSolution(PartialSolution clone, ScheduledTask newTask) {
@@ -63,10 +62,10 @@ public class BranchAndBound implements IRunnable {
             this.task = newTask;
 
             // Add the current node to visited as an optimisation
-            this.visitedChildren.add(newTask.node);
+            this.visitedChildren.add(newTask.getNode());
 
             // Remove the current node from queued children to avoid infinite recursion
-            this.queuedChildren.remove(newTask.node);
+            this.queuedChildren.remove(newTask.getNode());
         }
     }
 
@@ -86,7 +85,7 @@ public class BranchAndBound implements IRunnable {
     }
 
     private void printPath(ScheduledTask iter) {
-        int pathLength = iter.startTime + iter.node.getValue();
+        int pathLength = iter.getStartTime() + iter.getNode().getValue();
         System.out.println("New Shortest Path: " + pathLength);
 
         while (iter != null) {
@@ -111,14 +110,14 @@ public class BranchAndBound implements IRunnable {
     private void doBranchAndBoundRecursive(State state, PartialSolution current) {
         // Consider current node
         var task = current.task;
-        int nodeFinishTime = task.startTime + task.node.getValue();
+        int nodeFinishTime = task.getStartTime() + task.getNode().getValue();
 
         // Bound the algorithm by the currently determined shortest path
         if (nodeFinishTime >= state.currentShortestPath)
             return;
 
         // Add children of current node
-        for (var edge : state.map.get(task.node)) {
+        for (var edge : state.map.get(task.getNode())) {
             var child = edge.getTarget();
 
             // TODO: More efficient lookup
@@ -169,11 +168,11 @@ public class BranchAndBound implements IRunnable {
                 // The task can start (at the earliest, assuming no communication time) once
                 // all dependency tasks have been completed
                 for (var dependency : dependencies) {
-                    int finishTime = dependency.startTime + dependency.node.getValue();
+                    int finishTime = dependency.getStartTime() + dependency.getNode().getValue();
 
                     // Account for communication time
-                    if (dependency.processorId != processorId)
-                        finishTime += getEdgeWeight(state, dependency.node, child);
+                    if (dependency.getProcessorId() != processorId)
+                        finishTime += getEdgeWeight(state, dependency.getNode(), child);
 
                     // Update earliest start time
                     earliestStartTime = Math.max(earliestStartTime, finishTime);
