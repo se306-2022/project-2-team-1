@@ -25,7 +25,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'com.team01.scheduler'
-    mainClass = 'com.team01.scheduler.HelloApplication'
+    mainClass = 'com.team01.scheduler.MainApplication'
 }
 
 javafx {

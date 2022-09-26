@@ -1,6 +1,6 @@
-package com.digraph.weighted.io;
+package com.team01.scheduler.io;
 
-import com.digraph.weighted.exceptions.InvalidInputException;
+import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import com.google.devtools.common.options.OptionsParser;
 
 import java.util.Collections;
@@ -15,6 +15,7 @@ public class CommandLineParser{
     private boolean isVisualize;
     private int numProcessors;
     private int numCores;
+    private boolean debugGui;
 
     public String getInputFileName() {
         return inputFileName;
@@ -35,6 +36,8 @@ public class CommandLineParser{
     public int getNumCores() {
         return numCores;
     }
+
+    public boolean isDebugGui() { return debugGui; }
 
     /**
      * private constructor for singleton design pattern
@@ -60,12 +63,17 @@ public class CommandLineParser{
     private void checkValidityOfArguments(String[] args) throws InvalidInputException{
         CommandLineOptions options = parser.getOptions(CommandLineOptions.class);
 
-        if (options.help){
+        if (options.help) {
             helpUser(parser);
         }
 
+        if (options.debugGui) {
+            debugGui = true;
+            return;
+        }
+
         // check that the input file name and the numProcessors are supplied
-        if (args == null){
+        if (args == null || args.length == 0) {
             throw new InvalidInputException("InputFileName or numProcessors args not supplied");
         }
 

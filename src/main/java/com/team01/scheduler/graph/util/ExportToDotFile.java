@@ -1,18 +1,14 @@
-package com.digraph.weighted.util;
+package com.team01.scheduler.graph.util;
 
 
-import com.digraph.weighted.models.Edge;
-import com.digraph.weighted.models.Graph;
-import com.digraph.weighted.models.Node;
+import com.team01.scheduler.graph.models.Edge;
+import com.team01.scheduler.graph.models.Graph;
+import com.team01.scheduler.graph.models.Node;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-
 public class ExportToDotFile {
     private Graph g;
     private String outputFileName;
@@ -26,11 +22,11 @@ public class ExportToDotFile {
         try(BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)))){
             out.write("digraph \"OutputExample\" {");
             out.newLine();
-            for(Node node: g.getNodes()){
+            for (Node node: g.getNodes()){
                 out.write(" "+node.getName()+" [weight="+node.getValue()+"]");
                 out.newLine();
             }
-            for(Edge edge: g.getEdges()){
+            for (Edge edge: g.getEdges()){
                 out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"]");
                 out.newLine();
             }
