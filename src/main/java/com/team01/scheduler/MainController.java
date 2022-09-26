@@ -1,6 +1,7 @@
 package com.team01.scheduler;
 
-import com.team01.scheduler.algorithm.DepthFirstSearch;
+import com.team01.scheduler.algorithm.BranchAndBound;
+import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.gui.Console;
 import javafx.collections.FXCollections;
@@ -127,6 +128,7 @@ public class MainController {
 
         tasks.add(Utils.createPrintGraphTask());
         tasks.add(new DepthFirstSearch());
+        tasks.add(new BranchAndBound());
 
         taskList = FXCollections.observableList(tasks);
     }
