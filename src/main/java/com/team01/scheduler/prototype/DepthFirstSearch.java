@@ -1,5 +1,6 @@
-package com.team01.scheduler.algorithm;
+package com.team01.scheduler.prototype;
 
+import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import com.team01.scheduler.graph.models.Edge;
 import com.team01.scheduler.graph.models.EdgesLinkedList;
