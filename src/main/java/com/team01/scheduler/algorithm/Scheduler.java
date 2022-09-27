@@ -27,22 +27,43 @@ public class Scheduler implements IRunnable {
         if (!map.containsKey(startNode))
             throw new InvalidInputException("Starting node must be part of graph");
 
-        int iTime = 0;
-        int jTime = 0;
+        int iTime = startNode.getInteger();
+        int jTime = startNode.getInteger();
 
         bool processor1 = true;
 
         for (Node node : graph.getNodes()) {
 
             if (processor1) {
+                if (iTime >= jTime + node.getInteger()) {
+                    System.out.println("Node " + node.getName() + " being processed in processor 1 at time " + iTime + "\n");
+                    iTime = jTime + node.getInteger();
 
-                System.out.println("Node " + node.getName() + " being processed in processor 1 at time " + iTime);
-                iTime = jTime + node.getInteger();
+                    //add + edge
+                } else if ((iTime >= jTime + node.getInteger()){
+
+                    System.out.println("Node " + node.getName() + " being processed in processor 2 at time " + iTime + "\n");
+
+                    //add + edge
+                    iTime = jTime + node.getInteger();
+                    processor1 = false;
+                }
 
             } else {
+                if (jTime >= iTime + node.getInteger()) {
+                    System.out.println("Node " + node.getName() + " being processed in processor 2 at time " + jTime  + "\n");
+                    jTime = iTime + node.getInteger();
 
-                System.out.println("Node " + node.getName() + " being processed in processor 2 at time " + jTime);
-                jTime = iTime + node.getInteger();
+                    //add + edge
+                } else if ((jTime >= iTime + node.getInteger()){
+
+                    System.out.println("Node " + node.getName() + " being processed in processor 1 at time " + jTime + "\n");
+
+                    //add + edge
+                    jTime = iTime + node.getInteger();
+                    processor1 = true;
+
+                }
             }
 
         }
