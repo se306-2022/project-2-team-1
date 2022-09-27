@@ -1,6 +1,8 @@
 package com.team01.scheduler;
 
 import com.team01.scheduler.algorithm.BranchAndBound;
+import com.team01.scheduler.algorithm.Schedule;
+import com.team01.scheduler.gui.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.gui.Console;
@@ -8,6 +10,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.io.OutputStream;
@@ -35,6 +39,9 @@ public class MainController {
     private SplitPane splitPane;
 
     @FXML
+    private TabPane tabPane;
+
+    @FXML
     public void onRunTask(ActionEvent actionEvent) {
         IRunnable runnable = listView.getSelectionModel().getSelectedItem();
 
@@ -43,7 +50,11 @@ public class MainController {
             return;
         }
 
-        taskRunner.safeRun(runnable, Utils.createSampleGraph());
+        taskRunner.safeRun(runnable, Utils.createSampleGraph(), schedule -> {
+            if (schedule instanceof Schedule) {
+                showResults(schedule);
+            }
+        });
     }
 
     private void redirectOutput(boolean shouldRedirect) {
@@ -116,6 +127,17 @@ public class MainController {
                     setText(item.getTaskName());
             }
         });
+    }
+
+    private void addTab(String title, Node content) {
+        Tab newTab = new Tab(title, content);
+        newTab.setClosable(true);
+        tabPane.getTabs().add(newTab);
+    }
+
+    private void showResults(Schedule schedule) {
+        var schedulerView = new ScheduleView(schedule);
+        addTab("Job Results", schedulerView);
     }
 
     public MainController() {
