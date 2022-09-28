@@ -1,9 +1,11 @@
 package com.team01.graphmodel;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.team01.scheduler.graph.models.Edge;
+import com.team01.scheduler.graph.models.Graph;
+import com.team01.scheduler.graph.models.Node;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ class GraphModelTest {
         edges.add(new Edge(b, d, 2));
         edges.add(new Edge(c, d,1));
 
-        Graph graph = new Graph(edges, nodes);
+        this.graph = new Graph(edges, nodes);
     }
 
     @Test
