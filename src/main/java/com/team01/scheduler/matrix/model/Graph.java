@@ -5,8 +5,7 @@ import com.team01.scheduler.matrix.exception.InvalidEdgeException;
 import com.team01.scheduler.matrix.exception.NodeInvalidIDMapping;
 import com.team01.scheduler.matrix.exception.NonExistingNodeException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Graph {
 
@@ -114,6 +113,53 @@ public class Graph {
         return parentNodes;
     }
 
+    /**
+     * Utility recursion function to iteratively sort the nodes until they are topologically sorted
+     *
+     * @param numberOfNodes     The number of nodes in graph
+     * @param visited           The array to keep track of visited nodes
+     * @param stack             The stack stores the order of nodes
+     */
+    private void topologicalSortRecursion(int numberOfNodes, boolean visited[], Stack stack) {
+        visited[numberOfNodes] = true;
+        Integer i;
+        Iterator<Integer> iterator = Arrays.stream(adjacencyMatrix[numberOfNodes]).iterator();
+        while (iterator.hasNext()) {
+            i = iterator.next();
+            if (!visited[i])
+                topologicalSortRecursion(i, visited, stack);
+        }
+
+    }
+
+    /**
+     * Base topological sort function to order the nodes in order of precedence
+     *
+     * @param numberOfNodes     The number of nodes in the graph
+     */
+    private void topologicalSort(int numberOfNodes) {
+        Stack stack = new Stack();
+
+        boolean visited[] = new boolean[numberOfNodes];
+        for (int i = 0; i < numberOfNodes; i++) {
+            visited[i] = false;
+        }
+
+        for (int i = 0; i < numberOfNodes; i++) {
+            if (visited[i] == false) {
+                topologicalSortRecursion(i, visited, stack);
+            }
+        }
+
+        //Print out all nodes
+        //TODO return the stack as a list when getNodes() is called
+        while (stack.empty() == false) {
+            System.out.print(stack.pop() + " ");
+        }
+    }
+
+
+
 
     private boolean isExitNode(int[][] matrix, int nodeId, int size) {
         for (int j=0; j<size; j++) {
@@ -147,5 +193,6 @@ public class Graph {
             throw new InvalidEdgeException("The Edge accesses a non-existing node.");
         }
     }
+
 
 }
