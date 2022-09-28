@@ -1,15 +1,14 @@
-package com.team01.graphmodel
-
-import static org.junit.jupiter.api.Assertions.*;
+package com.team01.graphmodel;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class GraphTest {
+class GraphModelTest {
 
     private Graph graph;
 
@@ -35,16 +34,16 @@ class GraphTest {
     }
 
     @Test
-    void testThreeNodeTaskGraph() {
+    void testFourNodeTaskGraph() {
 
-        int numNodes = 3;
+        int numNodes = 4;
         int countNodes = 0;
 
         for (Node node : graph.getNodes()) {
             countNodes++;
         }
 
-        assertEquals(numNodes, countNodes);
+        Assertions.assertEquals(numNodes, countNodes);
 
     }
 }
