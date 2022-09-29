@@ -1,6 +1,9 @@
 package com.team01.scheduler.io;
 
 import com.digraph.weighted.models.GraphController;
+import com.team01.scheduler.TaskRunner;
+import com.team01.scheduler.algorithm.BranchAndBound;
+import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.util.ExportToDotFile;
@@ -44,12 +47,20 @@ public class InputController {
     }
 
     public void runScheduler() {
+        Schedule schedule;
+        TaskRunner taskRunner = new TaskRunner();
         try {
             GraphController gc = new GraphController(commandLineParser.getInputFileName());
             graph = gc.getGraph();
+            schedule = taskRunner.safeRun(new BranchAndBound(),graph);
+            try{
+                ExportToDotFile export = new ExportToDotFile(graph,commandLineParser.getOutputFileName(),schedule);
+                export.writeDotWithSchedule();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            //RunnableOptions.getInstance().setGraph(graph);
 
-            export = new ExportToDotFile(graph, commandLineParser.getOutputFileName());
-            export.writeDot();
 
         } catch (IOException e){
             LOGGER.info("<<<PROBLEM WITH GRAPH PARSING>>> " + e.getMessage());

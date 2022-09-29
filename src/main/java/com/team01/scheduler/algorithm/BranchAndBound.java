@@ -193,7 +193,7 @@ public class BranchAndBound implements IRunnable {
     }
 
     @Override
-    public void run(Graph graph, INotifyCompletion notifyCompletion) {
+    public Schedule run(Graph graph) {
 
         var startNode = graph.getNodes().get(0);
 
@@ -215,7 +215,8 @@ public class BranchAndBound implements IRunnable {
         }
 
         var schedule = new Schedule(taskList, numProcessors);
-        notifyCompletion.notifyComplete(schedule);
+        return  schedule;
+
 
         /*Map<Node, EdgesLinkedList> map = graph.getGraph();
 
