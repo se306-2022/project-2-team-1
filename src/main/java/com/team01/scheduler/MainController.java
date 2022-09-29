@@ -50,7 +50,7 @@ public class MainController {
             return;
         }
 
-        taskRunner.safeRun(runnable, Utils.createSampleGraph(), schedule -> {
+        taskRunner.safeRunAsync(runnable, Utils.createSampleGraph(), schedule -> {
             if (schedule instanceof Schedule) {
                 showResults(schedule);
             }
