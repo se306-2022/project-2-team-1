@@ -81,8 +81,8 @@ public class Graph {
         return exitNodes;
     }
 
-    public List<Node> getChildrenForNode(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
-        List<Node> childrenNodes = new ArrayList<>();
+    public ArrayList<Node> getChildrenForNode(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
+        ArrayList<Node> childrenNodes = new ArrayList<>();
         // first check that the node indeed does exist in the graph
         if (!inputNodes.contains(node)){
             throw new NonExistingNodeException("The node does not exist in the graph: " + node);
@@ -97,8 +97,8 @@ public class Graph {
         return childrenNodes;
     }
 
-    public List<Node> getParentsForNode(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
-        List<Node> parentNodes = new ArrayList<>();
+    public ArrayList<Node> getParentsForNode(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
+        ArrayList<Node> parentNodes = new ArrayList<>();
         // first check that the node indeed does exist in the graph
         if (!inputNodes.contains(node)){
             throw new NonExistingNodeException("The node does not exist in the graph: " + node);
