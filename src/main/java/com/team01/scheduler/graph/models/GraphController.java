@@ -1,11 +1,9 @@
-package com.digraph.weighted.models;
+package com.team01.scheduler.graph.models;
 
-import com.team01.scheduler.graph.models.Edge;
-import com.team01.scheduler.graph.models.Graph;
-import com.team01.scheduler.graph.models.Node;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,15 +22,19 @@ public class GraphController {
         while ((input = br.readLine()) != null) {
 
             // Ignore first and last line
-            if (input.contains("}") || input.contains("{")) {
+            if (input.contains("}") || input.contains("{") || !input.contains("Weight")) {
                 continue;
             }
-
-            String[] split = input.split(" ");
-
+            input = input.trim();
+            String[] split = input.split("\\s+");
+            System.out.println(Arrays.asList(split));
             // Reading in a node
-            if (split.length == 3) {
-                nodes.add(new Node(split[0], Character.getNumericValue(split[1].charAt(split[1].length() -2))));
+            if (split.length == 2) {
+                split[1]=split[1].replace("[Weight=","").trim();
+                split[1]=split[1].replaceAll("];","");
+                split[1]=split[1].replaceAll("\"/[^,]*$\"","");
+                nodes.add(new Node(split[0], Integer.parseInt(split[1])));
+                System.out.println("noode added!");
             } else { // Reading in an Edge
                 Node source;
                 Node target;
@@ -56,10 +58,12 @@ public class GraphController {
                 }
 
                 // Add edge
-                edges.add(new Edge(source, target, Character.getNumericValue(split[3].charAt(split[3].length() -2))));
+                split[3]=split[3].replace("[Weight=","").trim();
+                split[3]=split[3].replaceAll("];","");
+                split[3]=split[3].replaceAll("\"/[^,]*$\"","").trim();
+                edges.add(new Edge(source, target, Integer.parseInt(split[3])));
             }
         }
-
         this.graph = new Graph(edges, nodes);
 
     }

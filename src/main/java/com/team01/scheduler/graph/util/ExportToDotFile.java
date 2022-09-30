@@ -33,11 +33,12 @@ public class ExportToDotFile {
             out.write("digraph \""+outputFileName+"\" {");
             out.newLine();
             for (Node node: g.getNodes()){
-                out.write(" "+node.getName()+" [weight="+node.getValue()+"]");
+
+                out.write(" "+node.getName()+" [weight="+node.getValue()+"];");
                 out.newLine();
             }
             for (Edge edge: g.getEdges()){
-                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"]");
+                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"];");
                 out.newLine();
             }
             out.write("}");
@@ -51,11 +52,11 @@ public class ExportToDotFile {
             schedule.getScheduledTaskList();
             List<ScheduledTask> scheduledTasks= schedule.getScheduledTaskList();
             for (ScheduledTask scheduledTask: scheduledTasks){
-                out.write(" "+scheduledTask.getNode().getName()+" [weight="+scheduledTask.getNode().getValue()+",Start="+scheduledTask.getStartTime()+",Processor="+scheduledTask.getProcessorId()+"]");
+                out.write(" "+scheduledTask.getNode().getName()+" [weight="+scheduledTask.getNode().getValue()+",Start="+scheduledTask.getStartTime()+",Processor="+scheduledTask.getProcessorId()+"];");
                 out.newLine();
             }
             for (Edge edge: g.getEdges()){
-                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"]");
+                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"];");
                 out.newLine();
             }
             out.write("}");
