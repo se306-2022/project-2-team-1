@@ -1,6 +1,7 @@
 package com.team01.scheduler;
 
 import com.team01.scheduler.algorithm.IRunnable;
+import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.graph.models.Edge;
 import com.team01.scheduler.graph.models.EdgesLinkedList;
 import com.team01.scheduler.graph.models.Graph;
@@ -46,7 +47,7 @@ public class Utils {
             }
 
             @Override
-            public void run(Graph graph) {
+            public Schedule run(Graph graph) {
                 for (EdgesLinkedList currentList: graph.getGraph().values()) {
                     int listSize = currentList.size();
 
@@ -56,6 +57,7 @@ public class Utils {
                         System.out.println(currentEdge.toString());
                     }
                 }
+                return null;
             }
         };
     }

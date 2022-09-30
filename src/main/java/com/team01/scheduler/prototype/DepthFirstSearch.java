@@ -1,13 +1,13 @@
 package com.team01.scheduler.prototype;
 
 import com.team01.scheduler.algorithm.IRunnable;
+import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import com.team01.scheduler.graph.models.Edge;
 import com.team01.scheduler.graph.models.EdgesLinkedList;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.models.Node;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -22,7 +22,7 @@ public class DepthFirstSearch implements IRunnable {
     }
 
     @Override
-    public void run(Graph graph) {
+    public Schedule run(Graph graph) {
 
         Map<Node, EdgesLinkedList> map = graph.getGraph();
         Node startNode = graph.getNodes().get(0);
@@ -45,5 +45,6 @@ public class DepthFirstSearch implements IRunnable {
                 stack.push(edge.getTarget());
             }
         }
+        return null;
     }
 }
