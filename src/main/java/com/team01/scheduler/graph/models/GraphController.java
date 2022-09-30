@@ -27,14 +27,12 @@ public class GraphController {
             }
             input = input.trim();
             String[] split = input.split("\\s+");
-            System.out.println(Arrays.asList(split));
             // Reading in a node
             if (split.length == 2) {
                 split[1]=split[1].replace("[Weight=","").trim();
                 split[1]=split[1].replaceAll("];","");
                 split[1]=split[1].replaceAll("\"/[^,]*$\"","");
                 nodes.add(new Node(split[0], Integer.parseInt(split[1])));
-                System.out.println("noode added!");
             } else { // Reading in an Edge
                 Node source;
                 Node target;

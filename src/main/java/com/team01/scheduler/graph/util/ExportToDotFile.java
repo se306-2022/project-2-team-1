@@ -28,12 +28,15 @@ public class ExportToDotFile {
         this.schedule = schedule;
     }
 
+    /**
+     * Generate dot file for graph only
+     *
+     * **/
     public void writeDot() throws IOException {
         try(BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)))){
             out.write("digraph \""+outputFileName+"\" {");
             out.newLine();
             for (Node node: g.getNodes()){
-
                 out.write(" "+node.getName()+" [weight="+node.getValue()+"];");
                 out.newLine();
             }
@@ -45,11 +48,14 @@ public class ExportToDotFile {
         }
     }
 
+    /**
+     * Generate dot file for graph and schedule
+     *
+     * **/
     public void writeDotWithSchedule() throws IOException {
         try(BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)))){
             out.write("digraph \""+outputFileName+"\" {");
             out.newLine();
-            schedule.getScheduledTaskList();
             List<ScheduledTask> scheduledTasks= schedule.getScheduledTaskList();
             for (ScheduledTask scheduledTask: scheduledTasks){
                 out.write(" "+scheduledTask.getNode().getName()+" [weight="+scheduledTask.getNode().getValue()+",Start="+scheduledTask.getStartTime()+",Processor="+scheduledTask.getProcessorId()+"];");
