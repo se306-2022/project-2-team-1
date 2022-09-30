@@ -1,6 +1,6 @@
 package com.team01.scheduler.io;
 
-import com.digraph.weighted.models.GraphController;
+import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
@@ -16,7 +16,7 @@ import static javafx.application.Application.launch;
 public class InputController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InputController.class);
-    private CommandLineParser commandLineParser;
+    public CommandLineParser commandLineParser;
     private Graph graph;
 
     private ExportToDotFile export;
