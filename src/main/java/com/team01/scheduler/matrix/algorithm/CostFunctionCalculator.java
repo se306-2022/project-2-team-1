@@ -12,15 +12,18 @@ import java.util.HashMap;
  * lowerbound/costfunction = max(bottom level + starttime for every node in partial schedule)
  */
 public class CostFunctionCalculator {
-
+    private static CostFunctionCalculator instance;
     private HashMap<Node,Integer> bottomLevels = new HashMap<>();
     private Graph adjacencyMatrix;
 
-    public CostFunctionCalculator(Graph g){
-        this.adjacencyMatrix = g;
+    private CostFunctionCalculator(){
     }
 
-    public Integer findCostFunction(PartialSchedule partialSchedule, ArrayList<Processor> processorsList) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
+    public static CostFunctionCalculator getInstance(){
+        return (instance == null) ? instance = new CostFunctionCalculator() : instance;
+    }
+
+    public Integer findCostFunction(PartialSchedule partialSchedule, ArrayList<Processor> processorsList,Graph g) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
 
