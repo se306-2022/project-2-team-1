@@ -24,6 +24,7 @@ public class CostFunctionCalculator {
     }
 
     public Integer findCostFunction(PartialSchedule partialSchedule, ArrayList<Processor> processorsList,Graph g) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
+        adjacencyMatrix = g;
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
 
