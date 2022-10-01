@@ -20,7 +20,10 @@
                     <Button text="Run Task" onAction="#onRunTask"/>
                     <Button text="Toggle Console" onAction="#onToggleConsole"/>
                 </ToolBar>
-                <ListView fx:id="listView" VBox.vgrow="ALWAYS" />
+                <SplitPane VBox.vgrow="ALWAYS">
+                    <TextArea fx:id="graphEditor" />
+                    <ListView fx:id="listView" />
+                </SplitPane>
             </VBox>
         </Tab>
     </TabPane>

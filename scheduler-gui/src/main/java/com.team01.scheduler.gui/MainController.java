@@ -15,8 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +40,9 @@ public class MainController {
 
     @FXML
     private TabPane tabPane;
+
+    @FXML
+    public TextArea graphEditor;
 
     @FXML
     public void onRunTask(ActionEvent actionEvent) {
@@ -128,6 +130,14 @@ public class MainController {
                     setText(item.getTaskName());
             }
         });
+
+        // Setup Defaults
+
+        // Populate Graph Editor
+        String graphDotFile = Utils.loadResource(MainController.class, "samples/Nodes_7_OutTree.dot");
+        if (graphDotFile != null) {
+            graphEditor.setText(graphDotFile);
+        }
     }
 
     private void addTab(String title, Node content) {
