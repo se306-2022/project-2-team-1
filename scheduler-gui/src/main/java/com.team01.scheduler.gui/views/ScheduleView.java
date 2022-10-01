@@ -1,14 +1,11 @@
-package com.team01.scheduler.gui;
+package com.team01.scheduler.gui.views;
 
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.algorithm.ScheduledTask;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
-
-import java.util.List;
 
 public class ScheduleView extends Canvas {
 

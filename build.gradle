@@ -1,12 +1,15 @@
 plugins {
     id 'java'
     id 'application'
+    id 'java-library'
     id 'org.openjfx.javafxplugin' version '0.0.13'
     id 'org.beryx.jlink' version '2.24.1'
 }
 
-group 'com.team01'
-version '1.0-SNAPSHOT'
+allprojects {
+    group = 'com.team01.scheduler'
+    version = '1.0-SNAPSHOT'
+}
 
 repositories {
     mavenCentral()
@@ -16,16 +19,8 @@ ext {
     junitVersion = '5.9.0'
 }
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
-
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-}
-
-application {
-    mainModule = 'com.team01.scheduler'
-    mainClass = 'com.team01.scheduler.MainApplication'
 }
 
 javafx {

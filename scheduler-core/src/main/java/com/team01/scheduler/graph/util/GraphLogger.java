@@ -4,7 +4,6 @@ import com.team01.scheduler.graph.models.Edge;
 import com.team01.scheduler.graph.models.EdgesLinkedList;
 import com.team01.scheduler.graph.models.Node;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class GraphLogger {

@@ -1,4 +1,4 @@
-package com.team01.scheduler.gui;
+package com.team01.scheduler.gui.views;
 
 import javafx.scene.control.TextArea;
 

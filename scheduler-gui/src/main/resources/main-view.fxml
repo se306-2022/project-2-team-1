@@ -6,12 +6,12 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ListView?>
-<?import com.team01.scheduler.gui.Console?>
+<?import com.team01.scheduler.gui.views.Console?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 <SplitPane orientation="VERTICAL" xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.team01.scheduler.MainController"
+           fx:controller="com.team01.scheduler.gui.MainController"
            fx:id="splitPane">
     <TabPane fx:id="tabPane">
         <Tab text="Debug GUI" closable="false">

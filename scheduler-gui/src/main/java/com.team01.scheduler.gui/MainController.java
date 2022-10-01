@@ -1,17 +1,18 @@
-package com.team01.scheduler;
+package com.team01.scheduler.gui;
 
+import com.team01.scheduler.TaskRunner;
+import com.team01.scheduler.Utils;
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.gui.ScheduleView;
+import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
-import com.team01.scheduler.gui.Console;
+import com.team01.scheduler.gui.views.Console;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.io.OutputStream;

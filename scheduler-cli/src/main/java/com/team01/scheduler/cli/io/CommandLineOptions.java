@@ -1,4 +1,4 @@
-package com.team01.scheduler.io;
+package com.team01.scheduler.cli.io;
 
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionsBase;
@@ -39,12 +39,4 @@ public class CommandLineOptions extends OptionsBase{
             defaultValue = "false"
     )
     public boolean help;
-
-    @Option(
-            name = "debugGui",
-            abbrev = 'd',
-            help = "Launches the debug GUI. This will not run the scheduler.",
-            defaultValue = "false"
-    )
-    public boolean debugGui;
 }

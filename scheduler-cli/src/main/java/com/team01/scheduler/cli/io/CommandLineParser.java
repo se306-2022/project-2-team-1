@@ -1,4 +1,4 @@
-package com.team01.scheduler.io;
+package com.team01.scheduler.cli.io;
 
 import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import com.google.devtools.common.options.OptionsParser;
@@ -37,8 +37,6 @@ public class CommandLineParser{
         return numCores;
     }
 
-    public boolean isDebugGui() { return debugGui; }
-
     /**
      * private constructor for singleton design pattern
      */
@@ -65,11 +63,6 @@ public class CommandLineParser{
 
         if (options.help) {
             helpUser(parser);
-        }
-
-        if (options.debugGui) {
-            debugGui = true;
-            return;
         }
 
         // check that the input file name and the numProcessors are supplied

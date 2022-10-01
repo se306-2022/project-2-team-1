@@ -4,7 +4,7 @@
 .gradle
 target
 **/build/
-!src/**/build/
+!scheduler-core/src/**/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
