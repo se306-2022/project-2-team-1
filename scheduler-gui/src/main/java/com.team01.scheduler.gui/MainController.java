@@ -60,7 +60,7 @@ public class MainController {
         }
 
         // Get parameters from controls
-        int coreCount = numProcessors.getValue();
+        int processorCount = numProcessors.getValue();
         String inputGraph = graphEditor.getText();
 
         // Attempt to parse the graph
@@ -72,7 +72,7 @@ public class MainController {
         }
 
         // Run the task (currently synchronous, but later in async)
-        taskRunner.safeRunAsync(runnable, graph, coreCount, schedule -> {
+        taskRunner.safeRunAsync(runnable, graph, processorCount, schedule -> {
             if (schedule != null) {
                 showResults(schedule);
             }

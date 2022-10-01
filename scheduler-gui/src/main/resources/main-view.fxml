@@ -23,7 +23,7 @@
                     <Button text="Run Task" onAction="#onRunTask"/>
                     <Button text="Toggle Console" onAction="#onToggleConsole"/>
                     <Separator/>
-                    <Label text="Core Count:" labelFor="$numProcessors"/>
+                    <Label text="Num Processors:" labelFor="$numProcessors"/>
                     <Spinner fx:id="numProcessors" />
                 </ToolBar>
                 <SplitPane VBox.vgrow="ALWAYS">
