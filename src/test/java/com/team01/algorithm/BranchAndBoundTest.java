@@ -25,15 +25,12 @@ public class BranchAndBoundTest {
         nodes.add(b);
         nodes.add(c);
         nodes.add(d);
-
         List<Edge> edges = new ArrayList<>();
         edges.add(new Edge(a, b, 1));
         edges.add(new Edge(a, c, 2));
         edges.add(new Edge(b, d, 2));
         edges.add(new Edge(c, d,1));
-
         Graph graph = new Graph(edges, nodes);
-
         BranchAndBound bnb = new BranchAndBound();
         bnb.run(graph);
 

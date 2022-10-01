@@ -11,6 +11,7 @@ public class BranchAndBound implements IRunnable {
     public BranchAndBound() {
 
     }
+    private int shortestPath;
 
     @Override
     public String getTaskName() {
@@ -92,6 +93,7 @@ public class BranchAndBound implements IRunnable {
             System.out.println(iter);
             iter = iter.parent;
         }
+        shortestPath = pathLength;
 
         System.out.println("End\n");
     }
@@ -215,7 +217,9 @@ public class BranchAndBound implements IRunnable {
         }
 
         var schedule = new Schedule(taskList, numProcessors);
+        schedule.setShortestPath(shortestPath);
         return  schedule;
+
 
 
         /*Map<Node, EdgesLinkedList> map = graph.getGraph();
