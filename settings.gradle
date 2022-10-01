@@ -1,1 +1,5 @@
 rootProject.name = "scheduler"
+
+include 'scheduler-core'
+include 'scheduler-cli'
+include 'scheduler-gui'
