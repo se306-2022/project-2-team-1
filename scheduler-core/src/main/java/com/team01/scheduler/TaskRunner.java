@@ -13,9 +13,10 @@ public class TaskRunner {
      *
      * @param runnable The task to run
      * @param graph The input graph
+     * @param numProcessors
      * @return Status code of task
      */
-    public Schedule safeRun(IRunnable runnable, Graph graph) {
+    public Schedule safeRun(IRunnable runnable, Graph graph, int numProcessors) {
 
         System.out.println("Running task: " + runnable.getTaskName());
 
@@ -23,7 +24,7 @@ public class TaskRunner {
         Schedule schedule;
 
         try {
-            schedule = runnable.run(graph);
+            schedule = runnable.run(graph, numProcessors);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +42,7 @@ public class TaskRunner {
         System.out.println("\nTASK START\n");
 
         try {
-            notifyCompletion.notifyComplete(runnable.run(graph));
+            notifyCompletion.notifyComplete(runnable.run(graph, 2));
         }
         catch (Exception e) {
             e.printStackTrace();

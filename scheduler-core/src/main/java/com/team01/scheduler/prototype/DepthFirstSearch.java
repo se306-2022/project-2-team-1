@@ -22,7 +22,7 @@ public class DepthFirstSearch implements IRunnable {
     }
 
     @Override
-    public Schedule run(Graph graph) {
+    public Schedule run(Graph graph, int numProcessors) {
 
         Map<Node, EdgesLinkedList> map = graph.getGraph();
         Node startNode = graph.getNodes().get(0);
