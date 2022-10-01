@@ -45,6 +45,9 @@ public class MainController {
     public TextArea graphEditor;
 
     @FXML
+    public Spinner<Integer> numProcessors;
+
+    @FXML
     public void onRunTask(ActionEvent actionEvent) {
         IRunnable runnable = listView.getSelectionModel().getSelectedItem();
 
@@ -134,10 +137,18 @@ public class MainController {
         // Setup Defaults
 
         // Populate Graph Editor
-        String graphDotFile = Utils.loadResource(MainController.class, "samples/Nodes_7_OutTree.dot");
+        var graphDotFile = Utils.loadResource(MainController.class, "Nodes_7_OutTree.dot");
+
         if (graphDotFile != null) {
             graphEditor.setText(graphDotFile);
         }
+
+        // Setup Core Count Spinner
+        var factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Integer.MAX_VALUE);
+        factory.setValue(2);
+
+        numProcessors.setValueFactory(factory);
+
     }
 
     private void addTab(String title, Node content) {

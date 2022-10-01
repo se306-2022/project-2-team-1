@@ -10,6 +10,9 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Label?>
 <SplitPane orientation="VERTICAL" xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.team01.scheduler.gui.MainController"
            fx:id="splitPane">
@@ -19,6 +22,9 @@
                 <ToolBar>
                     <Button text="Run Task" onAction="#onRunTask"/>
                     <Button text="Toggle Console" onAction="#onToggleConsole"/>
+                    <Separator/>
+                    <Label text="Core Count:" labelFor="$numProcessors"/>
+                    <Spinner fx:id="numProcessors" />
                 </ToolBar>
                 <SplitPane VBox.vgrow="ALWAYS">
                     <TextArea fx:id="graphEditor" />
