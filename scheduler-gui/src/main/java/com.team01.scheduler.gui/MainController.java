@@ -4,6 +4,8 @@ import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.Utils;
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
+import com.team01.scheduler.graph.models.Graph;
+import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
@@ -49,6 +51,7 @@ public class MainController {
 
     @FXML
     public void onRunTask(ActionEvent actionEvent) {
+        // Get runnable from list
         IRunnable runnable = listView.getSelectionModel().getSelectedItem();
 
         if (runnable == null) {
@@ -56,11 +59,40 @@ public class MainController {
             return;
         }
 
-        taskRunner.safeRunAsync(runnable, Utils.createSampleGraph(), schedule -> {
-            if (schedule instanceof Schedule) {
+        // Get parameters from controls
+        int coreCount = numProcessors.getValue();
+        String inputGraph = graphEditor.getText();
+
+        // Attempt to parse the graph
+        var graph = safeParseGraph(inputGraph);
+
+        if (graph == null) {
+            System.err.println("Could not parse graph");
+            return;
+        }
+
+        // Run the task (currently synchronous, but later in async)
+        taskRunner.safeRunAsync(runnable, graph, coreCount, schedule -> {
+            if (schedule != null) {
                 showResults(schedule);
             }
         });
+    }
+
+    /**
+     * Parse the provided string and return a new instance of its graph model.
+     * @param graphviz Input string in graphviz dot format
+     * @return The graph model or NULL if a failure occurred
+     */
+    private Graph safeParseGraph(String graphviz) {
+        try {
+            var graphController = new GraphController(graphviz);
+            return graphController.getGraph();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private void redirectOutput(boolean shouldRedirect) {
