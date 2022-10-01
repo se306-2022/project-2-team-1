@@ -1,6 +1,6 @@
 package com.team01.scheduler.cli;
 
-import com.team01.scheduler.io.InputController;
+import com.team01.scheduler.cli.io.InputController;
 
 public class Main {
 

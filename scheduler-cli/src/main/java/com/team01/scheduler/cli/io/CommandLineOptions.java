@@ -1,4 +1,4 @@
-package com.team01.scheduler.io;
+package com.team01.scheduler.cli.io;
 
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionsBase;
