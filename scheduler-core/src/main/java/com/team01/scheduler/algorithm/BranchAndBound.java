@@ -87,7 +87,7 @@ public class BranchAndBound implements IRunnable {
     private void printPath(ScheduledTask iter) {
         int pathLength = iter.getStartTime() + iter.getNode().getValue();
         System.out.println("New Shortest Path: " + pathLength);
-
+        System.out.println("Processor ID | Start time | Node name:");
         while (iter != null) {
             System.out.println(iter);
             iter = iter.parent;
@@ -193,11 +193,11 @@ public class BranchAndBound implements IRunnable {
     }
 
     @Override
-    public Schedule run(Graph graph) {
+    public Schedule run(Graph graph, int numProcessors) {
 
         var startNode = graph.getNodes().get(0);
 
-        int numProcessors = 2;
+        //int numProcessors = 2;
         Map<Node, EdgesLinkedList> map = graph.getGraph();
         State state = new State(numProcessors, map);
 

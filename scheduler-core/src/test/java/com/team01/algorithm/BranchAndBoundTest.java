@@ -35,7 +35,7 @@ public class BranchAndBoundTest {
         Graph graph = new Graph(edges, nodes);
 
         BranchAndBound bnb = new BranchAndBound();
-        bnb.run(graph);
+        bnb.run(graph, 2);
 
     }
 }
