@@ -1,4 +1,4 @@
-package com.prototypes;
+package com.team01.prototype;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
