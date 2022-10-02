@@ -77,8 +77,8 @@ public class InputController {
 
 
         } catch (IOException e){
-            System.out.println("Please enter a valid file name with a valid dot file.");
-            LOGGER.info("<<<PROBLEM WITH GRAPH PARSING>>> " + e.getMessage());
+            System.out.println("Error with graph parsing: " + e.getMessage());
+            System.out.println("Ensure the dot file is valid.");
         }
     }
 

@@ -67,7 +67,7 @@ public class CommandLineParser{
         }
 
         // check that the input file name and the numProcessors are supplied
-        if (args == null || args.length == 0) {
+        if (args == null || args.length < 2) {
             throw new InvalidInputException("InputFileName or numProcessors args not supplied");
         }
 
@@ -82,7 +82,7 @@ public class CommandLineParser{
         }
 
         // check that the number of processors is valid
-        if (args[1] != null && !isParseableInteger(args[1])){
+        if (args[1] == null || !isParseableInteger(args[1])){
             throw new InvalidInputException("numProcessors arg is invalid");
         }
 
