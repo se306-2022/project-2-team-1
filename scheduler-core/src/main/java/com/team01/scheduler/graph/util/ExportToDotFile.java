@@ -48,7 +48,7 @@ public class ExportToDotFile {
             out.newLine();
             // add all nodes and their corresponding values.
             for (Node node: graph.getNodes()){
-                out.write(" "+node.getName()+" [weight="+node.getValue()+"];");
+                out.write(" "+node.getName()+" [Weight="+node.getValue()+"];");
                 out.newLine();
             }
             // add a entry for every edge
