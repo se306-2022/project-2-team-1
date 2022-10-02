@@ -8,7 +8,7 @@ plugins {
 
 allprojects {
     group = 'com.team01.scheduler'
-    version = '1.0-SNAPSHOT'
+    version = '1.0'
 }
 
 repositories {
