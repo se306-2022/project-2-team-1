@@ -14,17 +14,22 @@ public class Main {
      */
     public static void main(String[] args) {
         // initialise inputcontroller to hand input arguments
-        InputController ic = new InputController(args);
-        switch (ic.getInvocationType())
-        {
-            case VISUALIZATION:
-                attachVisualisation(args);
-                ic.runScheduler();
-                break;
+        try {
+            InputController ic = new InputController(args);
+            switch (ic.getInvocationType())
+            {
+                case VISUALIZATION:
+                    attachVisualisation(args);
+                    ic.runScheduler();
+                    break;
 
-            case HEADLESS:
-                ic.runScheduler();
-                break;
+                case HEADLESS:
+                    ic.runScheduler();
+                    break;
+            }
+        }
+        catch (Exception e) {
+            System.err.println("Unable to run scheduler: " + e.getMessage());
         }
     }
 }
