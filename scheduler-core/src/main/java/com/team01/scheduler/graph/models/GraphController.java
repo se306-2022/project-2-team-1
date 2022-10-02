@@ -36,6 +36,7 @@ public class GraphController {
                 String target = input.substring(arrowIndex+2, bracketIndex);
                 int weight;
                 if(commaIndex == -1){
+                    // no additional params
                     weight = Integer.parseInt(input.substring(weightIndex+7,endBracketIndex));
                 }else{
                     weight = Integer.parseInt(input.substring(weightIndex+7,commaIndex));
@@ -59,23 +60,28 @@ public class GraphController {
                     nodes.add(targetNode);
                 }
                 edges.add(new Edge(sourceNode, targetNode, weight));
+                // if a node has a parent, it cannot be a start node
+                possibleStartNodes.remove(targetNode);
 
             }else{
                 // node
                 String source = input.substring(0,bracketIndex);
                 int weight;
                 if(commaIndex == -1){
+                    // weight is between 'weight=' and next non string element
                     weight = Integer.parseInt(input.substring(weightIndex+7,endBracketIndex));
                 }else{
                     weight = Integer.parseInt(input.substring(weightIndex+7,commaIndex));
                 }
                 nodes.add(new Node(source, weight));
+                // all nodes could possibly be a start node
+                possibleStartNodes.add(new Node(source, weight));
             }
 
             }
 
 
-
+        System.out.println("possible start nodes: "+possibleStartNodes);
         this.graph = new Graph(edges, nodes);
     }
 
