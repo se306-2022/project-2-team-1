@@ -11,6 +11,22 @@ public class Schedule {
         this.scheduledTaskList = scheduledTaskList;
     }
 
+    public int getPathLength() {
+
+        int latestTime = 0;
+
+        for (var task : scheduledTaskList) {
+            var taskEndTime = task.getStartTime() + task.getWorkTime();
+
+            if (taskEndTime > latestTime) {
+                latestTime = taskEndTime;
+            }
+        }
+
+        return latestTime;
+
+    }
+
     public int getNumProcessors() {
         return numProcessors;
     }
