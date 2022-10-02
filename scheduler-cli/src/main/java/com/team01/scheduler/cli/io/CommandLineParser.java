@@ -98,7 +98,7 @@ public class CommandLineParser{
             outputFileName = inputFileName.replace(".dot", "") + "-output.dot";
         } else {
             outputFileName = options.outputFileName;
-
+        //ensure dot file is sent
             if (!outputFileName.endsWith(".dot")){
                 outputFileName = outputFileName + ".dot";
             }
@@ -107,6 +107,11 @@ public class CommandLineParser{
         isVisualize = options.isVisualize;
     }
 
+    /**
+     * Helper to check if string can be parsed to int
+     * @param s string to be parsed
+     * @return
+     */
     private boolean isParseableInteger(String s){
         if (s == null) {
             return false;
@@ -119,6 +124,11 @@ public class CommandLineParser{
         }
         return true;
     }
+
+    /**
+     *  Debugging funciton
+     * @param parser
+     */
     private void helpUser(OptionsParser parser){
         System.out.println(parser.describeOptions(Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
     }
