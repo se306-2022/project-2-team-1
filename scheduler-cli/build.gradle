@@ -2,6 +2,8 @@ apply plugin: 'application'
 apply plugin: 'org.openjfx.javafxplugin'
 apply plugin: 'org.beryx.jlink'
 
+mainClassName = "com.team01.scheduler.cli.Main"
+
 repositories {
     mavenCentral()
 }
@@ -23,4 +25,16 @@ dependencies {
 application {
     mainModule = 'com.team01.scheduler.cli'
     mainClass = 'com.team01.scheduler.cli.Main'
+}
+
+// See: https://www.baeldung.com/gradle-fat-jar
+// Create a 'fat jar' with all dependencies included
+task buildStandaloneJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.team01.scheduler.cli.Main'
+    }
+    baseName = 'scheduler'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
