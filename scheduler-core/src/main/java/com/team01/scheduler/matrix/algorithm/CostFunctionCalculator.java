@@ -19,10 +19,26 @@ public class CostFunctionCalculator {
     private CostFunctionCalculator(){
     }
 
+    /**
+     * Singleton design pattern so that only one instance is created of this class.
+     * @return
+     */
     public static CostFunctionCalculator getInstance(){
         return (instance == null) ? instance = new CostFunctionCalculator() : instance;
     }
 
+    /**
+     * Given a partial schedule this method is called to find the corresponding cost function,
+     * which is used as the heuristic to determine whether we should continue exploring the given
+     * partial schedule.
+     * @param partialSchedule
+     * @param processorsList
+     * @param g
+     * @return
+     * @throws NonExistingNodeException
+     * @throws NodeInvalidIDMapping
+     * @throws NodeNotScheduledException
+     */
     public Integer findCostFunction(PartialSchedule partialSchedule, ArrayList<Processor> processorsList,Graph g) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
         adjacencyMatrix = g;
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
@@ -42,6 +58,13 @@ public class CostFunctionCalculator {
         return findMaxLowerBound(bottomLevels,startingTimes,partialSchedule.getNodesInPartialSchedule());
     }
 
+    /**
+     * Helper function which calculates the bottom level for a given node in the adjacency matrix
+     * @param node
+     * @return
+     * @throws NonExistingNodeException
+     * @throws NodeInvalidIDMapping
+     */
     private Integer calculateBottomLevel(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
         int bottomLevel = node.getComputationCost();
         ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(node);
@@ -55,6 +78,16 @@ public class CostFunctionCalculator {
         return bottomLevel;
     }
 
+    /**
+     * Helper function which given the bottom level and the starting time for each node/task
+     * in a partial schedule, finds the node with the highest summation of the two.
+     * The returned Lower bound summation is used as the heuristic for deciding whether to
+     * continue with exploring that partial schedule or not.
+     * @param bottomLevels
+     * @param startingTimes
+     * @param partialScheduleNodes
+     * @return
+     */
     private Integer findMaxLowerBound( HashMap<Node,Integer> bottomLevels, HashMap<Node,Integer> startingTimes, ArrayList<Node> partialScheduleNodes){
         HashMap<Node, Integer> lowerBounds = new HashMap<>();
 

@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Graph {
 
+    // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(Graph.class);
 
     // Adjacency Map
@@ -58,10 +59,17 @@ public class Graph {
     }
 
 
+    /**
+     * Getter for list of possible start nodes
+     * @return list of start nodes
+     */
     public List<Node> getPossibleStartNodes() {
         return possibleStartNodes;
     }
 
+    /**
+     * Helper method to store input graph in an adjacency map
+     */
     public void populateAdjacencyMap(){
         int i = 0;
 

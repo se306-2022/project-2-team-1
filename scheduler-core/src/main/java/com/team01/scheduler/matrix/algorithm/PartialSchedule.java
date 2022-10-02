@@ -6,8 +6,16 @@ import java.util.List;
 import java.util.Objects;
 
 public class PartialSchedule {
-
+    /**
+     * List of processors which the nodes are scheduled on
+     * in the current partial schedule
+     */
     private List<Processor> processors;
+
+    /**
+     * Stores the lower bound value for the partial schedule,
+     * calculated by the CostFunctionCalculator.class
+     */
     private int lowerBound;
 
     public PartialSchedule(int numProcessors){
@@ -24,6 +32,11 @@ public class PartialSchedule {
         return processors;
     }
 
+    /**
+     * Returns all the nodes/tasks which are part of this
+     * partial schedule instance.
+     * @return
+     */
     public ArrayList<Node> getNodesInPartialSchedule() {
         ArrayList<Node> nodes = new ArrayList<>();
 
@@ -38,6 +51,11 @@ public class PartialSchedule {
         return this.lowerBound;
     }
 
+    /**
+     * Returns the count for the number of nodes/tasks
+     * part of this instance of partial schedule
+     * @return
+     */
     public int getNumberOfNodes(){
         ArrayList<Node> nodes = new ArrayList<>();
 
@@ -56,6 +74,10 @@ public class PartialSchedule {
         return lowerBound == that.lowerBound && Objects.equals(processors, that.processors);
     }
 
+    /**
+     * Equals method needs a corresponding hash code method
+     * @return
+     */
     @Override
     public int hashCode() {
         return Objects.hash(processors, lowerBound);

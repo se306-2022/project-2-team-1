@@ -2,6 +2,12 @@ package com.team01.scheduler.matrix.model;
 
 import java.util.Objects;
 
+/**
+ * The edge class is used to parse in edges from the graphviz parser.
+ * The adjacency matrix implementation does not directly use this class,
+ * however it is required to make this graph model compatible with the
+ * graphviz parser class.
+ */
 public class Edge {
     private Node srcNode;
     private Node destNode;

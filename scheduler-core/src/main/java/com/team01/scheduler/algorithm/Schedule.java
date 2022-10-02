@@ -3,10 +3,20 @@ package com.team01.scheduler.algorithm;
 
 import java.util.List;
 
+/**
+ * The class Schedule is responsible for keeping track of all tasks within a scheduled task list. The list adds
+ * all tasks when the current shortest path is updated
+ */
 public class Schedule {
     private int numProcessors;
     private List<ScheduledTask> scheduledTaskList;
 
+    /**
+     * A constructor to create a new schedule whenever the shortest path is updated
+     *
+     * @param scheduledTaskList     The list containing all tasks
+     * @param numProcessors         The number of processors used for the algorithm run
+     */
     public Schedule(List<ScheduledTask> scheduledTaskList, int numProcessors) {
         this.numProcessors = numProcessors;
         this.scheduledTaskList = scheduledTaskList;
@@ -22,7 +32,11 @@ public class Schedule {
         return shortestPath;
     }
 
-
+    /**
+     * Gets the path length by comparing each task's available start time in the list.
+     *
+     * @return  The path length of the schedule
+     */
     public int getPathLength() {
 
         int latestTime = 0;

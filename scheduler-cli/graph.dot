@@ -1,0 +1,10 @@
+digraph "example" {
+w [Weight=2, colour="white"] ;
+b[Weight=3];
+w -> b [Weight=1] ;
+c [Weight=3] ;
+w->c    [Weight=2] ;
+d    [Weight = 2 ]   ;
+b->d[Weight=2];
+c ->d[Weight=1] ;
+}

@@ -4,7 +4,12 @@ import com.team01.scheduler.matrix.model.Graph;
 import java.util.PriorityQueue;
 
 public class AStarScheduler {
-
+    /**
+     * Adjacency Matrix based implementation for the A* star exhaustive search algorithm.
+     * Iterates through each possible partial schedule for the given number of processors and
+     * prunes ones which aren't in contention to be the shortest path based on the cost function
+     * heuristic.
+     */
     private Graph adjacencyMatrix;
     private PriorityQueue<PartialSchedule> priorityQueue = new PriorityQueue<>(new CostFunctionComparator());
 
