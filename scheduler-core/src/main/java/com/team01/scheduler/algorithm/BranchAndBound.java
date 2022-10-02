@@ -9,8 +9,6 @@ import java.util.*;
 
 public class BranchAndBound implements IRunnable {
 
-    private int pathLength;
-
     public BranchAndBound() {
 
     }
