@@ -77,7 +77,7 @@ public class Utils {
      */
     public static <T> String loadResource(Class<T> klass, String name) {
         // Get input stream for resource
-        InputStream inputStream = klass.getClassLoader().getResourceAsStream("Nodes_7_OutTree.dot");
+        InputStream inputStream = klass.getClassLoader().getResourceAsStream(name);
 
         if (inputStream != null) {
             // Try read the resource input stream
@@ -89,6 +89,7 @@ public class Utils {
                 while ((append = reader.readLine()) != null)
                     contents.append(append).append("\n");
 
+                System.out.println(contents);
                 return contents.toString();
             } catch (Exception e) {
                 e.printStackTrace();
