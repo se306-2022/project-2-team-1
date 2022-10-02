@@ -12,53 +12,78 @@ public class GraphController {
 
     private void parseGraphviz(BufferedReader br) throws IOException {
         List<Node> nodes = new ArrayList<>();
+        List<Node> possibleStartNodes = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
         String input;
 
         while ((input = br.readLine()) != null) {
 
-            // Ignore first and last line
+            // Ignore first and last line or those that don't have "weight"
             if (input.contains("}") || input.contains("{") || !input.contains("Weight")) {
                 continue;
             }
-            input = input.trim();
-            String[] split = input.split("\\s+");
-            // Reading in a node
-            if (split.length == 2) {
-                split[1]=split[1].replace("[Weight=","").trim();
-                split[1]=split[1].replaceAll("];","");
-                split[1]=split[1].replaceAll("\"/[^,]*$\"","");
-                nodes.add(new Node(split[0], Integer.parseInt(split[1])));
-            } else { // Reading in an Edge
-                Node source;
-                Node target;
 
-                // Check if source node has already been read
-                Optional<Node> tempSource = Node.containsName(nodes, split[0]);
+            input = input.replaceAll("\\s+","");
+            input = input.trim();
+
+            // Get index to determine whether it's an edge or a node later on
+            int arrowIndex = input.indexOf("->");
+            int bracketIndex = input.indexOf("[");
+            int weightIndex = input.indexOf("Weight=");
+
+            // Get weight of current edge or node
+            int weight;
+            int endIndex = -1;
+            for (int i = weightIndex + 7; i < input.length(); i++) {
+                try {
+                    Integer.parseInt(input.substring(i, i + 1));
+                } catch (NumberFormatException e) {
+                    endIndex = i-1;
+                }
+            }
+            weight = Integer.parseInt(input.substring(weightIndex+7,endIndex));
+
+            if (arrowIndex!= -1) {
+                // Reading in an edge
+                String source = input.substring(0,arrowIndex);
+                String target = input.substring(arrowIndex+2, bracketIndex);
+
+                Optional<Node> tempSource = Node.containsName(nodes, source);
+                Node sourceNode;
+                Node targetNode;
                 if (tempSource.isPresent()) {
-                    source = tempSource.get();
+                    sourceNode = tempSource.get();
                 } else {
-                    source = new Node(split[0], 0);
-                    nodes.add(source);
+                    sourceNode = new Node(source, 0);
+                    nodes.add(sourceNode);
                 }
 
                 // Check if target node has already been read
-                Optional<Node> tempTarget = Node.containsName(nodes, split[2]);
+                Optional<Node> tempTarget = Node.containsName(nodes, target);
                 if (tempTarget.isPresent()) {
-                    target = tempTarget.get();
+                    targetNode = tempTarget.get();
                 } else {
-                    target = new Node(split[2], 0);
-                    nodes.add(target);
+                    targetNode = new Node(target, 0);
+                    nodes.add(targetNode);
                 }
+                edges.add(new Edge(sourceNode, targetNode, weight));
 
-                // Add edge
-                split[3]=split[3].replace("[Weight=","").trim();
-                split[3]=split[3].replaceAll("];","");
-                split[3]=split[3].replaceAll("\"/[^,]*$\"","").trim();
-                edges.add(new Edge(source, target, Integer.parseInt(split[3])));
+                // Ff a node has a parent, it cannot be a start node
+                possibleStartNodes.remove(targetNode);
+
+            } else {
+                // Reading in a node
+                String source = input.substring(0,bracketIndex);
+                nodes.add(new Node(source, weight));
+
+                // All nodes could possibly be a start node
+                possibleStartNodes.add(new Node(source, weight));
             }
+
         }
-        this.graph = new Graph(edges, nodes);
+
+
+        this.graph = new Graph(edges, nodes, possibleStartNodes);
     }
 
     public GraphController(String contents) throws IOException {
