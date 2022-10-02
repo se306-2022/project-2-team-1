@@ -17,7 +17,7 @@ public class ScheduledTask {
 
     @Override
     public String toString() {
-        return getProcessorId() + " | " + getStartTime() + " | " + getNode().getName();
+        return "processorId: " + getProcessorId() + " | startTime: " + getStartTime() + " | node: " + getNode().getName();
     }
 
     public int getStartTime() {
