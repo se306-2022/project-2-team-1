@@ -34,6 +34,11 @@ public class InputController {
         commandLineParser.parseInputArguments(args);
     }
 
+    /**
+     * Method returns how the program was called
+     * Headless by default
+     * @return enum of invocation type
+     */
     public InvocationType getInvocationType() {
         if (commandLineParser.isVisualize())
             return InvocationType.VISUALIZATION;
@@ -41,19 +46,26 @@ public class InputController {
         return InvocationType.HEADLESS;
     }
 
+    /**
+     * Run scheduler with inputs from command line.
+     * Inputs from command line are parsed and graph is retrieved from file.
+     *
+     */
+
     public void runScheduler() {
 
         Schedule schedule;
         TaskRunner taskRunner = new TaskRunner();
         try {
-            var file = new File(commandLineParser.getInputFileName());
+            var file = new File(commandLineParser.getInputFileName()); // grab file based on provided file name
             var graphController = new GraphController(file);
-            graph = graphController.getGraph();
+            graph = graphController.getGraph(); // parse dot file to graph model
 
-            schedule = taskRunner.safeRun(new BranchAndBound(), graph, commandLineParser.getNumProcessors());
+            int numProcessors = commandLineParser.getNumProcessors();
+            schedule = taskRunner.safeRun(new BranchAndBound(), graph, numProcessors); // run branch and bound
 
             try{
-                System.out.println("  export");
+                // export to dot file
                 ExportToDotFile export = new ExportToDotFile(graph,commandLineParser.getOutputFileName(),schedule);
                 export.writeDotWithSchedule();
             } catch (Exception e){
