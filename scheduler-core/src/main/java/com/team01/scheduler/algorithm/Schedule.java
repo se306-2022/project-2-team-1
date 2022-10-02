@@ -1,3 +1,4 @@
+
 package com.team01.scheduler.algorithm;
 
 import java.util.List;
@@ -10,6 +11,17 @@ public class Schedule {
         this.numProcessors = numProcessors;
         this.scheduledTaskList = scheduledTaskList;
     }
+
+    public void setShortestPath(int shortestPath) {
+        this.shortestPath = shortestPath;
+    }
+
+    private int shortestPath;
+
+    public int getShortestPath() {
+        return shortestPath;
+    }
+
 
     public int getPathLength() {
 

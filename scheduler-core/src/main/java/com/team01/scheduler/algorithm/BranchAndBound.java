@@ -12,6 +12,7 @@ public class BranchAndBound implements IRunnable {
     public BranchAndBound() {
 
     }
+    private int shortestPath;
 
     @Override
     public String getTaskName() {
@@ -144,7 +145,7 @@ public class BranchAndBound implements IRunnable {
             System.out.println(task);
             task = task.parent;
         }
-
+        shortestPath = pathLength;
         System.out.println("End\n");
     }
 
@@ -294,6 +295,7 @@ public class BranchAndBound implements IRunnable {
         }
 
         var schedule = new Schedule(taskList, numProcessors);
+        schedule.setShortestPath(shortestPath);
         return  schedule;
 
 
