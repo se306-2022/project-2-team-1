@@ -8,6 +8,8 @@ import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.util.ExportToDotFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 import java.io.IOException;
 
 public class InputController {
@@ -44,9 +46,12 @@ public class InputController {
         Schedule schedule;
         TaskRunner taskRunner = new TaskRunner();
         try {
-            GraphController gc = new GraphController(commandLineParser.getInputFileName());
-            graph = gc.getGraph();
-            schedule = taskRunner.safeRun(new BranchAndBound(),graph, commandLineParser.getNumProcessors());
+            var file = new File(commandLineParser.getInputFileName());
+            var graphController = new GraphController(file);
+            graph = graphController.getGraph();
+
+            schedule = taskRunner.safeRun(new BranchAndBound(), graph, commandLineParser.getNumProcessors());
+
             try{
                 System.out.println("  export");
                 ExportToDotFile export = new ExportToDotFile(graph,commandLineParser.getOutputFileName(),schedule);

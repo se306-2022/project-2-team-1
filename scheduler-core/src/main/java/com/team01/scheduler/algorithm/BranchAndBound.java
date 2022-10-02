@@ -197,7 +197,6 @@ public class BranchAndBound implements IRunnable {
 
         var startNode = graph.getNodes().get(0);
 
-        //int numProcessors = 2;
         Map<Node, EdgesLinkedList> map = graph.getGraph();
         State state = new State(numProcessors, map);
 

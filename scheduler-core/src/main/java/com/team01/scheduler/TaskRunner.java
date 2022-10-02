@@ -35,18 +35,17 @@ public class TaskRunner {
 
         return schedule;
     }
-    public void safeRunAsync(IRunnable runnable, Graph graph, INotifyCompletion notifyCompletion) {
+    public void safeRunAsync(IRunnable runnable, Graph graph, int numProcessors, INotifyCompletion notifyCompletion) {
 
         System.out.println("Running task: " + runnable.getTaskName());
 
         System.out.println("\nTASK START\n");
 
         try {
-            notifyCompletion.notifyComplete(runnable.run(graph, 2));
+            notifyCompletion.notifyComplete(runnable.run(graph, numProcessors));
         }
         catch (Exception e) {
             e.printStackTrace();
-
         }
 
         System.out.println("\nTASK END\n\n");

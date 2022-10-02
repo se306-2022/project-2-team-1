@@ -10,12 +10,9 @@ public class GraphController {
 
     private Graph graph;
 
-    public GraphController(String fileName) throws IOException {
+    private void parseGraphviz(BufferedReader br) throws IOException {
         List<Node> nodes = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
-
-        File file = new File(fileName);
-        BufferedReader br = new BufferedReader(new FileReader(file));
         String input;
 
         while ((input = br.readLine()) != null) {
@@ -62,7 +59,16 @@ public class GraphController {
             }
         }
         this.graph = new Graph(edges, nodes);
+    }
 
+    public GraphController(String contents) throws IOException {
+        var reader = new BufferedReader(new StringReader(contents));
+        parseGraphviz(reader);
+    }
+
+    public GraphController(File file) throws IOException {
+        var reader = new BufferedReader(new FileReader(file));
+        parseGraphviz(reader);
     }
 
     public Graph getGraph() {

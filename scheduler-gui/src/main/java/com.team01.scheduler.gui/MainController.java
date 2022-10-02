@@ -4,6 +4,8 @@ import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.Utils;
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
+import com.team01.scheduler.graph.models.Graph;
+import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
@@ -15,8 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,14 @@ public class MainController {
     private TabPane tabPane;
 
     @FXML
+    public TextArea graphEditor;
+
+    @FXML
+    public Spinner<Integer> numProcessors;
+
+    @FXML
     public void onRunTask(ActionEvent actionEvent) {
+        // Get runnable from list
         IRunnable runnable = listView.getSelectionModel().getSelectedItem();
 
         if (runnable == null) {
@@ -51,11 +59,40 @@ public class MainController {
             return;
         }
 
-        taskRunner.safeRunAsync(runnable, Utils.createSampleGraph(), schedule -> {
-            if (schedule instanceof Schedule) {
+        // Get parameters from controls
+        int processorCount = numProcessors.getValue();
+        String inputGraph = graphEditor.getText();
+
+        // Attempt to parse the graph
+        var graph = safeParseGraph(inputGraph);
+
+        if (graph == null) {
+            System.err.println("Could not parse graph");
+            return;
+        }
+
+        // Run the task (currently synchronous, but later in async)
+        taskRunner.safeRunAsync(runnable, graph, processorCount, schedule -> {
+            if (schedule != null) {
                 showResults(schedule);
             }
         });
+    }
+
+    /**
+     * Parse the provided string and return a new instance of its graph model.
+     * @param graphviz Input string in graphviz dot format
+     * @return The graph model or NULL if a failure occurred
+     */
+    private Graph safeParseGraph(String graphviz) {
+        try {
+            var graphController = new GraphController(graphviz);
+            return graphController.getGraph();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private void redirectOutput(boolean shouldRedirect) {
@@ -128,6 +165,22 @@ public class MainController {
                     setText(item.getTaskName());
             }
         });
+
+        // Setup Defaults
+
+        // Populate Graph Editor
+        var graphDotFile = Utils.loadResource(MainController.class, "Nodes_7_OutTree.dot");
+
+        if (graphDotFile != null) {
+            graphEditor.setText(graphDotFile);
+        }
+
+        // Setup Core Count Spinner
+        var factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Integer.MAX_VALUE);
+        factory.setValue(2);
+
+        numProcessors.setValueFactory(factory);
+
     }
 
     private void addTab(String title, Node content) {

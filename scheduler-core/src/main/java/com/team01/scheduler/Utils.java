@@ -7,6 +7,11 @@ import com.team01.scheduler.graph.models.EdgesLinkedList;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.models.Node;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,5 +65,37 @@ public class Utils {
                 return null;
             }
         };
+    }
+
+    /**
+     * Helper function for reading a resource file as a string.
+     *
+     * @param klass Class to load the resource from
+     * @param name Filename of the resource (relative to the module)
+     * @return String containing the resource contents
+     * @param <T> Type of the class to load the resource from
+     */
+    public static <T> String loadResource(Class<T> klass, String name) {
+        // Get input stream for resource
+        InputStream inputStream = klass.getClassLoader().getResourceAsStream("Nodes_7_OutTree.dot");
+
+        if (inputStream != null) {
+            // Try read the resource input stream
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                StringBuilder contents = new StringBuilder();
+                String append;
+
+                // Build a string by appending each line
+                while ((append = reader.readLine()) != null)
+                    contents.append(append).append("\n");
+
+                return contents.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Otherwise return null
+        return null;
     }
 }
