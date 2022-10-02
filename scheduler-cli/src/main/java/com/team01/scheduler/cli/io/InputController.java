@@ -42,23 +42,27 @@ public class InputController {
     }
 
     public void runScheduler() {
+
         Schedule schedule;
         TaskRunner taskRunner = new TaskRunner();
         try {
             var file = new File(commandLineParser.getInputFileName());
             var graphController = new GraphController(file);
             graph = graphController.getGraph();
+
             schedule = taskRunner.safeRun(new BranchAndBound(), graph, commandLineParser.getNumProcessors());
+
             try{
+                System.out.println("  export");
                 ExportToDotFile export = new ExportToDotFile(graph,commandLineParser.getOutputFileName(),schedule);
                 export.writeDotWithSchedule();
             } catch (Exception e){
                 e.printStackTrace();
             }
-            //RunnableOptions.getInstance().setGraph(graph);
 
 
         } catch (IOException e){
+            System.out.println("Please enter a valid file name with a valid dot file.");
             LOGGER.info("<<<PROBLEM WITH GRAPH PARSING>>> " + e.getMessage());
         }
     }

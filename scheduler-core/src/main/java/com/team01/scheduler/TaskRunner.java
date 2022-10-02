@@ -13,6 +13,7 @@ public class TaskRunner {
      *
      * @param runnable The task to run
      * @param graph The input graph
+     * @param numProcessors
      * @return Status code of task
      */
     public Schedule safeRun(IRunnable runnable, Graph graph, int numProcessors) {
@@ -45,7 +46,6 @@ public class TaskRunner {
         }
         catch (Exception e) {
             e.printStackTrace();
-
         }
 
         System.out.println("\nTASK END\n\n");
