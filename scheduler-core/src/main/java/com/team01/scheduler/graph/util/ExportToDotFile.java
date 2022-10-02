@@ -53,7 +53,7 @@ public class ExportToDotFile {
             }
             // add a entry for every edge
             for (Edge edge: graph.getEdges()){
-                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"];");
+                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [Weight="+edge.getWeight()+"];");
                 out.newLine();
             }
             out.write("}");
@@ -72,12 +72,12 @@ public class ExportToDotFile {
             List<ScheduledTask> scheduledTasks= schedule.getScheduledTaskList();
             // add a line for every node, containing its length, start and processor id
             for (ScheduledTask scheduledTask: scheduledTasks){
-                out.write(" "+scheduledTask.getNode().getName()+" [weight="+scheduledTask.getNode().getValue()+",Start="+scheduledTask.getStartTime()+",Processor="+scheduledTask.getProcessorId()+"];");
+                out.write(" "+scheduledTask.getNode().getName()+" [Weight="+scheduledTask.getNode().getValue()+",Start="+scheduledTask.getStartTime()+",Processor="+scheduledTask.getProcessorId()+"];");
                 out.newLine();
             }
             // add a entry for every edge
             for (Edge edge: graph.getEdges()){
-                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"];");
+                out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [Weight="+edge.getWeight()+"];");
                 out.newLine();
             }
             out.write("}");
