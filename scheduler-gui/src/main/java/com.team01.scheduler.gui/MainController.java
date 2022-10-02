@@ -16,6 +16,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -191,8 +193,20 @@ public class MainController {
 
     private void showResults(Schedule schedule) {
         var schedulerView = new ScheduleView(schedule);
-        var scrollPane = new ScrollPane(schedulerView);
-        addTab("Job Results", scrollPane);
+        VBox.setVgrow(schedulerView, Priority.ALWAYS);
+
+        var zoomInButton = new Button("Zoom In");
+        zoomInButton.setOnMouseClicked(x -> schedulerView.zoomIn());
+
+        var zoomOutButton = new Button("Zoom Out");
+        zoomOutButton.setOnMouseClicked(x -> schedulerView.zoomOut());
+
+        var toolbar = new ToolBar(zoomInButton, zoomOutButton);
+
+        var vbox = new VBox();
+        vbox.getChildren().addAll(toolbar, schedulerView);
+
+        addTab("Job Results", vbox);
     }
 
     public MainController() {
