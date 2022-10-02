@@ -19,6 +19,9 @@ public class Graph {
     // List of Nodes
     private List<Node> nodes;
 
+    // List of possible start nodes
+    private List<Node> possibleStartNodes;
+
     // List of Edges
     private List<Edge> edges;
 
@@ -27,6 +30,23 @@ public class Graph {
             throw new IllegalArgumentException("Edges or Nodes Empty");
         }
 
+        this.nodes = nodes;
+        this.edges = edges;
+
+        // Create adjacency map
+        adjacencyMap = new HashMap<>();
+
+        // populate the adjacency map
+        this.populateAdjacencyMap();
+    }
+
+    // For use in branch and bound
+    public Graph(List<Edge> edges, List<Node> nodes, List<Node> possibleStartNodes) {
+        if (edges.isEmpty() || nodes.isEmpty()) {
+            throw new IllegalArgumentException("Edges or Nodes Empty");
+        }
+
+        this.possibleStartNodes = possibleStartNodes;
         this.nodes = nodes;
         this.edges = edges;
 

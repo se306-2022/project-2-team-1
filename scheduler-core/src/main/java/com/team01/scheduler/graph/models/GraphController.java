@@ -81,8 +81,7 @@ public class GraphController {
             }
 
 
-        System.out.println("possible start nodes: "+possibleStartNodes);
-        this.graph = new Graph(edges, nodes);
+        this.graph = new Graph(edges, nodes, possibleStartNodes);
     }
 
     public GraphController(String contents) throws IOException {
