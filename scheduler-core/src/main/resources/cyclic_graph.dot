@@ -1,0 +1,6 @@
+digraph "OutTree-Balanced-MaxBf-3_Nodes_7_CCR_2.0_WeightType_Random" {
+	1	[Weight=2];
+	2	[Weigts=1];
+	1 -> 2 [Weight=2];
+	2 -> 1 [Weigght=1];
+}
