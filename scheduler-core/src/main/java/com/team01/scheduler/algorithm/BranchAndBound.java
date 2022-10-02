@@ -84,13 +84,33 @@ public class BranchAndBound implements IRunnable {
         return true;
     }
 
-    private void printPath(ScheduledTask iter) {
-        int pathLength = iter.getStartTime() + iter.getNode().getValue();
+    private int calculateFinishTime(ScheduledTask iter) {
+        int latestTime = 0;
+
+        // Iterate over scheduled tasks to get the latest task end time
+        while (iter != null) {
+            // Calculate end time of task
+            var taskEndTime = iter.getStartTime() + iter.getWorkTime();
+
+            // Update latest time
+            if (taskEndTime > latestTime) {
+                latestTime = taskEndTime;
+            }
+
+            iter = iter.parent;
+        }
+
+        return latestTime;
+    }
+
+    private void printPath(ScheduledTask task) {
+        int pathLength = calculateFinishTime(task);
+
         System.out.println("New Shortest Path: " + pathLength);
         System.out.println("Processor ID | Start time | Node name:");
-        while (iter != null) {
-            System.out.println(iter);
-            iter = iter.parent;
+        while (task != null) {
+            System.out.println(task);
+            task = task.parent;
         }
 
         System.out.println("End\n");
