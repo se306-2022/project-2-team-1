@@ -23,5 +23,3 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
-*.dot
-scheduler-cli/graph.dot

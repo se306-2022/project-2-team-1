@@ -3,3 +3,6 @@ rootProject.name = "scheduler"
 include 'scheduler-core'
 include 'scheduler-cli'
 include 'scheduler-gui'
+include 'scheduler-cli:src:main:test'
+findProject(':scheduler-cli:src:main:test')?.name = 'test'
+
