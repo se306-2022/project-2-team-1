@@ -1,6 +1,8 @@
 package com.team01.scheduler.gui.views;
 
 import com.team01.scheduler.algorithm.Schedule;
+import com.team01.scheduler.algorithm.ScheduledTask;
+import javafx.concurrent.Task;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,15 +14,53 @@ public class ScheduleView extends Canvas {
     private Schedule schedule;
     private GraphicsContext gc;
 
-    private static final int viewWidth = 400;
-    private static final int viewHeight = 400;
-
     private static final int colWidth = 100;
     private static final int colHeight = 35;
     private static final int padding = 40;
+    private static final float step = 1.0f;
+
+    /**
+     * Calculate necessary view width from schedule
+     * @param schedule Schedule to display
+     * @return Required minimum width
+     */
+    private static int calculateViewWidth(Schedule schedule) {
+        return colWidth * schedule.getNumProcessors() + padding*2;
+    }
+
+    private static ScheduledTask getLatestTask(Schedule schedule) {
+        int latestTime = 0;
+        ScheduledTask latestTask = null;
+
+        // Iterate over scheduled tasks to get the latest task end time
+        for (var task : schedule.getScheduledTaskList()) {
+            // Calculate end time of task
+            var taskEndTime = task.getStartTime() + task.getWorkTime();
+
+            // Update latest time
+            if (taskEndTime > latestTime) {
+                latestTime = taskEndTime;
+                latestTask = task;
+            }
+        }
+
+        return latestTask;
+    }
+
+    /**
+     * Calculate necessary view height from schedule
+     * @param schedule Schedule to display
+     * @return Required minimum height
+     */
+    private static int calculateViewHeight(Schedule schedule) {
+        var task = getLatestTask(schedule);
+        var latestTime = task.getStartTime() + task.getWorkTime();
+
+        return (int) ((latestTime / step) * colHeight) + padding*2;
+    }
 
     public ScheduleView(Schedule schedule) {
-        super(viewWidth, viewHeight);
+        super(calculateViewWidth(schedule), calculateViewHeight(schedule));
 
         this.schedule = schedule;
         this.gc = getGraphicsContext2D();
@@ -32,12 +72,10 @@ public class ScheduleView extends Canvas {
         int numProcessors = schedule.getNumProcessors();
         var taskList = schedule.getScheduledTaskList();
 
-        var lastTask = taskList.get(taskList.size()-1);
+        var lastTask = getLatestTask(schedule);
         int endTime = lastTask.getStartTime() + lastTask.getWorkTime();
 
         int offset = 15;
-
-        float step = 1.0f;
         endTime += step;
 
         gc.save();
@@ -90,7 +128,7 @@ public class ScheduleView extends Canvas {
         gc.setLineWidth(2);
         for (int i = 0; i <= numProcessors; i++) {
             int x = i * colWidth;
-            gc.strokeLine(x, 0, x, viewHeight - 2*padding);
+            gc.strokeLine(x, 0, x, getHeight() - 2*padding);
         }
 
         gc.restore();

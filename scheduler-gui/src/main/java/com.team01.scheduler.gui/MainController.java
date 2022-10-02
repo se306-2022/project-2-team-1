@@ -191,7 +191,8 @@ public class MainController {
 
     private void showResults(Schedule schedule) {
         var schedulerView = new ScheduleView(schedule);
-        addTab("Job Results", schedulerView);
+        var scrollPane = new ScrollPane(schedulerView);
+        addTab("Job Results", scrollPane);
     }
 
     public MainController() {
