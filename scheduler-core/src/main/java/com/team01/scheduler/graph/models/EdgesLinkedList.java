@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 public class EdgesLinkedList implements Iterable<Edge> {
 
+    // Starting Edge
     private Edge head;
 
     public EdgesLinkedList() {
