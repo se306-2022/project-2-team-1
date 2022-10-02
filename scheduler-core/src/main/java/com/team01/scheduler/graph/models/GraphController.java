@@ -18,29 +18,36 @@ public class GraphController {
 
         while ((input = br.readLine()) != null) {
 
-            // Ignore first and last line or those that dont have "weight"
+            // Ignore first and last line or those that don't have "weight"
             if (input.contains("}") || input.contains("{") || !input.contains("Weight")) {
                 continue;
             }
 
             input = input.replaceAll("\\s+","");
             input = input.trim();
+
+            // Get index to determine whether it's an edge or a node later on
             int arrowIndex = input.indexOf("->");
             int bracketIndex = input.indexOf("[");
             int weightIndex = input.indexOf("Weight=");
-            int commaIndex = input.indexOf(",");
-            int endBracketIndex = input.indexOf("]");
-            if(arrowIndex!= -1){
-                // is an edge
+
+            // Get weight of current edge or node
+            int weight;
+            int endIndex = -1;
+            for (int i = weightIndex + 7; i < input.length(); i++) {
+                try {
+                    Integer.parseInt(input.substring(i, i + 1));
+                } catch (NumberFormatException e) {
+                    endIndex = i-1;
+                }
+            }
+            weight = Integer.parseInt(input.substring(weightIndex+7,endIndex));
+
+            if (arrowIndex!= -1) {
+                // Reading in an edge
                 String source = input.substring(0,arrowIndex);
                 String target = input.substring(arrowIndex+2, bracketIndex);
-                int weight;
-                if(commaIndex == -1){
-                    // no additional params
-                    weight = Integer.parseInt(input.substring(weightIndex+7,endBracketIndex));
-                }else{
-                    weight = Integer.parseInt(input.substring(weightIndex+7,commaIndex));
-                }
+
                 Optional<Node> tempSource = Node.containsName(nodes, source);
                 Node sourceNode;
                 Node targetNode;
@@ -60,25 +67,20 @@ public class GraphController {
                     nodes.add(targetNode);
                 }
                 edges.add(new Edge(sourceNode, targetNode, weight));
-                // if a node has a parent, it cannot be a start node
+
+                // Ff a node has a parent, it cannot be a start node
                 possibleStartNodes.remove(targetNode);
 
-            }else{
-                // node
+            } else {
+                // Reading in a node
                 String source = input.substring(0,bracketIndex);
-                int weight;
-                if(commaIndex == -1){
-                    // weight is between 'weight=' and next non string element
-                    weight = Integer.parseInt(input.substring(weightIndex+7,endBracketIndex));
-                }else{
-                    weight = Integer.parseInt(input.substring(weightIndex+7,commaIndex));
-                }
                 nodes.add(new Node(source, weight));
-                // all nodes could possibly be a start node
+
+                // All nodes could possibly be a start node
                 possibleStartNodes.add(new Node(source, weight));
             }
 
-            }
+        }
 
 
         this.graph = new Graph(edges, nodes, possibleStartNodes);
