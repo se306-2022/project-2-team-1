@@ -57,6 +57,11 @@ public class Graph {
         this.populateAdjacencyMap();
     }
 
+
+    public List<Node> getPossibleStartNodes() {
+        return possibleStartNodes;
+    }
+
     public void populateAdjacencyMap(){
         int i = 0;
 
