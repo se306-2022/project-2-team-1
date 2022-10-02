@@ -251,28 +251,12 @@ public class BranchAndBound implements IRunnable {
 
         Map<Node, EdgesLinkedList> map = graph.getGraph();
 
-        HashSet<Node> nonSourceNodes = new HashSet<>();
-        HashSet<Node> sourceNodes = new HashSet<>();
-        // iterate through all the edges and find the nodes which don't have a incoming edge
-        for (EdgesLinkedList list : map.values()) {
-            for (Edge edge : list) {
-                nonSourceNodes.add(edge.getTarget());
-            }
-        }
-
-        // check which nodes are in the list
-        for (Node n : graph.getNodes()){
-            if (!nonSourceNodes.contains(n)){
-                sourceNodes.add(n);
-            }
-        }
-
         State state = new State(numProcessors, map);
 
-        for (Node n : sourceNodes) {
+        for (Node n : graph.getPossibleStartNodes()) {
             Map<Node, List<ScheduledTask>> queuedChildren = new HashMap<>();
 
-            for (Node s : sourceNodes) {
+            for (Node s : graph.getPossibleStartNodes()) {
                 if (s != n){
                    queuedChildren.put(s, new ArrayList<>());
                 }
