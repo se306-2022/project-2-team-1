@@ -51,6 +51,11 @@ public class MainController {
     @FXML
     public Spinner<Integer> numProcessors;
 
+    /**
+     * Run a task using TaskRunner
+     *
+     * @param actionEvent ignored
+     */
     @FXML
     public void onRunTask(ActionEvent actionEvent) {
         // Get runnable from list
@@ -97,6 +102,10 @@ public class MainController {
         return null;
     }
 
+    /**
+     * Redirect standard output and error to internal console
+     * @param shouldRedirect whether to redirect
+     */
     private void redirectOutput(boolean shouldRedirect) {
         if (shouldRedirect) {
             // Set new standard output and error
@@ -109,6 +118,11 @@ public class MainController {
             System.setErr(stdError);
         }
     }
+
+    /**
+     * Set the visibility of the internal console
+     * @param showConsole whether to show
+     */
     private void setConsoleState(boolean showConsole) {
         if (showConsole) {
             redirectOutput(true);
@@ -130,10 +144,17 @@ public class MainController {
         }
     }
 
+    /**
+     * Toggle the console visibility
+     * @param actionEvent ignored
+     */
     public void onToggleConsole(ActionEvent actionEvent) {
         setConsoleState(!useInternalConsole);
     }
 
+    /**
+     * Setup relevant streams for output redirection
+     */
     private void setupRedirection() {
         // Create console output stream
         OutputStream consoleStream = console.getConsoleOutputStream();
@@ -144,6 +165,10 @@ public class MainController {
         stdError = System.err;
     }
 
+    /**
+     * Called once JavaFX has initialised. Do setup involving controls
+     * in this function.
+     */
     public void initialize() {
         // Setup console for redirection but do not redirect
         // until the user opts in.
@@ -185,30 +210,45 @@ public class MainController {
 
     }
 
+    /**
+     * Add a new tab
+     * @param title Title of tab
+     * @param content Content of tab (JavaFX control)
+     */
     private void addTab(String title, Node content) {
         Tab newTab = new Tab(title, content);
         newTab.setClosable(true);
         tabPane.getTabs().add(newTab);
     }
 
+    /**
+     * Show schedule in new tab
+     * @param schedule Schedule to display
+     */
     private void showResults(Schedule schedule) {
+        // Scheduler View is a custom control which displays a schedule
         var schedulerView = new ScheduleView(schedule);
         VBox.setVgrow(schedulerView, Priority.ALWAYS);
 
+        // Add zoom controls
         var zoomInButton = new Button("Zoom In");
-        zoomInButton.setOnMouseClicked(x -> schedulerView.zoomIn());
-
         var zoomOutButton = new Button("Zoom Out");
+        zoomInButton.setOnMouseClicked(x -> schedulerView.zoomIn());
         zoomOutButton.setOnMouseClicked(x -> schedulerView.zoomOut());
 
+        // Add to toolbar
         var toolbar = new ToolBar(zoomInButton, zoomOutButton);
 
         var vbox = new VBox();
         vbox.getChildren().addAll(toolbar, schedulerView);
 
+        // Create new tab
         addTab("Job Results", vbox);
     }
 
+    /**
+     * Controller associated with main-view.fxml
+     */
     public MainController() {
 
         // Create runner
