@@ -43,12 +43,47 @@ and then click the Task dropdown. Following on, click the application dropdown t
 
 Input components like the graph and the number of processors can be edited in the GUI.
 
-### Command Line Options for CLI
-
 
 
 ### Building the JAR
 
+```bash
+# initialise gradle
+./gradlew
+
+# list all projects
+./gradlew projects
+
+# run just the cli
+./gradlew :scheduler-cli:run
+
+# run the gui
+./gradlew :scheduler-gui:run
+
+# build the stand alone jar file
+# jar file is located in "scheduler-cli/build/libs/"
+./gradlew :scheduler-cli:buildStandaloneJar
+```
 
 ### Running the JAR
+```bash
+# Running the runnable jar file, which can be found in the 
+# root level of the github repository.
+java -jar scheduler.jar INPUT.dot P [OPTION(S)]
+```
 
+### Command Line Options for CLI
+
+```
+Options category 'misc':
+  --[no]help [-h] (a boolean; default: "false")
+    Prints usage info.
+
+Options category 'startup':
+  --[no]visualize [-v] (a boolean; default: "false")
+    Enable/disable visualizing the search
+  --num_cores [-p] (an integer; default: "1")
+    Uses this many cores for execution in parallel. Default is sequential.
+  --output [-o] (a string; default: "")
+    Specify the name of the output file. The default is INPUT-output.dot
+```

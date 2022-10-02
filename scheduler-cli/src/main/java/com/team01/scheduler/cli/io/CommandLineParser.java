@@ -63,7 +63,7 @@ public class CommandLineParser{
 
         if (options.help) {
             helpUser(parser);
-            return;
+            System.exit(0);
         }
 
         // check that the input file name and the numProcessors are supplied
