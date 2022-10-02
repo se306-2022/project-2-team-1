@@ -21,7 +21,11 @@ import java.util.stream.Stream;
 public class FindOptimalScheduleTest {
     Graph graph;
 
-
+    /**
+     *
+     * @return results on whether an optimal test case was found
+     * @throws IOException for invalid files
+     */
     @TestFactory
     Stream<DynamicTest> providedTests() throws IOException {
         String[][] input = new String[][]{

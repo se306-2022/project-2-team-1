@@ -3,8 +3,11 @@ package com.team01.scheduler.cli.io;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionsBase;
 
+/**
+ * Uses google dev options to pass in command line options into application
+ */
 public class CommandLineOptions extends OptionsBase{
-
+    // Options are defined
     @Option(
             name = "num_cores",
             abbrev = 'p',

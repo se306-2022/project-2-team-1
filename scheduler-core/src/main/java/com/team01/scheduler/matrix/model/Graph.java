@@ -34,12 +34,24 @@ public class Graph {
         this.inputEdges = inputEdges;
     }
 
+    /**
+     * Main method which initializes the adjacency matrix based on the number of nodes
+     * as specified by in the input from the graphviz parser class.
+     * @throws DuplicateEdgeException
+     * @throws InvalidEdgeException
+     */
     public void initialize() throws DuplicateEdgeException, InvalidEdgeException {
         int size = inputNodes.size();
         adjacencyMatrix = new int[size][size];
         addEdges();
     }
 
+    /**
+     * Helper method parses the Edge class instances into the corresponding edges in
+     * the adjacency matrix.
+     * @throws DuplicateEdgeException
+     * @throws InvalidEdgeException
+     */
     private void addEdges() throws DuplicateEdgeException, InvalidEdgeException {
         for (Edge e : inputEdges){
 
@@ -57,6 +69,13 @@ public class Graph {
         }
     }
 
+    /**
+     * Helper method which gets the source nodes in the graph,
+     * through identifying the nodes which
+     * have no incoming edge.
+     * @return
+     * @throws NodeInvalidIDMapping
+     */
     public List<Node> getEntryNodes() throws NodeInvalidIDMapping {
         entryNodes = new ArrayList<>();
 
@@ -69,6 +88,12 @@ public class Graph {
         return entryNodes;
     }
 
+    /**
+     * Gets the leaf nodes for the graph through identifying the nodes
+     * which have no outgoing edges in the adjacency matrix.
+     * @return
+     * @throws NodeInvalidIDMapping
+     */
     public List<Node> getExitNodes() throws NodeInvalidIDMapping {
         exitNodes = new ArrayList<>();
 
@@ -81,6 +106,14 @@ public class Graph {
         return exitNodes;
     }
 
+    /**
+     * Returns all the nodes in the graph which have an incoming edge coming
+     * from the node given as parameter for the method.
+     * @param node
+     * @return
+     * @throws NonExistingNodeException
+     * @throws NodeInvalidIDMapping
+     */
     public ArrayList<Node> getChildrenForNode(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
         ArrayList<Node> childrenNodes = new ArrayList<>();
         // first check that the node indeed does exist in the graph
@@ -97,6 +130,14 @@ public class Graph {
         return childrenNodes;
     }
 
+    /**
+     * Returns all the nodes which have an outgoing edge to the node specifed in
+     * the method argument.
+     * @param node
+     * @return
+     * @throws NonExistingNodeException
+     * @throws NodeInvalidIDMapping
+     */
     public ArrayList<Node> getParentsForNode(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
         ArrayList<Node> parentNodes = new ArrayList<>();
         // first check that the node indeed does exist in the graph
@@ -158,9 +199,13 @@ public class Graph {
         }
     }
 
-
-
-
+    /**
+     * Helper method for determing whether a given node is a leaf node.
+     * @param matrix
+     * @param nodeId
+     * @param size
+     * @return
+     */
     private boolean isExitNode(int[][] matrix, int nodeId, int size) {
         for (int j=0; j<size; j++) {
             if (matrix[nodeId][j] != 0) {
@@ -170,6 +215,14 @@ public class Graph {
         return true;
     }
 
+    /**
+     * Helper method for identifying whether a given node is a source node
+     * in the given graph.
+     * @param matrix
+     * @param nodeId
+     * @param size
+     * @return
+     */
     private boolean isEntryNode(int[][] matrix, int nodeId, int size) {
         for (int i=0; i<size; i++) {
             if (matrix[i][nodeId] != 0) {
@@ -179,6 +232,12 @@ public class Graph {
         return true;
     }
 
+    /**
+     * Return the Node.class instance for a node given its unique "id" field.
+     * @param id
+     * @return
+     * @throws NodeInvalidIDMapping
+     */
     private Node getNodeById(int id) throws NodeInvalidIDMapping {
         for (Node n : inputNodes){
             if (n.getId() == id){
@@ -188,6 +247,12 @@ public class Graph {
         throw new NodeInvalidIDMapping("Can't find Node for given ID");
     }
 
+    /**
+     * Helper method which checks if an edge actually exists in the graph
+     * @param source
+     * @param dest
+     * @throws InvalidEdgeException
+     */
     private void checkEdgeValidity(Node source, Node dest) throws InvalidEdgeException {
         if (!inputNodes.contains(source) || !inputNodes.contains(dest)){
             throw new InvalidEdgeException("The Edge accesses a non-existing node.");

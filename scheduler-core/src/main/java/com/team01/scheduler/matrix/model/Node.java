@@ -3,9 +3,18 @@ package com.team01.scheduler.matrix.model;
 import java.util.Objects;
 
 public class Node implements Comparable<Node>{
-
+    /**
+     * Each node has a unique id which is used as the index for
+     * the adjacency matrix
+     */
     private int id;
+    /**
+     * The name of each node in the graph
+     */
     private String name;
+    /**
+     * The computation cost for each node in the graph
+     */
     private int computationCost;
 
     public Node(){
