@@ -39,6 +39,10 @@ public class BranchAndBound implements IRunnable {
         private final Map<Node, List<ScheduledTask>> queuedChildren;
         private final int[] processorBusyUntilTime;
 
+        public Map<Node, List<ScheduledTask>> getQueuedChildren() {
+            return queuedChildren;
+        }
+
         ScheduledTask task;
 
         private PartialSolution(ScheduledTask task, int numProcessors) {
@@ -218,11 +222,40 @@ public class BranchAndBound implements IRunnable {
         var startNode = graph.getNodes().get(0);
 
         Map<Node, EdgesLinkedList> map = graph.getGraph();
+
+        HashSet<Node> nonSourceNodes = new HashSet<>();
+        HashSet<Node> sourceNodes = new HashSet<>();
+        // iterate through all the edges and find the nodes which don't have a incoming edge
+        for (EdgesLinkedList list : map.values()) {
+            for (Edge edge : list) {
+                nonSourceNodes.add(edge.getTarget());
+            }
+        }
+
+        // check which nodes are in the list
+        for (Node n : graph.getNodes()){
+            if (!nonSourceNodes.contains(n)){
+                sourceNodes.add(n);
+            }
+        }
+
         State state = new State(numProcessors, map);
 
-        // Add children to DFS solution tree
-        ScheduledTask newTask = new ScheduledTask(null, 0, 0, startNode);
-        doBranchAndBoundRecursive(state, new PartialSolution(newTask, numProcessors));
+        for (Node n : sourceNodes) {
+            Map<Node, List<ScheduledTask>> queuedChildren = new HashMap<>();
+
+            for (Node s : sourceNodes) {
+                if (s != n){
+                   queuedChildren.put(s, new ArrayList<>());
+                }
+            }
+
+            // Add children to DFS solution tree
+            ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
+            PartialSolution ps = new PartialSolution(newTask, numProcessors);
+            ps.getQueuedChildren().putAll(queuedChildren);
+            doBranchAndBoundRecursive(state, ps);
+        }
 
         // Report results
         List<ScheduledTask> taskList = new ArrayList<>();
