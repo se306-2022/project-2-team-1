@@ -25,7 +25,6 @@ public class GraphController {
 
             input = input.replaceAll("\\s+","");
             input = input.trim();
-
             // Get index to determine whether it's an edge or a node later on
             int arrowIndex = input.indexOf("->");
             int bracketIndex = input.indexOf("[");

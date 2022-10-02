@@ -14,33 +14,45 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 public class ExportToDotFile {
-    private Graph g;
+    private Graph graph;
     private String outputFileName;
     private Schedule schedule;
 
-    public ExportToDotFile(Graph g, String outputFileName) {
-        this.g = g;
+    /**
+     * Constructor for exporting without schedule
+     *
+     * **/
+    public ExportToDotFile(Graph graph, String outputFileName) {
+        this.graph = graph;
         this.outputFileName = outputFileName;
     }
-    public ExportToDotFile(Graph g, String outputFileName, Schedule schedule) {
-        this.g = g;
+
+    /**
+     * Constructor for exporting with a schedule
+     *
+     *
+     * **/
+    public ExportToDotFile(Graph graph, String outputFileName, Schedule schedule) {
+        this.graph = graph;
         this.outputFileName = outputFileName;
         this.schedule = schedule;
     }
 
     /**
-     * Generate dot file for graph only
-     *
-     * **/
+     * Generate dot file for graph without schedule
+     * @throws IOException unable to create new file
+     */
     public void writeDot() throws IOException {
         try(BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)))){
             out.write("digraph \""+outputFileName+"\" {");
             out.newLine();
-            for (Node node: g.getNodes()){
+            // add all nodes and their corresponding values.
+            for (Node node: graph.getNodes()){
                 out.write(" "+node.getName()+" [weight="+node.getValue()+"];");
                 out.newLine();
             }
-            for (Edge edge: g.getEdges()){
+            // add a entry for every edge
+            for (Edge edge: graph.getEdges()){
                 out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"];");
                 out.newLine();
             }
@@ -48,20 +60,23 @@ public class ExportToDotFile {
         }
     }
 
+
     /**
      * Generate dot file for graph and schedule
-     *
-     * **/
+     * @throws IOException unable to create new file
+     */
     public void writeDotWithSchedule() throws IOException {
         try(BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)))){
             out.write("digraph \""+outputFileName+"\" {");
             out.newLine();
             List<ScheduledTask> scheduledTasks= schedule.getScheduledTaskList();
+            // add a line for every node, containing its length, start and processor id
             for (ScheduledTask scheduledTask: scheduledTasks){
                 out.write(" "+scheduledTask.getNode().getName()+" [weight="+scheduledTask.getNode().getValue()+",Start="+scheduledTask.getStartTime()+",Processor="+scheduledTask.getProcessorId()+"];");
                 out.newLine();
             }
-            for (Edge edge: g.getEdges()){
+            // add a entry for every edge
+            for (Edge edge: graph.getEdges()){
                 out.write(" "+edge.getSource().getName()+" -> "+edge.getTarget().getName()+" [weight="+edge.getWeight()+"];");
                 out.newLine();
             }
