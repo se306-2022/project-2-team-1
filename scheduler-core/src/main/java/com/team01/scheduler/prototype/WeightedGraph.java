@@ -1,4 +1,4 @@
-package com.team01.prototype;
+package com.team01.scheduler.prototype;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
