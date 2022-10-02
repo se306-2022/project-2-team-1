@@ -8,6 +8,7 @@ import com.team01.scheduler.graph.models.Node;
 import java.util.*;
 
 public class BranchAndBound implements IRunnable {
+
     public BranchAndBound() {
 
     }

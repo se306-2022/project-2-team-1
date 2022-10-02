@@ -1,9 +1,12 @@
 package com.team01.algorithm;
 
 import com.team01.scheduler.algorithm.BranchAndBound;
+import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.graph.models.Edge;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.models.Node;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -35,7 +38,9 @@ public class BranchAndBoundTest {
         Graph graph = new Graph(edges, nodes);
 
         BranchAndBound bnb = new BranchAndBound();
-        bnb.run(graph, 2);
+        Schedule s = bnb.run(graph, 2);
+
+        Assertions.assertEquals(shortestPath, s.getPathLength());
 
     }
 }
