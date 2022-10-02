@@ -66,8 +66,11 @@ public class InputController {
 
             try{
                 // export to dot file
-                ExportToDotFile export = new ExportToDotFile(graph,commandLineParser.getOutputFileName(),schedule);
+                var outputFileName = commandLineParser.getOutputFileName();
+                ExportToDotFile export = new ExportToDotFile(graph, outputFileName, schedule);
                 export.writeDotWithSchedule();
+
+                System.out.println("Wrote to file: " + outputFileName);
             } catch (Exception e){
                 e.printStackTrace();
             }

@@ -63,6 +63,7 @@ public class CommandLineParser{
 
         if (options.help) {
             helpUser(parser);
+            return;
         }
 
         // check that the input file name and the numProcessors are supplied
@@ -71,10 +72,13 @@ public class CommandLineParser{
         }
 
         // check input file name is valid
-        if (args[0] != null && args[0].length() >= 5 && args[0].endsWith(".dot")){
+        if (args[0] != null){
+            if (!args[0].endsWith(".dot")) {
+                System.out.println("Warning: Filename does not end with '.dot' - is this a valid graphviz file?");
+            }
             inputFileName = args[0];
         } else {
-            throw new InvalidInputException("input file name is invalid");
+            throw new InvalidInputException("Input file name is invalid");
         }
 
         // check that the number of processors is valid
