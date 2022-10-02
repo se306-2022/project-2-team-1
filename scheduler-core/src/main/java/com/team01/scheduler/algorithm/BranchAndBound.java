@@ -8,6 +8,13 @@ import com.team01.scheduler.graph.models.Node;
 import java.util.*;
 
 public class BranchAndBound implements IRunnable {
+
+    private int pathLength;
+
+    public int getPathLength() {
+        return pathLength;
+    }
+
     public BranchAndBound() {
 
     }
@@ -85,7 +92,7 @@ public class BranchAndBound implements IRunnable {
     }
 
     private void printPath(ScheduledTask iter) {
-        int pathLength = iter.getStartTime() + iter.getNode().getValue();
+        this.pathLength = iter.getStartTime() + iter.getNode().getValue();
         System.out.println("New Shortest Path: " + pathLength);
         System.out.println("Processor ID | Start time | Node name:");
         while (iter != null) {
