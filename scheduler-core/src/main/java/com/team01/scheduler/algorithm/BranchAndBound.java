@@ -45,24 +45,44 @@ public class BranchAndBound implements IRunnable {
 
         ScheduledTask task;
 
+        /**
+         * Creates a new root-level partial schedule (i.e. first node)
+         * @param task Root task of the schedule
+         * @param numProcessors Number of processors
+         */
         private PartialSolution(ScheduledTask task, int numProcessors) {
             this.visitedChildren = new ArrayList<>();
             this.queuedChildren = new HashMap<>();
             this.processorBusyUntilTime = new int[numProcessors];
             this.task = task;
 
+            // Set the initial 'busy' time for the first task
+            processorBusyUntilTime[task.processorId] = task.getStartTime() + task.getWorkTime();
+
             // Add the current node to visited as an optimisation
             this.visitedChildren.add(task.getNode());
         }
 
-        private PartialSolution(PartialSolution clone, ScheduledTask newTask) {
+        /**
+         * Creates a child partial schedule with newTask as the N+1 task
+         * @param parent Parent partial schedule
+         * @param newTask New task to queue
+         */
+        private PartialSolution(PartialSolution parent, ScheduledTask newTask) {
             this.visitedChildren = new ArrayList<>();
-            this.visitedChildren.addAll(clone.visitedChildren);
+            this.visitedChildren.addAll(parent.visitedChildren);
 
             this.queuedChildren = new HashMap<>();
-            this.queuedChildren.putAll(clone.queuedChildren);
+            for (var nodeDependencyPair : parent.queuedChildren.entrySet()) {
+                var node = nodeDependencyPair.getKey();
+                var dependencyList = nodeDependencyPair.getValue();
 
-            this.processorBusyUntilTime = Arrays.copyOf(clone.processorBusyUntilTime, clone.processorBusyUntilTime.length);
+                // Clone list so it doesn't interfere between recursions
+                var clonedList = new ArrayList<>(dependencyList);
+                queuedChildren.put(node, clonedList);
+            }
+
+            this.processorBusyUntilTime = Arrays.copyOf(parent.processorBusyUntilTime, parent.processorBusyUntilTime.length);
             this.task = newTask;
 
             // Add the current node to visited as an optimisation
@@ -88,6 +108,13 @@ public class BranchAndBound implements IRunnable {
         return true;
     }
 
+    /**
+     * Iterate over all scheduled tasks to get the path length. Note we have
+     * to do this as the topmost task may start later but finish earlier and not
+     * be the true path length.
+     * @param iter Task to iterate on
+     * @return Path length (i.e. finish time)
+     */
     private int calculateFinishTime(ScheduledTask iter) {
         int latestTime = 0;
 
@@ -134,10 +161,10 @@ public class BranchAndBound implements IRunnable {
     private void doBranchAndBoundRecursive(State state, PartialSolution current) {
         // Consider current node
         var task = current.task;
-        int nodeFinishTime = task.getStartTime() + task.getNode().getValue();
+        int pathLength = calculateFinishTime(task);
 
         // Bound the algorithm by the currently determined shortest path
-        if (nodeFinishTime >= state.currentShortestPath)
+        if (pathLength >= state.currentShortestPath)
             return;
 
         // Add children of current node
@@ -163,8 +190,9 @@ public class BranchAndBound implements IRunnable {
         // If no more children are queued (i.e. done), then update
         // current shortestPath
         if (current.queuedChildren.size() == 0) {
-            if (nodeFinishTime < state.currentShortestPath) {
-                state.currentShortestPath = nodeFinishTime;
+
+            if (pathLength < state.currentShortestPath) {
+                state.currentShortestPath = pathLength;
                 state.currentShortestPathTask = task;
 
                 // Notify success
@@ -218,8 +246,6 @@ public class BranchAndBound implements IRunnable {
 
     @Override
     public Schedule run(Graph graph, int numProcessors) {
-
-        var startNode = graph.getNodes().get(0);
 
         Map<Node, EdgesLinkedList> map = graph.getGraph();
 
