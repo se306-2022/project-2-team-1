@@ -43,4 +43,40 @@ public class BranchAndBoundTest {
         Assertions.assertEquals(shortestPath, s.getPathLength());
 
     }
+
+    @Test
+    void testBranchAndBound2() {
+
+        int shortestPath = 4;
+
+        List<Node> nodes = new ArrayList<>();
+        Node a = new Node("a", 1);
+        Node b = new Node("b", 2);
+        Node c = new Node("c", 1);
+        nodes.add(a);
+        nodes.add(b);
+        nodes.add(c);
+
+        List<Edge> edges = new ArrayList<>();
+        edges.add(new Edge(a, b, 1));
+        edges.add(new Edge(a, c, 2));
+        edges.add(new Edge(b, c, 1));
+
+        Graph graph = new Graph(edges, nodes);
+
+        BranchAndBound bnb = new BranchAndBound();
+        Schedule s = bnb.run(graph, 2);
+
+        Assertions.assertEquals(shortestPath, s.getPathLength());
+
+    }
+
+    @Test
+    void testTaskName() {
+
+        BranchAndBound bnb = new BranchAndBound();
+
+        Assertions.assertEquals("Scheduler - DFS Branch and Bound", bnb.getTaskName());
+
+    }
 }
