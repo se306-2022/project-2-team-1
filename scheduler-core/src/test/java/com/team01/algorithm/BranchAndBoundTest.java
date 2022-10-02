@@ -71,34 +71,6 @@ public class BranchAndBoundTest {
 
     }
 
-
-    //TODO: Check for negative weights
-    @Test
-    void testBranchAndBound3() {
-
-        int shortestPath = -2;
-
-        List<Node> nodes = new ArrayList<>();
-        Node a = new Node("a", 1);
-        Node b = new Node("b", 2);
-        Node c = new Node("c", -17);
-        nodes.add(a);
-        nodes.add(b);
-        nodes.add(c);
-
-        List<Edge> edges = new ArrayList<>();
-        edges.add(new Edge(a, b, 1));
-        edges.add(new Edge(b, c, -3));
-
-        Graph graph = new Graph(edges, nodes);
-
-        BranchAndBound bnb = new BranchAndBound();
-        Schedule s = bnb.run(graph, 2);
-
-        Assertions.assertEquals(shortestPath, s.getPathLength());
-
-    }
-
     @Test
     void testTaskName() {
 
