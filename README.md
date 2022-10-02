@@ -1,27 +1,41 @@
-# project-2-team-1
+# SOFTENG306 Project 2 - Team-1
 
-## Running in IntelliJ
-Use the Gradle `application->run` task with the following parameters:
+#### Matthew Jakeman, Bryan Liu, Jaskaran Sandhu, Jia Tee, Jordan York, Nilay Setiya
 
-To run for a given dot file in the root directory:
-```
-# <filename> <num processes>
-run --args="graph.dot 3"
-```
+### Three Module Structure
+For this project, we decided to use a three module structure to separate the different components. These components
+were the CLI (Command Line Interface), Core (containing graph models and algorithms)
+and the GUI (Graphical User Interface).
 
-To run with visualisation enabled:
-```
-# <filename> <num processes> --visualize
-run --args="graph.dot 3 -v"
-```
+The CLI module contains all code relating to passing graph input through the command line. This includes checking input
+validity as well as converting to into our created graph models to then run through our algorithms.
 
-To see help options:
-```
-# --help
-run --args="-h"
-```
+As mentioned about, important components such as the graph models are located in the Core module. This module also
+contains our algorithms and their initial prototypes.
 
-To run with Debug Mode GUI (i.e. Does not run scheduler):
-```
-run --args="-d"
-```
+Lastly, the GUI modules contains all components relating to the visualisation of the scheduler including specific
+user views and layout constraints.
+
+The justification behind this design decision was to keep all components for these three large modules
+together whilst not overloading the main project with an excessive amount of files and directories.
+
+### Running CLI
+
+#### IntelliJ
+
+To run the CLI of our project via IntelliJ, click on the Gradle tab and locate **scheduler-cli**. Click the dropdown
+
+
+### Running GUI
+To run the GUI of our project,
+
+#### IntelliJ
+
+### Command Line Options for CLI
+
+
+### Building the JAR
+
+
+### Running the JAR
+
