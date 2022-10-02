@@ -9,6 +9,9 @@ import java.util.*;
 
 public class BranchAndBound implements IRunnable {
 
+    /**
+     * Default Constructor
+     */
     public BranchAndBound() {
 
     }
@@ -19,12 +22,20 @@ public class BranchAndBound implements IRunnable {
         return "Scheduler - DFS Branch and Bound";
     }
 
+    /**
+     * A state class that keeps track of the current shortest path in the algorithm.
+     */
     private final class State {
         final int numProcessors;
         final Map<Node, EdgesLinkedList> map;
         int currentShortestPath;
         ScheduledTask currentShortestPathTask;
 
+        /**
+         * Constructs a state object to keep track of the graph map along with the current shortest path
+         * @param numProcessors     The number of processors that we declare for the task graph
+         * @param map               The edge-node map object
+         */
         private State(int numProcessors, Map<Node, EdgesLinkedList> map) {
             this.numProcessors = numProcessors;
             this.map = map;
@@ -32,9 +43,12 @@ public class BranchAndBound implements IRunnable {
         }
     }
 
+    /**
+     * The partialSolution class consists of a partialSolution constructor
+     * which creates new instances whenever a new schedule is discovered.
+     */
     private final class PartialSolution {
         // Nodes which have already been visited
-        // TODO: More efficient lookup structure (i.e. BST)
         private final List<Node> visitedChildren;
 
         // Map of Nodes and (Edge Weights, Earliest Start Times)
@@ -95,6 +109,14 @@ public class BranchAndBound implements IRunnable {
         }
     }
 
+    /**
+     * Checks if the node of interest in the current solution has completed dependencies
+     *
+     * @param state     The state of the algorithm that keeps track of the current shortest path
+     * @param current   The current partial solution that is checked
+     * @param node      The current node that requires dependency checks
+     * @return
+     */
     private boolean haveVisitedDependencies(State state, PartialSolution current, Node node) {
 
         // This is awful - we'll probably need an adjacency matrix?
@@ -136,6 +158,11 @@ public class BranchAndBound implements IRunnable {
         return latestTime;
     }
 
+    /**
+     * Prints the schedule whenever a complete schedule is found and is the current shortest schedule
+     *
+     * @param task  The task. In this context, the important fields is the start time.
+     */
     private void printPath(ScheduledTask task) {
         int pathLength = calculateFinishTime(task);
 
@@ -149,6 +176,14 @@ public class BranchAndBound implements IRunnable {
         System.out.println("End\n");
     }
 
+    /**
+     * Gets the weight of the edge
+     *
+     * @param state     The state of the algorithm
+     * @param source    The source node
+     * @param target    The target node
+     * @return
+     */
     private int getEdgeWeight(State state, Node source, Node target) {
         EdgesLinkedList list = state.map.get(source);
 
@@ -160,6 +195,13 @@ public class BranchAndBound implements IRunnable {
         throw new RuntimeException("Edge not found");
     }
 
+    /**
+     * Recursively solve for branch and bound, by splitting the search space
+     * into smaller spaces.
+     *
+     * @param state     The state of the algorithm
+     * @param current   The current partial solution
+     */
     private void doBranchAndBoundRecursive(State state, PartialSolution current) {
         // Consider current node
         var task = current.task;
@@ -173,8 +215,6 @@ public class BranchAndBound implements IRunnable {
         for (var edge : state.map.get(task.getNode())) {
             var child = edge.getTarget();
 
-            // TODO: More efficient lookup
-            // TODO: Branch and bound
             if (current.visitedChildren.contains(child))
                 continue;
 
@@ -203,7 +243,6 @@ public class BranchAndBound implements IRunnable {
         }
 
         // Consider all queued children
-        // TODO: Make sure to account for task being scheduled after earliest start time
         for (var childToQueue : current.queuedChildren.entrySet()) {
 
             // Consider all processors the child can be queued on
@@ -246,6 +285,16 @@ public class BranchAndBound implements IRunnable {
         }
     }
 
+    /**
+     * Run the schedule using abstract IRunnable interface
+     *
+     * @param graph             The complete graph which has been deciphered from
+     *                          the dot file
+     * @param numProcessors     The number of processors that the algorithm will
+     *                          allocate to
+     *
+     * @return                  Return the optimal schedule
+     */
     @Override
     public Schedule run(Graph graph, int numProcessors) {
 
@@ -282,64 +331,5 @@ public class BranchAndBound implements IRunnable {
         schedule.setShortestPath(shortestPath);
         return  schedule;
 
-
-        /*Map<Node, EdgesLinkedList> map = graph.getGraph();
-
-        int numProcessors = 2;
-        int shortestPathLength = Integer.MAX_VALUE;
-        ScheduledTask shortestPathEndTask = null;
-
-        var startNode = graph.getNodes().get(0);
-        var stack = new Stack<ScheduledTask>();
-
-        // var queuedChildrenBinaryTree;
-
-        // Add children to DFS solution tree
-        for (int processorId = 0; processorId < numProcessors; processorId++) {
-            stack.push(new ScheduledTask(null, 0, processorId, startNode));
-        }
-
-        while (!stack.isEmpty()) {
-            ScheduledTask task = stack.pop();
-            Node iter = task.node;
-            int currentProcessorId = task.processorId;
-
-            // Visit the node
-            int pathLength = task.startTime + task.node.getValue();
-            System.out.println("Visiting node " + task.node.getName() + " with path length " + pathLength);
-
-            // Update shortest path
-            if (map.get(iter).size() == 0) {
-                if (pathLength < shortestPathLength) {
-                    shortestPathLength = pathLength;
-                    shortestPathEndTask = task;
-                }
-            }
-
-            // Generate N+1 solution
-
-            // For each child node
-            for (Edge edge : map.get(iter)) {
-                Node child = edge.getTarget();
-                int communicationWeight = edge.getWeight();
-
-                // For each processor
-                for (int processorId = 0; processorId < numProcessors; processorId++) {
-                    // Account for communication weight if on different processor
-                    if (processorId == currentProcessorId) {
-                        stack.push(new ScheduledTask(task, pathLength, processorId, child));
-                    } else {
-                        stack.push(new ScheduledTask(task, pathLength + communicationWeight, processorId, child));
-                    }
-                }
-            }
-        }
-
-        // Shortest path:
-        System.out.println("Shortest Path Length: " + shortestPathLength);
-        while (shortestPathEndTask != null) {
-            System.out.println(shortestPathEndTask);
-            shortestPathEndTask = shortestPathEndTask.parent;
-        }*/
     }
 }

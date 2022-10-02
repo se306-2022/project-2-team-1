@@ -10,6 +10,12 @@ public class GraphController {
 
     private Graph graph;
 
+    /**
+     * Method to read in graph from dot file and create a graph object
+     * @param br: buffered reader
+     * @throws IOException
+     */
+
     private void parseGraphviz(BufferedReader br) throws IOException {
         List<Node> nodes = new ArrayList<>();
         List<Node> possibleStartNodes = new ArrayList<>();
@@ -37,7 +43,8 @@ public class GraphController {
                 try {
                     Integer.parseInt(input.substring(i, i + 1));
                 } catch (NumberFormatException e) {
-                    endIndex = i-1;
+                    endIndex = i;
+                    break;
                 }
             }
             weight = Integer.parseInt(input.substring(weightIndex+7,endIndex));
@@ -85,20 +92,38 @@ public class GraphController {
         this.graph = new Graph(edges, nodes, possibleStartNodes);
     }
 
+    /**
+     * Constructor for Graph Controller
+     * @param contents
+     * @throws IOException
+     */
     public GraphController(String contents) throws IOException {
         var reader = new BufferedReader(new StringReader(contents));
         parseGraphviz(reader);
     }
 
+    /**
+     * Constructor for Graph Controller
+     * @param file
+     * @throws IOException
+     */
     public GraphController(File file) throws IOException {
         var reader = new BufferedReader(new FileReader(file));
         parseGraphviz(reader);
     }
 
+    /**
+     * Getter for graph object
+     * @return graph object
+     */
     public Graph getGraph() {
         return this.graph;
     }
 
+    /**
+     * Setter for the graph object
+     * @param graph
+     */
     public void setGraph(Graph graph) {
         this.graph = graph;
     }

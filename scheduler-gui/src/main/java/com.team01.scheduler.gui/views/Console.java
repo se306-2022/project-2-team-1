@@ -4,8 +4,11 @@ import javafx.scene.control.TextArea;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 
+/**
+ * Custom JavaFX control which can act as a destination for standard
+ * output and error streams.
+ */
 public class Console extends TextArea {
 
     // Loosely adapted from this web page:
