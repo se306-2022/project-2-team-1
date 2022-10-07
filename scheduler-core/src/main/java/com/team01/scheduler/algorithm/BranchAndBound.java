@@ -1,9 +1,10 @@
 package com.team01.scheduler.algorithm;
 
-import com.team01.scheduler.graph.models.Edge;
+import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
 import com.team01.scheduler.graph.models.EdgesLinkedList;
-import com.team01.scheduler.graph.models.Graph;
-import com.team01.scheduler.graph.models.Node;
+
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ public class BranchAndBound implements IRunnable {
      */
     private final class State {
         final int numProcessors;
-        final Map<Node, EdgesLinkedList> map;
+        final int[][]  map;
         int currentShortestPath;
         ScheduledTask currentShortestPathTask;
 
@@ -36,7 +37,7 @@ public class BranchAndBound implements IRunnable {
          * @param numProcessors     The number of processors that we declare for the task graph
          * @param map               The edge-node map object
          */
-        private State(int numProcessors, Map<Node, EdgesLinkedList> map) {
+        private State(int numProcessors, int[][]  map) {
             this.numProcessors = numProcessors;
             this.map = map;
             this.currentShortestPath = Integer.MAX_VALUE;
@@ -261,7 +262,7 @@ public class BranchAndBound implements IRunnable {
                 // The task can start (at the earliest, assuming no communication time) once
                 // all dependency tasks have been completed
                 for (var dependency : dependencies) {
-                    int finishTime = dependency.getStartTime() + dependency.getNode().getValue();
+                    int finishTime = dependency.getStartTime() + dependency.getNode().getComputationCost();
 
                     // Account for communication time
                     if (dependency.getProcessorId() != processorId)
@@ -279,7 +280,7 @@ public class BranchAndBound implements IRunnable {
 
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
-                nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getValue();
+                nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
                 // add to queue
 
                 // fetch from queue add submit thread pool thread
@@ -302,38 +303,42 @@ public class BranchAndBound implements IRunnable {
     @Override
     public Schedule run(Graph graph, int numProcessors) {
 
-        Map<Node, EdgesLinkedList> map = graph.getGraph();
+        int[][] map = graph.getAdjacencyMatrix();
 
         State state = new State(numProcessors, map);
 
-        for (Node n : graph.getPossibleStartNodes()) {
-            Map<Node, List<ScheduledTask>> queuedChildren = new HashMap<>();
+        try {
+            for (Node n : graph.getEntryNodes()) {
+                Map<Node, List<ScheduledTask>> queuedChildren = new HashMap<>();
 
-            for (Node s : graph.getPossibleStartNodes()) {
-                if (s != n){
-                   queuedChildren.put(s, new ArrayList<>());
+                for (Node s : graph.getEntryNodes()) {
+                    if (s != n){
+                       queuedChildren.put(s, new ArrayList<>());
+                    }
                 }
+
+                // Add children to DFS solution tree
+                ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
+                PartialSolution ps = new PartialSolution(newTask, numProcessors);
+                ps.getQueuedChildren().putAll(queuedChildren);
+                doBranchAndBoundRecursive(state, ps);
             }
 
-            // Add children to DFS solution tree
-            ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
-            PartialSolution ps = new PartialSolution(newTask, numProcessors);
-            ps.getQueuedChildren().putAll(queuedChildren);
-            doBranchAndBoundRecursive(state, ps);
+
+            // Report results
+            List<ScheduledTask> taskList = new ArrayList<>();
+
+            ScheduledTask iter = state.currentShortestPathTask;
+            while (iter != null) {
+                taskList.add(0, iter);
+                iter = iter.parent;
+            }
+
+            var schedule = new Schedule(taskList, numProcessors);
+            schedule.setShortestPath(shortestPath);
+            return  schedule;
+        } catch (NodeInvalidIDMapping e) {
+            throw new RuntimeException(e);
         }
-
-        // Report results
-        List<ScheduledTask> taskList = new ArrayList<>();
-
-        ScheduledTask iter = state.currentShortestPathTask;
-        while (iter != null) {
-            taskList.add(0, iter);
-            iter = iter.parent;
-        }
-
-        var schedule = new Schedule(taskList, numProcessors);
-        schedule.setShortestPath(shortestPath);
-        return  schedule;
-
     }
 }

@@ -1,6 +1,7 @@
 package com.team01.scheduler.algorithm;
 
-import com.team01.scheduler.graph.models.Node;
+
+import com.team01.scheduler.algorithm.matrixModels.Node;
 
 /**
  * Each task in this class has a processor ID associated with it as well as the node in question. Each
@@ -51,6 +52,6 @@ public class ScheduledTask {
     }
 
     public int getWorkTime() {
-        return node.getValue();
+        return node.getComputationCost();
     }
 }

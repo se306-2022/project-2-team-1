@@ -3,7 +3,8 @@ package com.team01.scheduler;
 import com.team01.scheduler.algorithm.INotifyCompletion;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.graph.models.Graph;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
+
 
 public class TaskRunner {
 
