@@ -51,7 +51,7 @@ public class BranchAndBound implements IRunnable {
         // Nodes which have already been visited
         private final List<Node> visitedChildren;
 
-        // Map of Nodes and (Edge Weights, Earliest Start Times)
+        // contains tasks that have been discovered but not processed
         private final Map<Node, List<ScheduledTask>> queuedChildren;
         private final int[] processorBusyUntilTime;
 
@@ -280,6 +280,10 @@ public class BranchAndBound implements IRunnable {
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getValue();
+                // add to queue
+
+                // fetch from queue add submit thread pool thread
+                // thread calls branch and bound recursive
                 doBranchAndBoundRecursive(state, nextSolution);
             }
         }
