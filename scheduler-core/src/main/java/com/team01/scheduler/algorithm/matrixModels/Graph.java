@@ -106,7 +106,7 @@ public class Graph {
      * which have no outgoing edges in the adjacency matrix.
      * @return
      */
-    public List<Node> getExitNodes() {
+    public ArrayList<Node> getExitNodes() {
         exitNodes = new ArrayList<>();
 
         for (int i=0; i<SIZE; i++) {

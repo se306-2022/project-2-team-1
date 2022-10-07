@@ -1,9 +1,6 @@
 package com.team01.scheduler.algorithm;
 
-import com.team01.scheduler.matrix.algorithm.PartialSchedule;
-import com.team01.scheduler.matrix.algorithm.Processor;
 import com.team01.scheduler.matrix.exception.NodeInvalidIDMapping;
-import com.team01.scheduler.matrix.exception.NodeNotScheduledException;
 import com.team01.scheduler.matrix.exception.NonExistingNodeException;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
@@ -33,31 +30,31 @@ public class CostFunctionCalculator {
      * Given a partial schedule this method is called to find the corresponding cost function,
      * which is used as the heuristic to determine whether we should continue exploring the given
      * partial schedule.
-     * @param partialSchedule
-     * @param processorsList
+     * @param visitedNodes
+     * @param st
      * @param g
-     * @return
-     * @throws NonExistingNodeException
-     * @throws NodeInvalidIDMapping
-     * @throws NodeNotScheduledException
+     * @return lowerBound
      */
-    public Integer findCostFunction(PartialSchedule partialSchedule, ArrayList<Processor> processorsList, Graph g) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
+    public Integer findCostFunction(ArrayList<Node> visitedNodes, ScheduledTask st, Graph g) {
         adjacencyMatrix = g;
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
 
-        for (Node n : partialSchedule.getNodesInPartialSchedule()){
+        for (Node n : visitedNodes){
 
+            // calculate the bottom level for the node
             bottomLevels.put(n, calculateBottomLevel(n));
 
-            for (Processor processor : processorsList){
-                if (processor.getScheduledNodes().contains(n)){
-                    startingTimes.put(n,processor.getStartTimeForNode(n));
+            // find the start time for node n
+            while (st != null) {
+                if (st.getNode() == n){
+                    startingTimes.put(n,st.getStartTime());
                 }
+                st = st.parent;
             }
         }
 
-        return findMaxLowerBound(bottomLevels,startingTimes,partialSchedule.getNodesInPartialSchedule());
+        return findMaxLowerBound(bottomLevels,startingTimes,visitedNodes);
     }
 
     /**
@@ -67,17 +64,27 @@ public class CostFunctionCalculator {
      * @throws NonExistingNodeException
      * @throws NodeInvalidIDMapping
      */
-    private Integer calculateBottomLevel(Node node) {
-        int bottomLevel = node.getComputationCost();
-        ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(node);
 
-        while (!childrenNodes.isEmpty()){
-            for (Node n : childrenNodes){
-                bottomLevel += n.getComputationCost();
-            }
-        }
+    private int bottomLevel;
+    private Integer calculateBottomLevel(Node node) {
+        bottomLevel = node.getComputationCost();
+
+        ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(node);
+        traverseChildrenNode(node);
 
         return bottomLevel;
+    }
+
+    public void traverseChildrenNode(Node startingNode){
+        ArrayList<Node> leafNodes = adjacencyMatrix.getExitNodes();
+        ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(startingNode);
+
+        for (Node cn : childrenNodes){
+            bottomLevel += cn.getComputationCost();
+            if (!leafNodes.contains(cn)){
+                traverseChildrenNode(cn);
+            }
+        }
     }
 
     /**

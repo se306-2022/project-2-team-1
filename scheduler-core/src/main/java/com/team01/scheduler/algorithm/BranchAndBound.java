@@ -4,9 +4,6 @@ import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
-
-
-
 import java.util.*;
 
 public class BranchAndBound implements IRunnable {
@@ -53,7 +50,7 @@ public class BranchAndBound implements IRunnable {
      */
     private final class PartialSolution {
         // Nodes which have already been visited
-        private final List<Node> visitedChildren;
+        private final ArrayList<Node> visitedChildren;
 
         // contains tasks that have been discovered but not processed
         private final Map<Node, List<ScheduledTask>> queuedChildren;
@@ -200,7 +197,9 @@ public class BranchAndBound implements IRunnable {
         int pathLength = calculateFinishTime(task);
 
         // Bound the algorithm by the currently determined shortest path
-        if (pathLength >= state.currentShortestPath)
+        CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
+        int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task,state.graph);
+        if (projectedPathLength >= state.currentShortestPath)
             return;
 
         // Add children of current node
