@@ -125,11 +125,11 @@ public class Graph {
      * @return
      * @throws NonExistingNodeException
      */
-    public ArrayList<Node> getChildrenForNode(Node node) throws NonExistingNodeException {
+    public ArrayList<Node> getChildrenForNode(Node node) {
         ArrayList<Node> childrenNodes = new ArrayList<>();
         // first check that the node indeed does exist in the graph
         if (!inputNodes.contains(node)){
-            throw new NonExistingNodeException("The node does not exist in the graph: " + node);
+            System.out.println("The node does not exist in the graph: " + node);
         }
 
         for (int j=0; j<SIZE; j++) {
@@ -148,11 +148,11 @@ public class Graph {
      * @return
      * @throws NonExistingNodeException
      */
-    public ArrayList<Node> getParentsForNode(Node node) throws NonExistingNodeException {
+    public ArrayList<Node> getParentsForNode(Node node) {
         ArrayList<Node> parentNodes = new ArrayList<>();
         // first check that the node indeed does exist in the graph
         if (!inputNodes.contains(node)){
-            throw new NonExistingNodeException("The node does not exist in the graph: " + node);
+            System.out.println("The node does not exist in the graph: " + node);
         }
 
         for (int i=0; i<SIZE; i++) {

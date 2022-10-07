@@ -1,9 +1,10 @@
 package com.team01.scheduler.algorithm;
 
+import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
-import com.team01.scheduler.graph.models.EdgesLinkedList;
+
 
 
 import java.util.*;
@@ -28,8 +29,9 @@ public class BranchAndBound implements IRunnable {
      */
     private final class State {
         final int numProcessors;
-        final int[][]  map;
+        final int[][] map;
         int currentShortestPath;
+        final Graph graph;
         ScheduledTask currentShortestPathTask;
 
         /**
@@ -37,10 +39,11 @@ public class BranchAndBound implements IRunnable {
          * @param numProcessors     The number of processors that we declare for the task graph
          * @param map               The edge-node map object
          */
-        private State(int numProcessors, int[][]  map) {
+        private State(int numProcessors, int[][] map,Graph graph) {
             this.numProcessors = numProcessors;
             this.map = map;
             this.currentShortestPath = Integer.MAX_VALUE;
+            this.graph = graph;
         }
     }
 
@@ -120,14 +123,9 @@ public class BranchAndBound implements IRunnable {
      */
     private boolean haveVisitedDependencies(State state, PartialSolution current, Node node) {
 
-        // This is awful - we'll probably need an adjacency matrix?
-        for (EdgesLinkedList list : state.map.values()) {
-            for (Edge edge : list) {
-                if (edge.getTarget() == node) {
-                    if (!current.visitedChildren.contains(edge.getSource()))
-                        return false;
-                }
-            }
+        for (Node dependencyNode : state.graph.getParentsForNode(node)){
+            if (!current.visitedChildren.contains(dependencyNode))
+                return false;
         }
 
         return true;
@@ -186,14 +184,7 @@ public class BranchAndBound implements IRunnable {
      * @return
      */
     private int getEdgeWeight(State state, Node source, Node target) {
-        EdgesLinkedList list = state.map.get(source);
-
-        for (Edge edge : list) {
-            if (edge.getTarget() == target)
-                return edge.getWeight();
-        }
-
-        throw new RuntimeException("Edge not found");
+        return state.map[source.getId()][target.getId()];
     }
 
     /**
@@ -213,8 +204,7 @@ public class BranchAndBound implements IRunnable {
             return;
 
         // Add children of current node
-        for (var edge : state.map.get(task.getNode())) {
-            var child = edge.getTarget();
+        for (Node child : state.graph.getChildrenForNode(task.getNode())) {
 
             if (current.visitedChildren.contains(child))
                 continue;
@@ -305,7 +295,7 @@ public class BranchAndBound implements IRunnable {
 
         int[][] map = graph.getAdjacencyMatrix();
 
-        State state = new State(numProcessors, map);
+        State state = new State(numProcessors, map, graph);
 
         try {
             for (Node n : graph.getEntryNodes()) {
