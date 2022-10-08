@@ -292,6 +292,9 @@ public class BranchAndBound implements IRunnable {
     @Override
     public Schedule run(Graph graph, int numProcessors) {
 
+        /** Start Timer **/
+        long startTime = System.nanoTime();
+
         int[][] map = graph.getAdjacencyMatrix();
 
         State state = new State(numProcessors, map, graph);
@@ -325,6 +328,15 @@ public class BranchAndBound implements IRunnable {
 
             var schedule = new Schedule(taskList, numProcessors);
             schedule.setShortestPath(shortestPath);
+
+            /** End Timer **/
+            long endTime = System.nanoTime();
+
+            /** Print Time Taken **/
+            long duration = (endTime - startTime);
+
+            System.out.println("The algorithm took " + duration + "milliseconds");
+
             return  schedule;
         } catch (NodeInvalidIDMapping e) {
             throw new RuntimeException(e);
