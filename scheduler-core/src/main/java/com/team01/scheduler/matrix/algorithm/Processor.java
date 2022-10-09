@@ -16,6 +16,15 @@ public class Processor {
      * The key is the order number of the node and the value is the actual node
      */
     private Map<Integer,Node> orderOfNodes;
+
+    public int getCurrentEndTime() {
+        return currentEndTime;
+    }
+
+    public void setCurrentEndTime(int currentEndTime) {
+        this.currentEndTime = currentEndTime;
+    }
+
     /**
      * current end time of the processor
      */
@@ -38,8 +47,8 @@ public class Processor {
      * and don't include the scheduling start times.
      * @return
      */
-    public ArrayList<Node> getScheduledNodes(){
-        return new ArrayList<Node>(scheduledNodes.keySet());
+    public Map<Node,Integer>  getScheduledNodes(){
+        return scheduledNodes;
     }
 
     public Integer getStartTimeForNode(Node node) throws NodeNotScheduledException {
@@ -50,11 +59,18 @@ public class Processor {
         }
     }
 
-    public void scheduleNode(Node node, PartialSchedule ps) throws NotImplementedException {
+    public void scheduleNode(Node node) {
         int order = scheduledNodes.size();
         orderOfNodes.put(order, node);
-        scheduledNodes.put(node, calculateStartTime(node,ps));
+        scheduledNodes.put(node, currentEndTime);
         currentEndTime = scheduledNodes.get(node) + node.getComputationCost();
+    }
+
+    public void scheduleNodeAtTime(Node node, int time){
+        int order = scheduledNodes.size();
+        orderOfNodes.put(order, node);
+        scheduledNodes.put(node, time);
+        currentEndTime = time + node.getComputationCost();
     }
 
     /**
@@ -88,9 +104,9 @@ public class Processor {
         return idleTime;
     }
 
-    private Integer calculateStartTime(Node node, PartialSchedule ps) throws NotImplementedException {
-        //TODO: How would you calculate the start time of a node in the schedule
-        throw new NotImplementedException("Method to implement");
-    }
+//    private Integer calculateStartTime(Node node, PartialSchedule ps) throws NotImplementedException {
+//        //TODO: How would you calculate the start time of a node in the schedule
+//        throw new NotImplementedException("Method to implement");
+//    }
 
 }

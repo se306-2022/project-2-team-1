@@ -2,7 +2,7 @@ package com.team01.scheduler.matrix.algorithm;
 
 import java.util.Comparator;
 
-public class CostFunctionComparator implements Comparator<PartialSchedule> {
+public class CostFunctionComparator implements Comparator<Schedule> {
 
     /**
      * Comparator is used to sort the partial schedules and return the one
@@ -13,7 +13,7 @@ public class CostFunctionComparator implements Comparator<PartialSchedule> {
      * @param s2 the second object to be compared.
      * @return
      */
-    public int compare(PartialSchedule s1, PartialSchedule s2) {
+    public int compare(Schedule s1, Schedule s2) {
         if (s1.getCostFunction() < s2.getCostFunction()) {
             return -1;
         } else if (s1.getCostFunction() > s2.getCostFunction()) {

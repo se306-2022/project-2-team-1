@@ -31,7 +31,7 @@ public class CostFunctionCalculator {
      * Given a partial schedule this method is called to find the corresponding cost function,
      * which is used as the heuristic to determine whether we should continue exploring the given
      * partial schedule.
-     * @param partialSchedule
+     * @param schedule
      * @param processorsList
      * @param g
      * @return
@@ -39,23 +39,23 @@ public class CostFunctionCalculator {
      * @throws NodeInvalidIDMapping
      * @throws NodeNotScheduledException
      */
-    public Integer findCostFunction(PartialSchedule partialSchedule, ArrayList<Processor> processorsList,Graph g) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
+    public Integer findCostFunction(Schedule schedule, ArrayList<Processor> processorsList,Graph g) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
         adjacencyMatrix = g;
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
 
-        for (Node n : partialSchedule.getNodesInPartialSchedule()){
+        for (Node n : schedule.getScheduledTaskList()){
 
             bottomLevels.put(n, calculateBottomLevel(n));
 
             for (Processor processor : processorsList){
-                if (processor.getScheduledNodes().contains(n)){
+                if (processor.getScheduledNodes().keySet().contains(n)){
                     startingTimes.put(n,processor.getStartTimeForNode(n));
                 }
             }
         }
 
-        return findMaxLowerBound(bottomLevels,startingTimes,partialSchedule.getNodesInPartialSchedule());
+        return findMaxLowerBound(bottomLevels,startingTimes, (ArrayList<Node>) schedule.getScheduledTaskList());
     }
 
     /**

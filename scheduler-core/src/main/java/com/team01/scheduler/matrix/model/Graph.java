@@ -12,9 +12,11 @@ public class Graph {
     private int[][] adjacencyMatrix;
     private final int SIZE;
     private List<Node> inputNodes;
+
     private List<Edge> inputEdges;
     private List<Node> entryNodes;
     private List<Node> exitNodes;
+    private List<Node> nodes;
 
     public Graph(List<Node> inputNodes, List<Edge> inputEdges) {
         this.inputNodes = inputNodes;
@@ -46,6 +48,14 @@ public class Graph {
         addEdges();
     }
 
+
+    public List<Node> getInputNodes() {
+        return inputNodes;
+    }
+
+    public List<Edge> getInputEdges() {
+        return inputEdges;
+    }
     /**
      * Helper method parses the Edge class instances into the corresponding edges in
      * the adjacency matrix.
@@ -84,8 +94,16 @@ public class Graph {
                 entryNodes.add(getNodeById(j));
             }
         }
-
         return entryNodes;
+    }
+
+
+    public List<Node> getNodes() throws NodeInvalidIDMapping {
+        nodes = new ArrayList<>();
+        for (int j=0; j<SIZE; j++) {
+            nodes.add(getNodeById(j));
+        }
+        return nodes;
     }
 
     /**
