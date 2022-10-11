@@ -101,30 +101,6 @@ public class ScheduleView extends GridPane {
     }
 
     /**
-     * Container for a Canvas control which handles resizing and painting
-     * whenever the available space changes.
-     *
-     * See: https://stackoverflow.com/questions/68011270/how-to-make-canvas-fill-up-the-center-of-borderpane-in-javafx
-     */
-    private class CanvasPane extends Region {
-        private Canvas canvas;
-
-        public CanvasPane(Canvas canvas) {
-            this.canvas = canvas;
-            getChildren().add(canvas);
-        }
-
-        @Override
-        protected void layoutChildren() {
-            super.layoutChildren();
-
-            canvas.setWidth(getWidth());
-            canvas.setHeight(getHeight());
-            draw();
-        }
-    }
-
-    /**
      * Decrease the step size i.e. zoom out
      */
     public void zoomIn() {
@@ -178,7 +154,7 @@ public class ScheduleView extends GridPane {
 
         // Add to Grid Pane
         var canvas = new Canvas();
-        var canvasPane = new CanvasPane(canvas);
+        var canvasPane = new CanvasPane(canvas, this::draw);
         addColumn(0, canvasPane, horizontalScroll);
         add(verticalScroll, 1, 0);
 

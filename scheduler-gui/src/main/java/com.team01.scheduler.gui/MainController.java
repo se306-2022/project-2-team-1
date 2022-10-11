@@ -6,6 +6,7 @@ import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.models.GraphController;
+import com.team01.scheduler.gui.views.RadialTree;
 import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
@@ -77,6 +78,8 @@ public class MainController {
             System.err.println("Could not parse graph");
             return;
         }
+
+        showProgress();
 
         // Run the task (currently synchronous, but later in async)
         taskRunner.safeRunAsync(runnable, graph, processorCount, schedule -> {
@@ -214,11 +217,29 @@ public class MainController {
      * Add a new tab
      * @param title Title of tab
      * @param content Content of tab (JavaFX control)
+     * @param makeCurrent Steal focus from current tab
      */
-    private void addTab(String title, Node content) {
+    private void addTab(String title, Node content, boolean makeCurrent) {
         Tab newTab = new Tab(title, content);
         newTab.setClosable(true);
         tabPane.getTabs().add(newTab);
+
+        if (makeCurrent)
+            tabPane.getSelectionModel().select(newTab);
+    }
+
+    /**
+     * Add a new tab in the background
+     * @param title Title of tab
+     * @param content Content of tab (JavaFX control)
+     */
+    private void addTab(String title, Node content) {
+        addTab(title, content, false);
+    }
+
+    private void showProgress() {
+        var radialTree = new RadialTree();
+        addTab("Progress", radialTree, true);
     }
 
     /**
