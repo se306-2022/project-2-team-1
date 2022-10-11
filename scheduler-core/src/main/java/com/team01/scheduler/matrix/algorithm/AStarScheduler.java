@@ -37,10 +37,14 @@ public class AStarScheduler {
     private class ScheduleTreeNode {
 
         private int numProcessors;
-        private List<Task> taskList;
+        private Map<Integer, List<Task>> schedule;
 
-        public ScheduleTreeNode(List<Task> taskList, int numProcessors) {
-            this.taskList = taskList;
+        private List<ScheduleTreeNode> adjNodes;
+
+        private ScheduleTreeNode parent;
+
+        public ScheduleTreeNode(Map<Integer, List<Task>> schedule, int numProcessors) {
+            this.schedule = schedule;
             this.numProcessors = numProcessors;
         }
 
