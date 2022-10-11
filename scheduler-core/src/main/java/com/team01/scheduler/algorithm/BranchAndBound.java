@@ -272,7 +272,7 @@ public class BranchAndBound implements IRunnable {
 
                 for (Node s : graph.getEntryNodes()) {
                     if (s != n){
-                       queuedChildren.put(s, new ArrayList<>());
+                        queuedChildren.put(s, new ArrayList<>());
                     }
                 }
 
