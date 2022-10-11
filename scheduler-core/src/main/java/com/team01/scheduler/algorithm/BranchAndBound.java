@@ -283,6 +283,9 @@ public class BranchAndBound implements IRunnable {
                 doBranchAndBoundRecursive(state, ps);
             }
 
+            // close the thread pool executor
+            
+            executor.shutdown();
             // Report results
             List<ScheduledTask> taskList = new ArrayList<>();
 
