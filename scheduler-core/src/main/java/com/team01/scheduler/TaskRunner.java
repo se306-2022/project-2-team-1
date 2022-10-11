@@ -17,7 +17,7 @@ public class TaskRunner {
      * @param numProcessors
      * @return Status code of task
      */
-    public Schedule safeRun(IRunnable runnable, Graph graph, int numProcessors) {
+    public Schedule safeRun(IRunnable runnable, Graph graph, int numProcessors, int numCores) {
 
         System.out.println("Running task: " + runnable.getTaskName());
 
@@ -25,7 +25,7 @@ public class TaskRunner {
         Schedule schedule;
 
         try {
-            schedule = runnable.run(graph, numProcessors);
+            schedule = runnable.run(graph, numProcessors, numCores);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -36,14 +36,14 @@ public class TaskRunner {
 
         return schedule;
     }
-    public void safeRunAsync(IRunnable runnable, Graph graph, int numProcessors, INotifyCompletion notifyCompletion) {
+    public void safeRunAsync(IRunnable runnable, Graph graph, int numProcessors, int numCores, INotifyCompletion notifyCompletion) {
 
         System.out.println("Running task: " + runnable.getTaskName());
 
         System.out.println("\nTASK START\n");
 
         try {
-            notifyCompletion.notifyComplete(runnable.run(graph, numProcessors));
+            notifyCompletion.notifyComplete(runnable.run(graph, numProcessors,numCores));
         }
         catch (Exception e) {
             e.printStackTrace();

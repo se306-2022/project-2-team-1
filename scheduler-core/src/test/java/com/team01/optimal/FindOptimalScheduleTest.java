@@ -3,7 +3,9 @@ package com.team01.optimal;
 import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.graph.models.Graph;
+
+import com.team01.scheduler.algorithm.matrixModels.Graph;
+
 import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.graph.util.ExportToDotFile;
 
@@ -54,7 +56,7 @@ public class FindOptimalScheduleTest {
                 File file = new File(fileName);
                 GraphController gc = new GraphController(file);
                 graph = gc.getGraph();
-                Schedule schedule = taskRunner.safeRun(new BranchAndBound(), graph,Integer.parseInt(processorCount));
+                Schedule schedule = taskRunner.safeRun(new BranchAndBound(), graph,Integer.parseInt(processorCount),1);
                 ExportToDotFile export = new ExportToDotFile(graph, outFileName, schedule);
                 export.writeDotWithSchedule();
                 return DynamicTest.dynamicTest("File: "+fileName+" processors: "+processorCount, () -> {

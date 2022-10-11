@@ -4,7 +4,10 @@ import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
+
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class BranchAndBound implements IRunnable {
 
@@ -16,15 +19,25 @@ public class BranchAndBound implements IRunnable {
     }
     private int shortestPath;
 
+    private State state;
+
+    private ExecutorService executor;
+
     @Override
     public String getTaskName() {
         return "Scheduler - DFS Branch and Bound";
     }
 
+    public BranchAndBound.State getState(){
+        return state;
+    }
+
+
+
     /**
      * A state class that keeps track of the current shortest path in the algorithm.
      */
-    private final class State {
+    public final class State {
         final int numProcessors;
         final int[][] map;
         int currentShortestPath;
@@ -36,77 +49,11 @@ public class BranchAndBound implements IRunnable {
          * @param numProcessors     The number of processors that we declare for the task graph
          * @param map               The edge-node map object
          */
-        private State(int numProcessors, int[][] map,Graph graph) {
+        public State(int numProcessors, int[][] map,Graph graph) {
             this.numProcessors = numProcessors;
             this.map = map;
             this.currentShortestPath = Integer.MAX_VALUE;
             this.graph = graph;
-        }
-    }
-
-    /**
-     * The partialSolution class consists of a partialSolution constructor
-     * which creates new instances whenever a new schedule is discovered.
-     */
-    private final class PartialSolution {
-        // Nodes which have already been visited
-        private final ArrayList<Node> visitedChildren;
-
-        // contains tasks that have been discovered but not processed
-        private final Map<Node, List<ScheduledTask>> queuedChildren;
-        private final int[] processorBusyUntilTime;
-
-        public Map<Node, List<ScheduledTask>> getQueuedChildren() {
-            return queuedChildren;
-        }
-
-        ScheduledTask task;
-
-        /**
-         * Creates a new root-level partial schedule (i.e. first node)
-         * @param task Root task of the schedule
-         * @param numProcessors Number of processors
-         */
-        private PartialSolution(ScheduledTask task, int numProcessors) {
-            this.visitedChildren = new ArrayList<>();
-            this.queuedChildren = new HashMap<>();
-            this.processorBusyUntilTime = new int[numProcessors];
-            this.task = task;
-
-            // Set the initial 'busy' time for the first task
-            processorBusyUntilTime[task.processorId] = task.getStartTime() + task.getWorkTime();
-
-            // Add the current node to visited as an optimisation
-            this.visitedChildren.add(task.getNode());
-        }
-
-        /**
-         * Creates a child partial schedule with newTask as the N+1 task
-         * @param parent Parent partial schedule
-         * @param newTask New task to queue
-         */
-        private PartialSolution(PartialSolution parent, ScheduledTask newTask) {
-            this.visitedChildren = new ArrayList<>();
-            this.visitedChildren.addAll(parent.visitedChildren);
-
-            this.queuedChildren = new HashMap<>();
-            for (var nodeDependencyPair : parent.queuedChildren.entrySet()) {
-                var node = nodeDependencyPair.getKey();
-                var dependencyList = nodeDependencyPair.getValue();
-
-                // Clone list so it doesn't interfere between recursions
-                var clonedList = new ArrayList<>(dependencyList);
-                queuedChildren.put(node, clonedList);
-            }
-
-            this.processorBusyUntilTime = Arrays.copyOf(parent.processorBusyUntilTime, parent.processorBusyUntilTime.length);
-            this.task = newTask;
-
-            // Add the current node to visited as an optimisation
-            this.visitedChildren.add(newTask.getNode());
-
-            // Remove the current node from queued children to avoid infinite recursion
-            this.queuedChildren.remove(newTask.getNode());
         }
     }
 
@@ -191,7 +138,7 @@ public class BranchAndBound implements IRunnable {
      * @param state     The state of the algorithm
      * @param current   The current partial solution
      */
-    private void doBranchAndBoundRecursive(State state, PartialSolution current) {
+    public void doBranchAndBoundRecursive(State state, PartialSolution current) {
         // Consider current node
         var task = current.task;
         int pathLength = calculateFinishTime(task);
@@ -270,11 +217,29 @@ public class BranchAndBound implements IRunnable {
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
-                // add to queue
 
-                // fetch from queue add submit thread pool thread
-                // thread calls branch and bound recursive
-                doBranchAndBoundRecursive(state, nextSolution);
+                // create instance of ThreadPoolWorker
+                ThreadPoolWorker tw = new ThreadPoolWorker(this,nextSolution);
+
+                // add to thread pool
+                executor.submit(tw);
+
+                /*
+                    	ExecutorService executor = Executors.newFixedThreadPool(2);
+
+
+                        // the tasks are submitted to the executorservice which assigns
+                        // the tasks to the threads
+
+                        for(int i=1; i<6; i++) {
+                            executor.submit(new Task(i*129));
+                        }
+
+                        // stop accepting new tasks and then shutdown threads when the
+                        // tasks are finished.
+                        executor.shutdown();
+
+                 */
             }
         }
     }
@@ -290,14 +255,16 @@ public class BranchAndBound implements IRunnable {
      * @return                  Return the optimal schedule
      */
     @Override
-    public Schedule run(Graph graph, int numProcessors) {
+    public Schedule run(Graph graph, int numProcessors, int numCores) {
 
         /** Start Timer **/
         long startTime = System.nanoTime();
 
+        executor = Executors.newFixedThreadPool(numCores);
+
         int[][] map = graph.getAdjacencyMatrix();
 
-        State state = new State(numProcessors, map, graph);
+        state = new State(numProcessors, map, graph);
 
         try {
             for (Node n : graph.getEntryNodes()) {

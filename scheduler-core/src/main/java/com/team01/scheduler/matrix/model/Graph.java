@@ -22,6 +22,7 @@ public class Graph {
         this.SIZE = inputNodes.size();
     }
 
+
     public int[][] getAdjacencyMatrix() {
         return adjacencyMatrix;
     }

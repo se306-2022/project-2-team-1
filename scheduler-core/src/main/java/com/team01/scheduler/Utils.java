@@ -55,7 +55,7 @@ public class Utils {
             }
 
             @Override
-            public Schedule run(Graph graph, int numProcessors) {
+            public Schedule run(Graph graph, int numProcessors, int numCores) {
                 /*
                 for (EdgesLinkedList currentList: graph.getGraph().values()) {
                     int listSize = currentList.size();
