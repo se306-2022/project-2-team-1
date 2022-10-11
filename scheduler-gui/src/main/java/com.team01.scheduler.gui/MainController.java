@@ -258,7 +258,7 @@ public class MainController {
         List<IRunnable> tasks = new ArrayList<>();
 
         tasks.add(Utils.createPrintGraphTask());
-        tasks.add(new DepthFirstSearch());
+        //tasks.add(new DepthFirstSearch());
         tasks.add(new BranchAndBound());
 
         taskList = FXCollections.observableList(tasks);

@@ -313,7 +313,6 @@ public class BranchAndBound implements IRunnable {
                 doBranchAndBoundRecursive(state, ps);
             }
 
-
             // Report results
             List<ScheduledTask> taskList = new ArrayList<>();
 

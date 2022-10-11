@@ -38,7 +38,8 @@ public class Utils {
         List<Node> nodes = Arrays.asList(nodeA, nodeB, nodeC, nodeD);
         List<Edge> edges = Arrays.asList(edgeAB, edgeAC, edgeBD, edgeCD);
 
-        return new Graph(nodes,edges);
+//        return new Graph(nodes,edges);
+        return null;
     }
 
     /**
