@@ -46,6 +46,7 @@ public class AStarScheduler implements IRunnable {
 
     private PriorityQueue<ScheduleTreeNode> openList;
     private PriorityQueue<ScheduleTreeNode> closedList;
+    private HashSet<ScheduleTreeNode> uniqueSchedules = new HashSet<>();
     private int numProcessors;
 
     public AStarScheduler(Graph graph, int numProcessors){
@@ -87,19 +88,26 @@ public class AStarScheduler implements IRunnable {
             if(currentSchedule.schedule.values().size() == graph.getNodes().size() ||
                     currentSchedule.getCurrentShortestPath()< currentBestSchedule.getCurrentShortestPath()) {
                 currentBestSchedule = currentSchedule;
+                System.out.println(currentBestSchedule.currentShortestPath);
             }
-            currentSchedule.adjNodes = CreateChildSchedules(currentSchedule, graph.getAdjacencyMap().get(currentNode));
 
-            // if schedule is null or faster then best
+            List<ScheduleTreeNode> newChildrenSchedules= CreateChildSchedules(currentSchedule, graph.getAdjacencyMap().get(currentNode));
+            currentSchedule.adjNodes = newChildrenSchedules;
+            // if schedule is faster than best
                 // Expand schedule to form new states (schedule all available nodes to all available processors)
-                    // For each new state check whether it is in either closed or open list
-                        // If yes: discard the schedule (go next?)
-                    // Place schedule in closed list.
-
+                // For each new state check whether it is in either closed or open list
+                    // If yes: discard the schedule
+                // Place schedule in closed list.
+            for(ScheduleTreeNode childSchedule:newChildrenSchedules){
+                if(!uniqueSchedules.contains(childSchedule)){
+                    openList.add(childSchedule);
+                    uniqueSchedules.add(childSchedule);
+                }
+            }
+                
+            openList.remove(currentSchedule);
 
         }
-
-
         return null;
     }
 
@@ -108,24 +116,29 @@ public class AStarScheduler implements IRunnable {
         List<ScheduleTreeNode> childSchedules = new ArrayList<>();
 
         for (Edge edge : adjEdges) {
-
+            ScheduleTreeNode clone = parent.clone(parent);
             Node targetNode = edge.getTarget();
-
+            int compTime = targetNode.getValue();
+            for (int i =0; i < parent.numProcessors; i++) {
+                // TODO consider when last scheduled node was on a different processors and therefore incurs extra time
+                int startTime = parent.processorBusyTime[i];
+                // map of processorID and corresponding list of tasks
+                Map<Integer, List<Task>> childSchedule  = new HashMap<>();
+                childSchedule = parent.schedule;
+                childSchedule.put(i, (List<Task>) new Task(startTime, i, targetNode));
+                ScheduleTreeNode scheduleTreeNode = new ScheduleTreeNode(childSchedule, parent.numProcessors, parent);
+                scheduleTreeNode.processorBusyTime[i] = scheduleTreeNode.processorBusyTime[i] + compTime;
+                childSchedules.add(scheduleTreeNode);
+            }
         }
-
         return childSchedules;
-
-
     }
 
     //private PriorityQueue<PartialSchedule> priorityQueue = new PriorityQueue<>(new CostFunctionComparator());
 
     private class Task {
-
         private int startTime;
-
         private int processorID;
-
         public Node node;
 
         public Task (int startTime, int processorID, Node node) {
@@ -146,6 +159,7 @@ public class AStarScheduler implements IRunnable {
 
         private int[] processorBusyTime;
         private int currentShortestPath;
+        private Node lastScheduledNode;
 
         public int getCurrentShortestPath() {
             return currentShortestPath;
@@ -161,6 +175,7 @@ public class AStarScheduler implements IRunnable {
         public ScheduleTreeNode(Map<Integer, List<Task>> schedule, int numProcessors) {
             this.schedule = schedule;
             this.numProcessors = numProcessors;
+            this.processorBusyTime = new int[numProcessors];
         }
 
         public void append(ScheduleTreeNode node) {
@@ -180,7 +195,6 @@ public class AStarScheduler implements IRunnable {
             }
 
             int[] array = Arrays.copyOf(node.processorBusyTime, node.processorBusyTime.length);
-
             ScheduleTreeNode newTing = new ScheduleTreeNode(mapCopy, node.numProcessors, node);
             newTing.processorBusyTime = array;
 
