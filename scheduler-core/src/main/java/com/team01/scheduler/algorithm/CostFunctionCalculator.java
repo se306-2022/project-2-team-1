@@ -67,15 +67,12 @@ public class CostFunctionCalculator {
      */
 
     private Integer calculateBottomLevel(Node node) {
-        int bottomLevel = 0;
 
-        traverseChildrenNode(node,bottomLevel);
-
-        return bottomLevel;
+        return traverseChildrenNode(node);
     }
 
-    public void traverseChildrenNode(Node startingNode, int bottomLevel){
-
+    public int traverseChildrenNode(Node startingNode){
+        int bottomLevel = 0;
         ArrayList<Node> leafNodes = adjacencyMatrix.getExitNodes();
         ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(startingNode);
         int temp = startingNode.getComputationCost();
@@ -83,8 +80,14 @@ public class CostFunctionCalculator {
             temp += cn.getComputationCost();
             if (!leafNodes.contains(cn)){
                 traverseChildrenNode(cn);
+            } else {
+                if (temp > bottomLevel){
+                    bottomLevel = temp;
+                }
             }
         }
+
+        return bottomLevel;
     }
 
     /**
