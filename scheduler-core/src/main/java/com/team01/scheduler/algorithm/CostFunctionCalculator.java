@@ -59,28 +59,28 @@ public class CostFunctionCalculator {
 
     /**
      * Helper function which calculates the bottom level for a given node in the adjacency matrix
+     * Bottom level is the longest path to leaf node
      * @param node
      * @return
      * @throws NonExistingNodeException
      * @throws NodeInvalidIDMapping
      */
 
-    private int bottomLevel;
     private Integer calculateBottomLevel(Node node) {
-        bottomLevel = node.getComputationCost();
+        int bottomLevel = 0;
 
-        ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(node);
-        traverseChildrenNode(node);
+        traverseChildrenNode(node,bottomLevel);
 
         return bottomLevel;
     }
 
-    public void traverseChildrenNode(Node startingNode){
+    public void traverseChildrenNode(Node startingNode, int bottomLevel){
+
         ArrayList<Node> leafNodes = adjacencyMatrix.getExitNodes();
         ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(startingNode);
-
+        int temp = startingNode.getComputationCost();
         for (Node cn : childrenNodes){
-            bottomLevel += cn.getComputationCost();
+            temp += cn.getComputationCost();
             if (!leafNodes.contains(cn)){
                 traverseChildrenNode(cn);
             }

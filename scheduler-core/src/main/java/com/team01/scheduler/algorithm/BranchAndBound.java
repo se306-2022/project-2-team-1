@@ -8,6 +8,7 @@ import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMappin
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BranchAndBound implements IRunnable {
 
@@ -33,14 +34,13 @@ public class BranchAndBound implements IRunnable {
     }
 
 
-
     /**
      * A state class that keeps track of the current shortest path in the algorithm.
      */
     public final class State {
-        final int numProcessors;
+        AtomicInteger numProcessors;
         final int[][] map;
-        int currentShortestPath;
+        AtomicInteger currentShortestPath;
         final Graph graph;
         ScheduledTask currentShortestPathTask;
 
@@ -50,9 +50,9 @@ public class BranchAndBound implements IRunnable {
          * @param map               The edge-node map object
          */
         public State(int numProcessors, int[][] map,Graph graph) {
-            this.numProcessors = numProcessors;
+            this.numProcessors = new AtomicInteger(numProcessors);
             this.map = map;
-            this.currentShortestPath = Integer.MAX_VALUE;
+            this.currentShortestPath = new AtomicInteger(Integer.MAX_VALUE);
             this.graph = graph;
         }
     }
@@ -146,7 +146,7 @@ public class BranchAndBound implements IRunnable {
         // Bound the algorithm by the currently determined shortest path
         CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
         int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task,state.graph);
-        if (projectedPathLength >= state.currentShortestPath)
+        if (projectedPathLength >= state.currentShortestPath.get())
             return;
 
         // Add children of current node
@@ -170,8 +170,8 @@ public class BranchAndBound implements IRunnable {
         // current shortestPath
         if (current.queuedChildren.size() == 0) {
 
-            if (pathLength < state.currentShortestPath) {
-                state.currentShortestPath = pathLength;
+            if (pathLength < state.currentShortestPath.get()) {
+                state.currentShortestPath.set(pathLength);
                 state.currentShortestPathTask = task;
 
                 // Notify success
@@ -183,7 +183,7 @@ public class BranchAndBound implements IRunnable {
         for (var childToQueue : current.queuedChildren.entrySet()) {
 
             // Consider all processors the child can be queued on
-            for (int processorId = 0; processorId < state.numProcessors; processorId++) {
+            for (int processorId = 0; processorId < state.numProcessors.get(); processorId++) {
 
                 int earliestStartTime = 0;
 
@@ -284,7 +284,7 @@ public class BranchAndBound implements IRunnable {
             }
 
             // close the thread pool executor
-            
+
             executor.shutdown();
             // Report results
             List<ScheduledTask> taskList = new ArrayList<>();

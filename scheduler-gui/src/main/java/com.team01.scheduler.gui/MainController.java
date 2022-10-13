@@ -79,6 +79,7 @@ public class MainController {
         }
 
         // Run the task (currently synchronous, but later in async)
+        // TODO need to add numcores as argument here
         taskRunner.safeRunAsync(runnable, graph, processorCount, schedule -> {
             if (schedule != null) {
                 showResults(schedule);
