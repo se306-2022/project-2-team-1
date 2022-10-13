@@ -83,6 +83,8 @@ public class CostFunctionCalculator {
             } else {
                 if (temp > bottomLevel){
                     bottomLevel = temp;
+                    // reset temp 
+                    temp = startingNode.getComputationCost();
                 }
             }
         }
