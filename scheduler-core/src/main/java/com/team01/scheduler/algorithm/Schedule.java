@@ -1,6 +1,8 @@
 
 package com.team01.scheduler.algorithm;
 
+import com.team01.scheduler.visualizer.CumulativeTree;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,9 @@ import java.util.List;
 public class Schedule {
     private int numProcessors;
     private List<ScheduledTask> scheduledTaskList;
+
+    // TODO: Remove
+    public CumulativeTree tree;
 
     /**
      * A constructor to create a new schedule whenever the shortest path is updated

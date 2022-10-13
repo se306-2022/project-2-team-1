@@ -11,6 +11,7 @@ import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.gui.views.Console;
+import com.team01.scheduler.visualizer.CumulativeTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -79,11 +80,10 @@ public class MainController {
             return;
         }
 
-        showProgress();
-
         // Run the task (currently synchronous, but later in async)
         taskRunner.safeRunAsync(runnable, graph, processorCount, schedule -> {
             if (schedule != null) {
+                showProgress(schedule.tree);
                 showResults(schedule);
             }
         });
@@ -237,8 +237,8 @@ public class MainController {
         addTab(title, content, false);
     }
 
-    private void showProgress() {
-        var radialTree = new RadialTree();
+    private void showProgress(CumulativeTree cumulativeTree) {
+        var radialTree = new RadialTree(cumulativeTree);
         addTab("Progress", radialTree, true);
     }
 

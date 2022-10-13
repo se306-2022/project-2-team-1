@@ -4,6 +4,7 @@ import com.team01.scheduler.graph.models.Edge;
 import com.team01.scheduler.graph.models.EdgesLinkedList;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.models.Node;
+import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.util.*;
 
@@ -26,6 +27,7 @@ public class BranchAndBound implements IRunnable {
      * A state class that keeps track of the current shortest path in the algorithm.
      */
     private final class State {
+        CumulativeTree cumulativeTree;
         final int numProcessors;
         final Map<Node, EdgesLinkedList> map;
         int currentShortestPath;
@@ -40,6 +42,7 @@ public class BranchAndBound implements IRunnable {
             this.numProcessors = numProcessors;
             this.map = map;
             this.currentShortestPath = Integer.MAX_VALUE;
+            this.cumulativeTree = new CumulativeTree();
         }
     }
 
@@ -61,6 +64,9 @@ public class BranchAndBound implements IRunnable {
 
         ScheduledTask task;
 
+        int depth;
+        int visualizerId;
+
         /**
          * Creates a new root-level partial schedule (i.e. first node)
          * @param task Root task of the schedule
@@ -71,6 +77,7 @@ public class BranchAndBound implements IRunnable {
             this.queuedChildren = new HashMap<>();
             this.processorBusyUntilTime = new int[numProcessors];
             this.task = task;
+            this.depth = CumulativeTree.INITIAL_DEPTH;
 
             // Set the initial 'busy' time for the first task
             processorBusyUntilTime[task.processorId] = task.getStartTime() + task.getWorkTime();
@@ -106,6 +113,9 @@ public class BranchAndBound implements IRunnable {
 
             // Remove the current node from queued children to avoid infinite recursion
             this.queuedChildren.remove(newTask.getNode());
+
+            // Increase depth tracking
+            this.depth = parent.depth + 1;
         }
     }
 
@@ -279,6 +289,8 @@ public class BranchAndBound implements IRunnable {
 
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
+                nextSolution.visualizerId = state.cumulativeTree.pushState(nextSolution.depth, current.visualizerId);
+                state.cumulativeTree.addSolutions(nextSolution.depth, current.queuedChildren.size()* state.numProcessors);
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getValue();
                 doBranchAndBoundRecursive(state, nextSolution);
             }
@@ -314,6 +326,7 @@ public class BranchAndBound implements IRunnable {
             // Add children to DFS solution tree
             ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
             PartialSolution ps = new PartialSolution(newTask, numProcessors);
+            ps.visualizerId = state.cumulativeTree.pushState(ps.depth, CumulativeTree.ROOT_ID);
             ps.getQueuedChildren().putAll(queuedChildren);
             doBranchAndBoundRecursive(state, ps);
         }
@@ -329,7 +342,7 @@ public class BranchAndBound implements IRunnable {
 
         var schedule = new Schedule(taskList, numProcessors);
         schedule.setShortestPath(shortestPath);
-        return  schedule;
-
+        schedule.tree = state.cumulativeTree;
+        return schedule;
     }
 }
