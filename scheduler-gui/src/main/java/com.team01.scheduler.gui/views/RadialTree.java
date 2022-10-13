@@ -5,6 +5,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 import java.util.Random;
 
@@ -13,7 +14,7 @@ public class RadialTree extends StackPane {
     private GraphicsContext gc;
     private CumulativeTree tree;
 
-    private final double CIRCLE_DISTANCE = 80;
+    private final double CIRCLE_DISTANCE = 40;
 
     public RadialTree(CumulativeTree tree) {
         var canvas = new Canvas();
@@ -30,10 +31,28 @@ public class RadialTree extends StackPane {
     {
         // See: https://mdigi.tools/random-bright-color/
         int hue = random.nextInt(360);
-        return Color.hsb(hue, 1.0, 1.0);
+        return Color.hsb(hue, 0.8, 1.0);
     }
 
-    private void drawRecursive(int stateId, int depth, double startRangeAngle, double endRangeAngle) {
+    static class Point {
+        double x;
+        double y;
+
+        public Point(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    private Point getCoordsForAngle(double angle, int depth) {
+        double radians = Math.toRadians(angle);
+        double x = Math.sin(radians) * CIRCLE_DISTANCE * depth;
+        double y = Math.cos(radians) * CIRCLE_DISTANCE * depth;
+
+        return new Point(x, y);
+    }
+
+    private void drawRecursive(int stateId, int depth, double parentX, double parentY, double startRangeAngle, double endRangeAngle) {
 
         if (!tree.depthMap.containsKey(depth))
             return;
@@ -51,14 +70,17 @@ public class RadialTree extends StackPane {
             double childEndAngle = childStartAngle + step;
             double childCentreAngle = (childEndAngle + childStartAngle) / 2;
 
-            double radians = Math.toRadians(childCentreAngle);
-            double x = Math.sin(radians) * CIRCLE_DISTANCE * depth;
-            double y = Math.cos(radians) * CIRCLE_DISTANCE * depth;
+            var startXY = getCoordsForAngle(childStartAngle, depth);
+            var endXY = getCoordsForAngle(childEndAngle, depth);
+            var centreXY = getCoordsForAngle(childCentreAngle, depth);
 
             gc.setFill(getColor(0));
-            gc.fillOval(x, y, 8, 8);
+            // gc.fillOval(x, y, 8, 8);
+            gc.fillPolygon(
+                    new double[] {parentX, startXY.x, endXY.x },
+                    new double[] {parentY, startXY.y, endXY.y}, 3);
 
-            drawRecursive(children.get(i), depth + 1, childStartAngle, childEndAngle);
+            drawRecursive(children.get(i), depth + 1, centreXY.x, centreXY.y, childStartAngle, childEndAngle);
         }
     }
 
@@ -86,7 +108,7 @@ public class RadialTree extends StackPane {
 
         var startAngle = 0.0f;
         for (var stateId : list) {
-            drawRecursive(stateId, depth, startAngle, startAngle + step);
+            drawRecursive(stateId, depth, 0, 0, startAngle, startAngle + step);
             startAngle += step;
         }
 
