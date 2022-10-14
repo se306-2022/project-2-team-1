@@ -5,11 +5,9 @@ import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
 
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Phaser;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BranchAndBound implements IRunnable {
@@ -17,9 +15,8 @@ public class BranchAndBound implements IRunnable {
     /**
      * Default Constructor
      */
-    public BranchAndBound() {
+    public BranchAndBound() {}
 
-    }
     private int shortestPath;
 
     private State state;
@@ -230,24 +227,7 @@ public class BranchAndBound implements IRunnable {
                 ThreadPoolWorker tw = new ThreadPoolWorker(this, nextSolution);
 
                 // add to thread pool
-                executor.submit(tw);
-
-                /*
-                    	ExecutorService executor = Executors.newFixedThreadPool(2);
-
-
-                        // the tasks are submitted to the executorservice which assigns
-                        // the tasks to the threads
-
-                        for(int i=1; i<6; i++) {
-                            executor.submit(new Task(i*129));
-                        }
-
-                        // stop accepting new tasks and then shutdown threads when the
-                        // tasks are finished.
-                        executor.shutdown();
-
-                 */
+                executor.execute(tw);
             }
         }
     }
@@ -265,15 +245,19 @@ public class BranchAndBound implements IRunnable {
     @Override
     public Schedule run(Graph graph, int numProcessors, int numCores) {
 
-        /** Start Timer **/
+        // Start Timer
         long startTime = System.nanoTime();
 
-        executor = Executors.newFixedThreadPool(numCores);
-
+        // Obtain adjacency matrix
         int[][] map = graph.getAdjacencyMatrix();
 
+        // Create thread pool
+        executor = Executors.newFixedThreadPool(numCores);
+
+        // Setup state
         state = new State(numProcessors, map, graph);
 
+        // Queue a thread worker for each starting node
         try {
             for (Node n : graph.getEntryNodes()) {
                 Map<Node, List<ScheduledTask>> queuedChildren = new HashMap<>();
@@ -288,46 +272,49 @@ public class BranchAndBound implements IRunnable {
                 ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
                 PartialSolution ps = new PartialSolution(newTask, numProcessors);
                 ps.getQueuedChildren().putAll(queuedChildren);
-                doBranchAndBoundRecursive(state, ps);
+
+                var worker = new ThreadPoolWorker(this, ps);
+                executor.execute(worker);
             }
-
-            // Wait for all tasks to arrive before proceeding
-            state.phaser.arriveAndAwaitAdvance();
-            state.phaser.arriveAndDeregister();
-
-        /*
-            // close the thread pool executor
-            while (executor.getThreadPoolExecutor().getActiveCount() != 0 || !executor.getThreadPoolExecutor().getQueue().isEmpty()){
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                }
-            }
-        */
-
-            //executor.shutdown();
-            // Report results
-            List<ScheduledTask> taskList = new ArrayList<>();
-
-            ScheduledTask iter = state.currentShortestPathTask;
-            while (iter != null) {
-                taskList.add(0, iter);
-                iter = iter.parent;
-            }
-
-            var schedule = new Schedule(taskList, numProcessors);
-            schedule.setShortestPath(shortestPath);
-
-            /** End Timer **/
-            long endTime = System.nanoTime();
-
-            /** Print Time Taken **/
-            long duration = (endTime - startTime);
-
-            System.out.println("The algorithm took " + duration + "milliseconds");
-            return  schedule;
         } catch (NodeInvalidIDMapping e) {
             throw new RuntimeException(e);
+        }
+
+        var threadPool = (ThreadPoolExecutor) executor;
+
+        // Wait for all tasks to arrive before proceeding
+        while (threadPool.getActiveCount() != 0 || threadPool.getQueue().size() != 0)
+            threadSleep();
+
+        threadPool.shutdown();
+
+        // Report results
+        List<ScheduledTask> taskList = new ArrayList<>();
+
+        ScheduledTask iter = state.currentShortestPathTask;
+        while (iter != null) {
+            taskList.add(0, iter);
+            iter = iter.parent;
+        }
+
+        var schedule = new Schedule(taskList, numProcessors);
+        schedule.setShortestPath(shortestPath);
+
+        // End Timer
+        long endTime = System.nanoTime();
+
+        // Print Time Taken
+        long duration = (endTime - startTime);
+
+        System.out.println("The algorithm took " + Duration.ofNanos(duration).toMillis() + " milliseconds");
+        return schedule;
+    }
+
+    private static void threadSleep() {
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
