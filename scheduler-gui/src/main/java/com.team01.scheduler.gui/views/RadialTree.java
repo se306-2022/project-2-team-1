@@ -16,6 +16,7 @@ public class RadialTree extends StackPane {
 
     private final double CIRCLE_DISTANCE = 40;
     private final double COLOR_MULTIPLIER = 1234;
+    private final double DEPTH_LIMIT = 6;
 
     public RadialTree(CumulativeTree tree) {
         var canvas = new Canvas();
@@ -63,7 +64,7 @@ public class RadialTree extends StackPane {
         public Color getColor(int stateId, CumulativeTree.State state)
         {
             // Ensure the generated hues are at least 20deg apart
-            double hue = (state.getPathLength() * 6) % 360;
+            double hue = (state.getPathLength() * 1) % 360;
             // System.out.println("Path Length: " + state.getPathLength() + " (hue: " + hue + "deg)");
 
             // See: https://mdigi.tools/random-bright-color/
@@ -99,6 +100,9 @@ public class RadialTree extends StackPane {
     }
 
     private void drawRecursive(CumulativeTree.State state, int stateId, int depth, double parentX, double parentY, double startRangeAngle, double endRangeAngle) {
+
+        if (depth > DEPTH_LIMIT)
+            return;
 
         if (!tree.depthMap.containsKey(depth))
             return;
@@ -140,15 +144,18 @@ public class RadialTree extends StackPane {
 
     private void draw() {
 
+        long startTime, endTime;
+
         gc.save();
+
+        startTime = System.nanoTime();
 
         gc.clearRect(0, 0, getWidth(), getHeight());
         drawGradientBackdrop();
 
         gc.translate(getWidth()/2, getHeight()/2);
 
-        // System.out.println(tree.stateMap);
-        System.out.println(tree.numSolutions);
+        System.out.println("Start Render");
 
         var depth = 0;
         var list = tree.getStartStates();
@@ -169,6 +176,16 @@ public class RadialTree extends StackPane {
             startAngle += step;
         }
 
+        if (tree.depthMap.size() > DEPTH_LIMIT) {
+            var leaves = tree.depthMap.get(tree.depthMap.size()-1);
+            System.out.println("Number of Leaves: " + leaves.size());
+        }
+
+        endTime = System.nanoTime();
+
         gc.restore();
+
+        System.out.println("Finish Render");
+        System.out.println(" - Elapsed time: " + (endTime - startTime) / (1000f*1000f) + "ms");
     }
 }
