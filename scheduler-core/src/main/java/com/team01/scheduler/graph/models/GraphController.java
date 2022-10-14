@@ -1,14 +1,17 @@
 package com.team01.scheduler.graph.models;
 
-
+import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.algorithm.matrixModels.Edge;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class GraphController {
 
     private Graph graph;
+
+    private static int ID = 0;
 
     /**
      * Method to read in graph from dot file and create a graph object
@@ -17,9 +20,8 @@ public class GraphController {
      */
 
     private void parseGraphviz(BufferedReader br) throws IOException {
-        List<Node> nodes = new ArrayList<>();
-        List<Node> possibleStartNodes = new ArrayList<>();
-        List<Edge> edges = new ArrayList<>();
+        ArrayList<Node> nodes = new ArrayList<>();
+        ArrayList<Edge> edges = new ArrayList<>();
         String input;
 
         while ((input = br.readLine()) != null) {
@@ -60,7 +62,7 @@ public class GraphController {
                 if (tempSource.isPresent()) {
                     sourceNode = tempSource.get();
                 } else {
-                    sourceNode = new Node(source, 0);
+                    sourceNode = new Node(incrementAndGetId(),source, 0);
                     nodes.add(sourceNode);
                 }
 
@@ -69,28 +71,29 @@ public class GraphController {
                 if (tempTarget.isPresent()) {
                     targetNode = tempTarget.get();
                 } else {
-                    targetNode = new Node(target, 0);
+                    targetNode = new Node(incrementAndGetId(),target, 0);
                     nodes.add(targetNode);
                 }
                 edges.add(new Edge(sourceNode, targetNode, weight));
 
-                // Ff a node has a parent, it cannot be a start node
-                possibleStartNodes.remove(targetNode);
-
             } else {
                 // Reading in a node
                 String source = input.substring(0,bracketIndex);
-                nodes.add(new Node(source, weight));
-
-                // All nodes could possibly be a start node
-                possibleStartNodes.add(new Node(source, weight));
+                nodes.add(new Node(incrementAndGetId(),source, weight));
             }
 
         }
 
 
-        this.graph = new Graph(edges, nodes, possibleStartNodes);
+        this.graph = new Graph(nodes,edges);
     }
+
+    public int incrementAndGetId(){
+        int currentIdValue = ID;
+        ID++;
+        return currentIdValue;
+    }
+
 
     /**
      * Constructor for Graph Controller

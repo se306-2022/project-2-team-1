@@ -11,17 +11,17 @@ import com.team01.scheduler.graph.models.Node;
 import java.util.Map;
 import java.util.Stack;
 
-public class DepthFirstSearch implements IRunnable {
+public class DepthFirstSearch {
 
     public DepthFirstSearch() {
     }
 
-    @Override
+
     public String getTaskName() {
         return "Depth First Search";
     }
 
-    @Override
+
     public Schedule run(Graph graph, int numProcessors) {
 
         Map<Node, EdgesLinkedList> map = graph.getGraph();
