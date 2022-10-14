@@ -52,6 +52,10 @@ public class CumulativeTree {
         public int getPathLength() {
             return pathLength;
         }
+
+        public boolean isDirty() {
+            return dirty;
+        }
     }
 
     // Map between sectorId and sector description

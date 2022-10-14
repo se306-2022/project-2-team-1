@@ -63,8 +63,8 @@ public class RadialTree extends StackPane {
         public Color getColor(int stateId, CumulativeTree.State state)
         {
             // Ensure the generated hues are at least 20deg apart
-            double hue = (state.getPathLength() * 3) % 360;
-            System.out.println("Path Length: " + state.getPathLength() + " (hue: " + hue + "deg)");
+            double hue = (state.getPathLength() * 6) % 360;
+            // System.out.println("Path Length: " + state.getPathLength() + " (hue: " + hue + "deg)");
 
             // See: https://mdigi.tools/random-bright-color/
             return Color.hsb(hue, 0.8, 1.0);
@@ -98,9 +98,12 @@ public class RadialTree extends StackPane {
         gc.fillRect(0, 0, getWidth(), getHeight());
     }
 
-    private void drawRecursive(int stateId, int depth, double parentX, double parentY, double startRangeAngle, double endRangeAngle) {
+    private void drawRecursive(CumulativeTree.State state, int stateId, int depth, double parentX, double parentY, double startRangeAngle, double endRangeAngle) {
 
         if (!tree.depthMap.containsKey(depth))
+            return;
+
+        if (!state.isDirty())
             return;
 
         var children = tree.outwardRelation.get(stateId);
@@ -113,7 +116,7 @@ public class RadialTree extends StackPane {
 
         for (int i = 0; i < children.size(); i++) {
             var childStateId = children.get(i);
-            var state = tree.stateMap.get(childStateId);
+            var childState = tree.stateMap.get(childStateId);
 
             double childStartAngle = step * i + startRangeAngle;
             double childEndAngle = childStartAngle + step;
@@ -123,7 +126,7 @@ public class RadialTree extends StackPane {
             var endXY = getCoordsForAngle(childEndAngle, depth);
             var centreXY = getCoordsForAngle(childCentreAngle, depth);
 
-            var color = colorStrategy.getColor(childStateId, state);
+            var color = colorStrategy.getColor(childStateId, childState);
             gc.setFill(color);
 
             // gc.fillOval(x, y, 8, 8);
@@ -131,7 +134,7 @@ public class RadialTree extends StackPane {
                     new double[] {parentX, startXY.x, endXY.x },
                     new double[] {parentY, startXY.y, endXY.y}, 3);
 
-            drawRecursive(childStateId, depth + 1, centreXY.x, centreXY.y, childStartAngle, childEndAngle);
+            drawRecursive(childState, childStateId, depth + 1, centreXY.x, centreXY.y, childStartAngle, childEndAngle);
         }
     }
 
@@ -161,7 +164,8 @@ public class RadialTree extends StackPane {
 
         var startAngle = 0.0f;
         for (var stateId : list) {
-            drawRecursive(stateId, depth, 0, 0, startAngle, startAngle + step);
+            var state = tree.stateMap.get(stateId);
+            drawRecursive(state, stateId, depth, 0, 0, startAngle, startAngle + step);
             startAngle += step;
         }
 
