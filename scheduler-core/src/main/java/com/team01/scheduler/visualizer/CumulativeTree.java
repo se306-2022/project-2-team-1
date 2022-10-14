@@ -118,21 +118,26 @@ public class CumulativeTree {
 
     public int pushState(int depth, int pathLength, int parentSector) {
 
+        int newSectorId;
+
         // Create sector
-        int newSectorId = createChildSector(parentSector, depth);
-        stateMap.put(newSectorId, new State(pathLength, /*numChildren, */parentSector));
+        synchronized (this) {
+            newSectorId = createChildSector(parentSector, depth);
+            stateMap.put(newSectorId, new State(pathLength, /*numChildren, */parentSector));
 
-        // Update total children
-        // TODO: Don't actually need this?
-        // numSolutions.putIfAbsent(depth, 0);
-        // var current = numSolutions.get(depth);
-        // numSolutions.put(depth, current + numChildren);
 
-        // Mark dirty (for redraw)
-        // We only mark the parent sector as dirty, because when drawing we draw within
-        // the bounds of our parent sector. This prevents having to reallocate the entire
-        // thing.
-        markDirtyAndPropagate(stateMap.get(parentSector));
+            // Update total children
+            // TODO: Don't actually need this?
+            // numSolutions.putIfAbsent(depth, 0);
+            // var current = numSolutions.get(depth);
+            // numSolutions.put(depth, current + numChildren);
+
+            // Mark dirty (for redraw)
+            // We only mark the parent sector as dirty, because when drawing we draw within
+            // the bounds of our parent sector. This prevents having to reallocate the entire
+            // thing.
+            markDirtyAndPropagate(stateMap.get(parentSector));
+        }
 
         return newSectorId;
     }

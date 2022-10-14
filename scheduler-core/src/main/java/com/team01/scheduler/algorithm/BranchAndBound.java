@@ -4,6 +4,7 @@ import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
+import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
 import java.util.*;
@@ -42,7 +43,7 @@ public class BranchAndBound implements IRunnable {
         AtomicInteger currentShortestPath;
         final Graph graph;
         ScheduledTask currentShortestPathTask;
-        final Phaser phaser;
+        CumulativeTree cumulativeTree;
 
         /**
          * Constructs a state object to keep track of the graph map along with the current shortest path
@@ -54,7 +55,7 @@ public class BranchAndBound implements IRunnable {
             this.map = map;
             this.currentShortestPath = new AtomicInteger(Integer.MAX_VALUE);
             this.graph = graph;
-            this.phaser = new Phaser();
+            this.cumulativeTree = new CumulativeTree();
         }
     }
 
@@ -221,6 +222,8 @@ public class BranchAndBound implements IRunnable {
 
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
+                nextSolution.visualizerId = state.cumulativeTree.pushState(nextSolution.depth, pathLength + child.getComputationCost(), current.visualizerId);
+                state.cumulativeTree.addSolutions(nextSolution.depth, current.queuedChildren.size() * state.numProcessors.get());
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
 
                 // create instance of ThreadPoolWorker
@@ -271,6 +274,8 @@ public class BranchAndBound implements IRunnable {
                 // Add children to DFS solution tree
                 ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
                 PartialSolution ps = new PartialSolution(newTask, numProcessors);
+                ps.visualizerId = state.cumulativeTree.pushState(ps.depth, n.getComputationCost(), CumulativeTree.ROOT_ID);
+
                 ps.getQueuedChildren().putAll(queuedChildren);
 
                 var worker = new ThreadPoolWorker(this, ps);
@@ -307,6 +312,7 @@ public class BranchAndBound implements IRunnable {
         long duration = (endTime - startTime);
 
         System.out.println("The algorithm took " + Duration.ofNanos(duration).toMillis() + " milliseconds");
+        schedule.tree = state.cumulativeTree;
         return schedule;
     }
 

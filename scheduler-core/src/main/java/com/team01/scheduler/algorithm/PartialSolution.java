@@ -1,6 +1,7 @@
 package com.team01.scheduler.algorithm;
 
 import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.util.*;
 
@@ -23,6 +24,9 @@ public class PartialSolution {
 
     ScheduledTask task;
 
+    int depth;
+    int visualizerId;
+
     /**
      * Creates a new root-level partial schedule (i.e. first node)
      * @param task Root task of the schedule
@@ -39,6 +43,8 @@ public class PartialSolution {
 
         // Add the current node to visited as an optimisation
         this.visitedChildren.add(task.getNode());
+
+        this.depth = CumulativeTree.INITIAL_DEPTH;
     }
 
     /**
@@ -68,5 +74,7 @@ public class PartialSolution {
 
         // Remove the current node from queued children to avoid infinite recursion
         this.queuedChildren.remove(newTask.getNode());
+
+        this.depth = parent.depth + 1;
     }
 }
