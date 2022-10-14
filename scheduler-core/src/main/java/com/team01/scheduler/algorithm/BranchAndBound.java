@@ -8,6 +8,7 @@ import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMappin
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -44,6 +45,7 @@ public class BranchAndBound implements IRunnable {
         AtomicInteger currentShortestPath;
         final Graph graph;
         ScheduledTask currentShortestPathTask;
+        final Phaser phaser;
 
         /**
          * Constructs a state object to keep track of the graph map along with the current shortest path
@@ -55,6 +57,7 @@ public class BranchAndBound implements IRunnable {
             this.map = map;
             this.currentShortestPath = new AtomicInteger(Integer.MAX_VALUE);
             this.graph = graph;
+            this.phaser = new Phaser();
         }
     }
 
@@ -224,7 +227,7 @@ public class BranchAndBound implements IRunnable {
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
 
                 // create instance of ThreadPoolWorker
-                ThreadPoolWorker tw = new ThreadPoolWorker(this,nextSolution);
+                ThreadPoolWorker tw = new ThreadPoolWorker(this, nextSolution);
 
                 // add to thread pool
                 executor.submit(tw);
@@ -288,13 +291,19 @@ public class BranchAndBound implements IRunnable {
                 doBranchAndBoundRecursive(state, ps);
             }
 
+            // Wait for all tasks to arrive before proceeding
+            state.phaser.arriveAndAwaitAdvance();
+            state.phaser.arriveAndDeregister();
+
+        /*
             // close the thread pool executor
-            // TODO: Pick something sensible?
-            try {
-                executor.awaitTermination(1, TimeUnit.HOURS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            while (executor.getThreadPoolExecutor().getActiveCount() != 0 || !executor.getThreadPoolExecutor().getQueue().isEmpty()){
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                }
             }
+        */
 
             //executor.shutdown();
             // Report results
@@ -316,7 +325,6 @@ public class BranchAndBound implements IRunnable {
             long duration = (endTime - startTime);
 
             System.out.println("The algorithm took " + duration + "milliseconds");
-
             return  schedule;
         } catch (NodeInvalidIDMapping e) {
             throw new RuntimeException(e);
