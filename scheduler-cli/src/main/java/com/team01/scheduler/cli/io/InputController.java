@@ -1,10 +1,11 @@
 package com.team01.scheduler.cli.io;
 
+import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.graph.models.Graph;
+
 import com.team01.scheduler.graph.util.ExportToDotFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +62,9 @@ public class InputController {
             var graphController = new GraphController(file);
             graph = graphController.getGraph(); // parse dot file to graph model
 
+            int numCores = commandLineParser.getNumCores();
             int numProcessors = commandLineParser.getNumProcessors();
-            schedule = taskRunner.safeRun(new BranchAndBound(), graph, numProcessors); // run branch and bound
+            schedule = taskRunner.safeRun(new BranchAndBound(), graph, numProcessors,numCores); // run branch and bound
 
             try{
                 // export to dot file

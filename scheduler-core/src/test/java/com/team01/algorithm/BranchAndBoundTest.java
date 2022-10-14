@@ -2,10 +2,11 @@ package com.team01.algorithm;
 
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.graph.models.Edge;
-import com.team01.scheduler.graph.models.Graph;
-import com.team01.scheduler.graph.models.Node;
 
+
+import com.team01.scheduler.algorithm.matrixModels.Edge;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.algorithm.matrixModels.Node;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,26 +20,26 @@ public class BranchAndBoundTest {
 
         int shortestPath = 8;
 
-        List<Node> nodes = new ArrayList<>();
-        Node a = new Node("a", 2);
-        Node b = new Node("b", 3);
-        Node c = new Node("c", 1);
-        Node d = new Node("d", 2);
+        ArrayList<Node> nodes = new ArrayList<>();
+        Node a = new Node(0,"a", 2);
+        Node b = new Node(1,"b", 3);
+        Node c = new Node(2,"c", 1);
+        Node d = new Node(3,"d", 2);
         nodes.add(a);
         nodes.add(b);
         nodes.add(c);
         nodes.add(d);
 
-        List<Edge> edges = new ArrayList<>();
+        ArrayList<Edge> edges = new ArrayList<>();
         edges.add(new Edge(a, b, 1));
         edges.add(new Edge(a, c, 2));
         edges.add(new Edge(b, d, 2));
         edges.add(new Edge(c, d,1));
 
-        Graph graph = new Graph(edges, nodes);
+        Graph graph = new Graph(nodes,edges);
 
         BranchAndBound bnb = new BranchAndBound();
-        Schedule s = bnb.run(graph, 2);
+        Schedule s = bnb.run(graph, 2,1);
 
         Assertions.assertEquals(shortestPath, s.getPathLength());
 
@@ -49,23 +50,23 @@ public class BranchAndBoundTest {
 
         int shortestPath = 4;
 
-        List<Node> nodes = new ArrayList<>();
-        Node a = new Node("a", 1);
-        Node b = new Node("b", 2);
-        Node c = new Node("c", 1);
+        ArrayList<Node> nodes = new ArrayList<>();
+        Node a = new Node(0,"a", 1);
+        Node b = new Node(1,"b", 2);
+        Node c = new Node(2,"c", 1);
         nodes.add(a);
         nodes.add(b);
         nodes.add(c);
 
-        List<Edge> edges = new ArrayList<>();
+        ArrayList<Edge> edges = new ArrayList<>();
         edges.add(new Edge(a, b, 1));
         edges.add(new Edge(a, c, 2));
         edges.add(new Edge(b, c, 1));
 
-        Graph graph = new Graph(edges, nodes);
+        Graph graph = new Graph(nodes,edges);
 
         BranchAndBound bnb = new BranchAndBound();
-        Schedule s = bnb.run(graph, 2);
+        Schedule s = bnb.run(graph, 2,1);
 
         Assertions.assertEquals(shortestPath, s.getPathLength());
 

@@ -3,9 +3,9 @@ package com.team01.scheduler.graph.util;
 
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.ScheduledTask;
-import com.team01.scheduler.graph.models.Edge;
-import com.team01.scheduler.graph.models.Graph;
-import com.team01.scheduler.graph.models.Node;
+import com.team01.scheduler.algorithm.matrixModels.Edge;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.algorithm.matrixModels.Node;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -48,7 +48,7 @@ public class ExportToDotFile {
             out.newLine();
             // add all nodes and their corresponding values.
             for (Node node: graph.getNodes()){
-                out.write(" "+node.getName()+" [Weight="+node.getValue()+"];");
+                out.write(" "+node.getName()+" [Weight="+node.getComputationCost()+"];");
                 out.newLine();
             }
             // add a entry for every edge
@@ -72,7 +72,7 @@ public class ExportToDotFile {
             List<ScheduledTask> scheduledTasks= schedule.getScheduledTaskList();
             // add a line for every node, containing its length, start and processor id
             for (ScheduledTask scheduledTask: scheduledTasks){
-                out.write(" "+scheduledTask.getNode().getName()+" [Weight="+scheduledTask.getNode().getValue()+",Start="+scheduledTask.getStartTime()+",Processor="+scheduledTask.getProcessorId()+"];");
+                out.write(" "+scheduledTask.getNode().getName()+" [Weight="+scheduledTask.getNode().getComputationCost()+",Start="+scheduledTask.getStartTime()+",Processor="+scheduledTask.getProcessorId()+"];");
                 out.newLine();
             }
             // add a entry for every edge

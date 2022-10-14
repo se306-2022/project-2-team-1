@@ -4,7 +4,7 @@ import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.Utils;
 import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.graph.models.Graph;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
@@ -51,6 +51,9 @@ public class MainController {
     @FXML
     public Spinner<Integer> numProcessors;
 
+    @FXML
+    public Spinner<Integer> cpuCores;
+
     /**
      * Run a task using TaskRunner
      *
@@ -68,6 +71,7 @@ public class MainController {
 
         // Get parameters from controls
         int processorCount = numProcessors.getValue();
+        int coreCount = cpuCores.getValue();
         String inputGraph = graphEditor.getText();
 
         // Attempt to parse the graph
@@ -79,7 +83,8 @@ public class MainController {
         }
 
         // Run the task (currently synchronous, but later in async)
-        taskRunner.safeRunAsync(runnable, graph, processorCount, schedule -> {
+        // TODO need to add numcores as argument here
+        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, schedule -> {
             if (schedule != null) {
                 showResults(schedule);
             }
@@ -202,11 +207,17 @@ public class MainController {
             graphEditor.setText(graphDotFile);
         }
 
-        // Setup Core Count Spinner
+        // Setup Num Processors Spinner
         var factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Integer.MAX_VALUE);
         factory.setValue(2);
 
         numProcessors.setValueFactory(factory);
+
+        // Setup Core Count Spinner
+        factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Integer.MAX_VALUE);
+        factory.setValue(1);
+
+        cpuCores.setValueFactory(factory);
 
     }
 
@@ -258,7 +269,7 @@ public class MainController {
         List<IRunnable> tasks = new ArrayList<>();
 
         tasks.add(Utils.createPrintGraphTask());
-        tasks.add(new DepthFirstSearch());
+        //tasks.add(new DepthFirstSearch());
         tasks.add(new BranchAndBound());
 
         taskList = FXCollections.observableList(tasks);

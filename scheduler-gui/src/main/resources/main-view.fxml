@@ -25,6 +25,8 @@
                     <Separator/>
                     <Label text="Num Processors:" labelFor="$numProcessors"/>
                     <Spinner fx:id="numProcessors" />
+                    <Label text="CPU Cores:" labelFor="$cpuCores"/>
+                    <Spinner fx:id="cpuCores" />
                 </ToolBar>
                 <SplitPane VBox.vgrow="ALWAYS">
                     <TextArea fx:id="graphEditor" />

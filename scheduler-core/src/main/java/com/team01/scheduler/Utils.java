@@ -2,10 +2,12 @@ package com.team01.scheduler;
 
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.graph.models.Edge;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.algorithm.matrixModels.Node;
+
+import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.graph.models.EdgesLinkedList;
-import com.team01.scheduler.graph.models.Graph;
-import com.team01.scheduler.graph.models.Node;
+
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -23,10 +25,10 @@ public class Utils {
      * @return Graph instance
      */
     public static Graph createSampleGraph() {
-        Node nodeA = new Node("a", 2);
-        Node nodeB = new Node("b", 3);
-        Node nodeC = new Node("c", 3);
-        Node nodeD = new Node("d", 2);
+        Node nodeA = new Node(0,"a", 2);
+        Node nodeB = new Node(1,"b", 3);
+        Node nodeC = new Node(2,"c", 3);
+        Node nodeD = new Node(3,"d", 2);
 
         Edge edgeAB = new Edge(nodeA, nodeB, 1);
         Edge edgeAC = new Edge(nodeA, nodeC, 2);
@@ -36,7 +38,8 @@ public class Utils {
         List<Node> nodes = Arrays.asList(nodeA, nodeB, nodeC, nodeD);
         List<Edge> edges = Arrays.asList(edgeAB, edgeAC, edgeBD, edgeCD);
 
-        return new Graph(edges, nodes);
+//        return new Graph(nodes,edges);
+        return null;
     }
 
     /**
@@ -52,7 +55,8 @@ public class Utils {
             }
 
             @Override
-            public Schedule run(Graph graph, int numProcessors) {
+            public Schedule run(Graph graph, int numProcessors, int numCores) {
+                /*
                 for (EdgesLinkedList currentList: graph.getGraph().values()) {
                     int listSize = currentList.size();
 
@@ -60,6 +64,12 @@ public class Utils {
                         Edge currentEdge = currentList.get(i);
 
                         System.out.println(currentEdge.toString());
+                    }
+                }
+                 */
+                for (int i=0; i< graph.getNumberofNodes(); i++){
+                    for (int j=0; j < graph.getNumberofNodes(); j++){
+                        System.out.println(graph.getNodeById(i) + " - " + graph.getNodeById(j) + " = " + graph.getAdjacencyMatrix()[i][j]);
                     }
                 }
                 return null;
