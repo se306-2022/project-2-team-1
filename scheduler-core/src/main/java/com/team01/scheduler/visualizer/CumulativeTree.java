@@ -41,7 +41,7 @@ public class CumulativeTree {
         int numChildren;
 
         // Dirty
-        boolean dirty;
+        public boolean dirty;
 
         public State(int pathLength, /*int numChildren, */int parentId) {
             this.pathLength = pathLength;

@@ -140,6 +140,8 @@ public class RadialTree extends StackPane {
 
             drawRecursive(childState, childStateId, depth + 1, centreXY.x, centreXY.y, childStartAngle, childEndAngle);
         }
+
+        state.dirty = false;
     }
 
     private void draw() {
