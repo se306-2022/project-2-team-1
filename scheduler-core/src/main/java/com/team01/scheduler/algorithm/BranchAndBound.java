@@ -289,7 +289,7 @@ public class BranchAndBound implements IRunnable {
 
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
-                nextSolution.visualizerId = state.cumulativeTree.pushState(nextSolution.depth, current.visualizerId);
+                nextSolution.visualizerId = state.cumulativeTree.pushState(nextSolution.depth, pathLength + child.getValue(), current.visualizerId);
                 state.cumulativeTree.addSolutions(nextSolution.depth, current.queuedChildren.size()* state.numProcessors);
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getValue();
                 doBranchAndBoundRecursive(state, nextSolution);
@@ -326,7 +326,7 @@ public class BranchAndBound implements IRunnable {
             // Add children to DFS solution tree
             ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
             PartialSolution ps = new PartialSolution(newTask, numProcessors);
-            ps.visualizerId = state.cumulativeTree.pushState(ps.depth, CumulativeTree.ROOT_ID);
+            ps.visualizerId = state.cumulativeTree.pushState(ps.depth, n.getValue(), CumulativeTree.ROOT_ID);
             ps.getQueuedChildren().putAll(queuedChildren);
             doBranchAndBoundRecursive(state, ps);
         }

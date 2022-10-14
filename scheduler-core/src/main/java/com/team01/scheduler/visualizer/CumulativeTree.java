@@ -48,6 +48,10 @@ public class CumulativeTree {
             //this.numChildren = numChildren;
             this.parentId = parentId;
         }
+
+        public int getPathLength() {
+            return pathLength;
+        }
     }
 
     // Map between sectorId and sector description
@@ -108,11 +112,11 @@ public class CumulativeTree {
         numSolutions.put(depth, current + solutions);*/
     }
 
-    public int pushState(int depth, /*int numChildren, */int parentSector) {
+    public int pushState(int depth, int pathLength, int parentSector) {
 
         // Create sector
         int newSectorId = createChildSector(parentSector, depth);
-        stateMap.put(newSectorId, new State(1, /*numChildren, */parentSector));
+        stateMap.put(newSectorId, new State(pathLength, /*numChildren, */parentSector));
 
         // Update total children
         // TODO: Don't actually need this?
