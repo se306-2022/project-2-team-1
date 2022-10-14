@@ -51,6 +51,9 @@ public class MainController {
     @FXML
     public Spinner<Integer> numProcessors;
 
+    @FXML
+    public Spinner<Integer> cpuCores;
+
     /**
      * Run a task using TaskRunner
      *
@@ -68,6 +71,7 @@ public class MainController {
 
         // Get parameters from controls
         int processorCount = numProcessors.getValue();
+        int coreCount = cpuCores.getValue();
         String inputGraph = graphEditor.getText();
 
         // Attempt to parse the graph
@@ -80,7 +84,7 @@ public class MainController {
 
         // Run the task (currently synchronous, but later in async)
         // TODO need to add numcores as argument here
-        taskRunner.safeRunAsync(runnable, graph, processorCount, schedule -> {
+        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, schedule -> {
             if (schedule != null) {
                 showResults(schedule);
             }
@@ -203,11 +207,17 @@ public class MainController {
             graphEditor.setText(graphDotFile);
         }
 
-        // Setup Core Count Spinner
+        // Setup Num Processors Spinner
         var factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Integer.MAX_VALUE);
         factory.setValue(2);
 
         numProcessors.setValueFactory(factory);
+
+        // Setup Core Count Spinner
+        factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, Integer.MAX_VALUE);
+        factory.setValue(1);
+
+        cpuCores.setValueFactory(factory);
 
     }
 

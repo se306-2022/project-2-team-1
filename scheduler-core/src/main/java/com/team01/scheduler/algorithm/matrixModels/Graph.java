@@ -21,6 +21,7 @@ public class Graph {
         this.inputNodes = inputNodes;
         this.inputEdges = inputEdges;
         this.SIZE = inputNodes.size();
+        this.initialize();
     }
 
     public int[][] getAdjacencyMatrix() {
@@ -72,7 +73,7 @@ public class Graph {
             checkEdgeValidity(e.getSource(),e.getTarget());
 
             int row = e.getSource().getId();
-            int dest = e.getSource().getId();
+            int dest = e.getTarget().getId();
             int communicationCost = e.getWeight();
 
             if (adjacencyMatrix[row][dest] != 0){
@@ -130,6 +131,7 @@ public class Graph {
         // first check that the node indeed does exist in the graph
         if (!inputNodes.contains(node)){
             System.out.println("The node does not exist in the graph: " + node);
+            return null;
         }
 
         for (int j=0; j<SIZE; j++) {

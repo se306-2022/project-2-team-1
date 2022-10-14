@@ -75,6 +75,14 @@ public class CostFunctionCalculator {
         int bottomLevel = 0;
         ArrayList<Node> leafNodes = adjacencyMatrix.getExitNodes();
         ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(startingNode);
+
+        // create hash map
+        HashMap<Integer,Node> bottomLevelsPerNode = new HashMap<>();
+        for (Node cn : childrenNodes){
+            bottomLevelsPerNode.put(cn.getComputationCost(),cn);
+        }
+
+
         int temp = startingNode.getComputationCost();
         for (Node cn : childrenNodes){
             temp += cn.getComputationCost();
@@ -83,7 +91,7 @@ public class CostFunctionCalculator {
             } else {
                 if (temp > bottomLevel){
                     bottomLevel = temp;
-                    // reset temp 
+                    // reset temp
                     temp = startingNode.getComputationCost();
                 }
             }

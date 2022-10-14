@@ -8,6 +8,7 @@ import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMappin
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BranchAndBound implements IRunnable {
@@ -144,9 +145,13 @@ public class BranchAndBound implements IRunnable {
         int pathLength = calculateFinishTime(task);
 
         // Bound the algorithm by the currently determined shortest path
-        CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
+        /*CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
         int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task,state.graph);
         if (projectedPathLength >= state.currentShortestPath.get())
+            return;*/
+
+        // Bound the algorithm by the currently determined shortest path
+        if (pathLength >= state.currentShortestPath.get())
             return;
 
         // Add children of current node
@@ -284,8 +289,14 @@ public class BranchAndBound implements IRunnable {
             }
 
             // close the thread pool executor
+            // TODO: Pick something sensible?
+            try {
+                executor.awaitTermination(1, TimeUnit.HOURS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
-            executor.shutdown();
+            //executor.shutdown();
             // Report results
             List<ScheduledTask> taskList = new ArrayList<>();
 
