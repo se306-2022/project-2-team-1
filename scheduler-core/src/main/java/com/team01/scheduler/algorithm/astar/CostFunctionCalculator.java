@@ -1,5 +1,6 @@
-package com.team01.scheduler.algorithm;
+package com.team01.scheduler.algorithm.astar;
 
+import com.team01.scheduler.algorithm.ScheduledTask;
 import com.team01.scheduler.matrix.exception.NodeInvalidIDMapping;
 import com.team01.scheduler.matrix.exception.NonExistingNodeException;
 import com.team01.scheduler.algorithm.matrixModels.Node;

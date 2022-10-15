@@ -1,7 +1,7 @@
 package com.team01.optimal;
 
 import com.team01.scheduler.TaskRunner;
-import com.team01.scheduler.algorithm.BranchAndBound;
+import com.team01.scheduler.algorithm.astar.AStarScheduler;
 import com.team01.scheduler.algorithm.Schedule;
 
 import com.team01.scheduler.algorithm.matrixModels.Graph;
@@ -12,7 +12,6 @@ import com.team01.scheduler.graph.util.ExportToDotFile;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 import java.io.File;
@@ -56,7 +55,7 @@ public class FindOptimalScheduleTest {
                 File file = new File(fileName);
                 GraphController gc = new GraphController(file);
                 graph = gc.getGraph();
-                Schedule schedule = taskRunner.safeRun(new BranchAndBound(), graph,Integer.parseInt(processorCount),1);
+                Schedule schedule = taskRunner.safeRun(new AStarScheduler(), graph,Integer.parseInt(processorCount),1);
                 ExportToDotFile export = new ExportToDotFile(graph, outFileName, schedule);
                 export.writeDotWithSchedule();
                 return DynamicTest.dynamicTest("File: "+fileName+" processors: "+processorCount, () -> {

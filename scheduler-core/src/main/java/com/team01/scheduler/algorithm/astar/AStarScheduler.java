@@ -1,5 +1,6 @@
-package com.team01.scheduler.algorithm;
+package com.team01.scheduler.algorithm.astar;
 
+import com.team01.scheduler.algorithm.*;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
@@ -10,12 +11,12 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BranchAndBound implements IRunnable {
+public class AStarScheduler implements IRunnable {
 
     /**
      * Default Constructor
      */
-    public BranchAndBound() {}
+    public AStarScheduler() {}
 
     private int shortestPath;
 
@@ -25,10 +26,10 @@ public class BranchAndBound implements IRunnable {
 
     @Override
     public String getTaskName() {
-        return "Scheduler - DFS Branch and Bound";
+        return "Scheduler - BFS A-Star";
     }
 
-    public BranchAndBound.State getState(){
+    public AStarScheduler.State getState(){
         return state;
     }
 

@@ -9,9 +9,9 @@ import com.team01.scheduler.algorithm.matrixModels.Node;
  */
 public class ScheduledTask {
     int startTime;
-    int processorId;
+    public int processorId;
     Node node;
-    ScheduledTask parent;
+    public ScheduledTask parent;
 
     /**
      * The constructor to create ScheduledTask. Multiple instances are created
