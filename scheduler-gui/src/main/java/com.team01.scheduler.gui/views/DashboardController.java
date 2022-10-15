@@ -18,6 +18,9 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DashboardController implements Initializable {
 
@@ -39,18 +42,27 @@ public class DashboardController implements Initializable {
     private Circle c8;
     @FXML
     private Circle c9;
-
-
-
     @FXML
-    private Label ramAmount;
+    private Label memoryNumberLabel;
     @FXML
-    private Label ramIdentifer;
+    private Label memoryTypeLabel;
     @FXML
-    private Button play;
+    private Label FPS;
+    @FXML
+    private Label FPSLabel;
+    @FXML
+    private Label ;
+    @FXML
+    private Label memoryNumberLabel;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        performRotationAnimation();
+        displayStatistics();
+    }
+
+    private void performRotationAnimation() {
         setRotate(c1, true, 360, 5);
         setRotate(c2, true, 180, 10);
         setRotate(c3, true, 145, 15);
@@ -63,12 +75,25 @@ public class DashboardController implements Initializable {
         setRotate(c8, true, 180, 14);
         setRotate(c9, true, 145, 21);
     }
-    @FXML
-    private void play(ActionEvent event) {
 
+    private void displayStatistics() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                displayMemory();
+                //displayFPS();
+                //displayCurrentShortestTime();
+            }
+        };
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(runnable, 0, 500, TimeUnit.MILLISECONDS);
+    }
 
+    private void displayMemory() {
+        double usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024;
 
     }
+
 
     private void setRotate(Circle c, boolean reverse, int angle, double duration) {
 

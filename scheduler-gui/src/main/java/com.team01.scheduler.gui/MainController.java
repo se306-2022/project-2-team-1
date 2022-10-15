@@ -294,8 +294,6 @@ public class MainController {
         addTab("Dashboard", pane);
         tabPane.getSelectionModel().select(2);
 
-
-
     }
 
 }

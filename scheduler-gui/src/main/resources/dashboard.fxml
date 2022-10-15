@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
 <GridPane alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.team01.scheduler.gui.views.DashboardController">
    <columnConstraints>
@@ -89,20 +90,38 @@
                         <Circle fx:id="c1" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
                         <Circle fx:id="c2" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
                         <Circle fx:id="c3" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
+                        <Label id="memoryNumberLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="MEM" textFill="WHITE">
+                           <font>
+                              <Font name="Lucida Console" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label id="memoryTypeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="MB" textFill="#b3b3b3" />
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutX="10.0" layoutY="212.0" prefWidth="154.0">
                      <children>
-                        <Circle fx:id="c4" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
-                        <Circle fx:id="c5" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
-                        <Circle fx:id="c6" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
+                        <Circle fx:id="c11" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
+                        <Circle fx:id="c21" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
+                        <Circle fx:id="c31" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
+                        <Label id="FPS" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="FPS" textFill="WHITE">
+                           <font>
+                              <Font name="Lucida Console" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label id="FPSLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="FPS" textFill="#b3b3b3" />
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutX="10.0" layoutY="99.0" prefWidth="154.0">
                      <children>
-                        <Circle fx:id="c7" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
-                        <Circle fx:id="c8" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
-                        <Circle fx:id="c9" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
+                        <Circle fx:id="c12" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
+                        <Circle fx:id="c22" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
+                        <Circle fx:id="c32" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
+                        <Label id="shortestCostLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="Shortest" textFill="WHITE">
+                           <font>
+                              <Font name="Lucida Console" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label id="costLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="Cost" textFill="#b3b3b3" />
                      </children>
                   </AnchorPane>
                </children>
