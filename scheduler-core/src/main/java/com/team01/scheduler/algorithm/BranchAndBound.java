@@ -253,8 +253,22 @@ public class BranchAndBound implements IRunnable {
 
         // Start Timer
         long startTime = System.nanoTime();
+        try{
+            Node startNode = graph.getEntryNodes().get(0); // get a leaf node to start off with
+            CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
+            functionCalculator.setGraph(graph);
+            functionCalculator.setBottomLevel(startNode);
+            //System.out.println(functionCalculator.bottomLevels.toString());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
-        // Obtain adjacency matrix
+
+
+
+
+    // Obtain adjacency matrix
         int[][] map = graph.getAdjacencyMatrix();
 
         // Create thread pool
