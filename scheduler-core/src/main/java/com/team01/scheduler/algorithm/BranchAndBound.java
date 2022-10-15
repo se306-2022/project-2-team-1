@@ -216,6 +216,9 @@ public class BranchAndBound implements IRunnable {
                 // Ensure earliestStartTime is not before the time when the processor is free
                 int realStartTime = Math.max(earliestStartTime, current.processorBusyUntilTime[processorId]);
 
+                if (Math.max(pathLength, realStartTime + child.getComputationCost()) >= state.currentShortestPath.get())
+                    continue;
+
                 // Create new scheduled task
                 var newTask = new ScheduledTask(current.task, realStartTime, processorId, child);
 

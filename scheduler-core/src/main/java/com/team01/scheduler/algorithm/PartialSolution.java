@@ -77,4 +77,19 @@ public class PartialSolution {
 
         this.depth = parent.depth + 1;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PartialSolution that = (PartialSolution) o;
+        return depth == that.depth && Objects.equals(visitedChildren, that.visitedChildren) && Objects.equals(queuedChildren, that.queuedChildren) && Arrays.equals(processorBusyUntilTime, that.processorBusyUntilTime) && Objects.equals(task, that.task);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(visitedChildren, queuedChildren, task, depth);
+        result = 31 * result + Arrays.hashCode(processorBusyUntilTime);
+        return result;
+    }
 }
