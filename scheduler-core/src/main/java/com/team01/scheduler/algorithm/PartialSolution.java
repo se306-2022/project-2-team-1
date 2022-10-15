@@ -22,10 +22,10 @@ public class PartialSolution {
         return queuedChildren;
     }
 
-    ScheduledTask task;
+    public ScheduledTask task;
 
-    int depth;
-    int visualizerId;
+    public int depth;
+    public int visualizerId;
 
     /**
      * Creates a new root-level partial schedule (i.e. first node)

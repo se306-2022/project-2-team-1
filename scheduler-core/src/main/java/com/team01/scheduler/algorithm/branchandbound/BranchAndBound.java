@@ -1,13 +1,17 @@
-package com.team01.scheduler.algorithm;
+package com.team01.scheduler.algorithm.branchandbound;
 
-import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.algorithm.*;
+import com.team01.scheduler.algorithm.branchandbound.ThreadPoolWorker;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
 import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BranchAndBound implements IRunnable {
@@ -21,14 +25,14 @@ public class BranchAndBound implements IRunnable {
 
     private State state;
 
-    private ExecutorService executor;
+    private StackExecutor executor;
 
     @Override
     public String getTaskName() {
         return "Scheduler - DFS Branch and Bound";
     }
 
-    public BranchAndBound.State getState(){
+    public State getState(){
         return state;
     }
 
@@ -145,12 +149,6 @@ public class BranchAndBound implements IRunnable {
         int pathLength = calculateFinishTime(task);
 
         // Bound the algorithm by the currently determined shortest path
-        /*CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
-        int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task,state.graph);
-        if (projectedPathLength >= state.currentShortestPath.get())
-            return;*/
-
-        // Bound the algorithm by the currently determined shortest path
         if (pathLength >= state.currentShortestPath.get())
             return;
 
@@ -255,24 +253,16 @@ public class BranchAndBound implements IRunnable {
         long startTime = System.nanoTime();
         try{
             Node startNode = graph.getEntryNodes().get(0); // get a leaf node to start off with
-            CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
-            functionCalculator.setGraph(graph);
-            functionCalculator.setBottomLevel(startNode);
-            //System.out.println(functionCalculator.bottomLevels.toString());
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
-
-
-
-
-    // Obtain adjacency matrix
+        // Obtain adjacency matrix
         int[][] map = graph.getAdjacencyMatrix();
 
         // Create thread pool
-        executor = Executors.newFixedThreadPool(numCores);
+        executor = new StackExecutor(numCores);
 
         // Setup state
         var cumulativeTree = (updateVisualizer != null)
@@ -313,13 +303,8 @@ public class BranchAndBound implements IRunnable {
             throw new RuntimeException(e);
         }
 
-        var threadPool = (ThreadPoolExecutor) executor;
-
         // Wait for all tasks to arrive before proceeding
-        while (threadPool.getActiveCount() != 0 || threadPool.getQueue().size() != 0)
-            threadSleep();
-
-        threadPool.shutdown();
+        executor.runAndWait();
 
         // Report results
         List<ScheduledTask> taskList = new ArrayList<>();
