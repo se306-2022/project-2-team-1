@@ -1,6 +1,6 @@
 package com.team01.algorithm;
 
-import com.team01.scheduler.algorithm.BranchAndBound;
+import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
 
 
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BranchAndBoundTest {
 

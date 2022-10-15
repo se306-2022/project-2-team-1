@@ -1,36 +1,34 @@
-package com.team01.scheduler.algorithm;
+package com.team01.scheduler.algorithm.branchandbound;
 
-import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.algorithm.*;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
-import com.team01.scheduler.matrix.algorithm.CostFunctionComparator;
 import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AStar implements IRunnable{
+public class BranchAndBound implements IRunnable {
+
     /**
      * Default Constructor
      */
-    public AStar() {
-    }
+    public BranchAndBound() {}
 
-    private PriorityBlockingQueue priorityBlockingQueue;
     private int shortestPath;
 
-    private AStar.State state;
+    private State state;
 
-    private PriorityQueueExecutor executor;
+    private StackExecutor executor;
 
     @Override
     public String getTaskName() {
         return "Scheduler - DFS Branch and Bound";
     }
 
-    public AStar.State getState(){
+    public State getState(){
         return state;
     }
 
@@ -38,7 +36,7 @@ public class AStar implements IRunnable{
     /**
      * A state class that keeps track of the current shortest path in the algorithm.
      */
-    public static final class State {
+    public final class State {
         AtomicInteger numProcessors;
         final int[][] map;
         AtomicInteger currentShortestPath;
@@ -66,9 +64,9 @@ public class AStar implements IRunnable{
      * @param state     The state of the algorithm that keeps track of the current shortest path
      * @param current   The current partial solution that is checked
      * @param node      The current node that requires dependency checks
-     * @return Returns true if dependencies have been visited
+     * @return
      */
-    private boolean haveVisitedDependencies(AStar.State state, PartialSolution current, Node node) {
+    private boolean haveVisitedDependencies(State state, PartialSolution current, Node node) {
 
         for (Node dependencyNode : state.graph.getParentsForNode(node)){
             if (!current.visitedChildren.contains(dependencyNode))
@@ -128,9 +126,9 @@ public class AStar implements IRunnable{
      * @param state     The state of the algorithm
      * @param source    The source node
      * @param target    The target node
-     * @return Returns the edge weight
+     * @return
      */
-    private int getEdgeWeight(AStar.State state, Node source, Node target) {
+    private int getEdgeWeight(State state, Node source, Node target) {
         return state.map[source.getId()][target.getId()];
     }
 
@@ -141,16 +139,10 @@ public class AStar implements IRunnable{
      * @param state     The state of the algorithm
      * @param current   The current partial solution
      */
-    public void doBranchAndBoundRecursive(AStar.State state, PartialSolution current) {
+    public void doBranchAndBoundRecursive(State state, PartialSolution current) {
         // Consider current node
         var task = current.task;
         int pathLength = calculateFinishTime(task);
-
-        // Bound the algorithm by the currently determined shortest path
-        /*CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
-        int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task,state.graph);
-        if (projectedPathLength >= state.currentShortestPath.get())
-            return;*/
 
         // Bound the algorithm by the currently determined shortest path
         if (pathLength >= state.currentShortestPath.get())
@@ -232,7 +224,7 @@ public class AStar implements IRunnable{
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
 
                 // create instance of ThreadPoolWorker
-                AStarThreadPoolWorker tw = new AStarThreadPoolWorker(this, nextSolution);
+                ThreadPoolWorker tw = new ThreadPoolWorker(this, nextSolution);
 
                 // add to thread pool
                 executor.execute(tw);
@@ -243,51 +235,36 @@ public class AStar implements IRunnable{
     /**
      * Run the schedule using abstract IRunnable interface
      *
-     * @param graph             The complete graph which has been deciphered from
-     *                          the dot file
-     * @param numProcessors     The number of processors that the algorithm will
-     *                          allocate to
-     *
-     * @return                  Return the optimal schedule
+     * @param graph         The complete graph which has been deciphered from
+     *                      the dot file
+     * @param numProcessors The number of processors that the algorithm will
+     *                      allocate to
+     * @return Return the optimal schedule
      */
     @Override
-    public Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer) {
+    public Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer)  {
 
         // Start Timer
         long startTime = System.nanoTime();
         try{
             Node startNode = graph.getEntryNodes().get(0); // get a leaf node to start off with
-            CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
-            functionCalculator.setGraph(graph);
-            functionCalculator.setBottomLevel(startNode);
-            //System.out.println(functionCalculator.bottomLevels.toString());
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
-
         // Obtain adjacency matrix
         int[][] map = graph.getAdjacencyMatrix();
 
-        // create the priority blocking queue
-        priorityBlockingQueue = new PriorityBlockingQueue(new CostFunctionComparator());
-
         // Create thread pool
-<<<<<<< Updated upstream:scheduler-core/src/main/java/com/team01/scheduler/algorithm/AStar.java
-        //executor = Executors.newFixedThreadPool(numCores);
-        executor = new ThreadPoolExecutor(numCores,numCores,10,TimeUnit.HOURS, priorityBlockingQueue);
-
-=======
-        executor = new PriorityQueueExecutor(numCores);
->>>>>>> Stashed changes:scheduler-core/src/main/java/com/team01/scheduler/algorithm/astar/AStarScheduler.java
+        executor = new StackExecutor(numCores);
 
         // Setup state
         var cumulativeTree = (updateVisualizer != null)
                 ? new CumulativeTree()
                 : null;
 
-        state = new AStar.State(numProcessors, map, graph, cumulativeTree);
+        state = new State(numProcessors, map, graph, cumulativeTree);
 
 
         if (updateVisualizer != null)
@@ -314,13 +291,14 @@ public class AStar implements IRunnable{
 
                 ps.getQueuedChildren().putAll(queuedChildren);
 
-                var worker = new AStarThreadPoolWorker(this, ps);
+                var worker = new ThreadPoolWorker(this, ps);
                 executor.execute(worker);
             }
         } catch (NodeInvalidIDMapping e) {
             throw new RuntimeException(e);
         }
 
+        // Wait for all tasks to arrive before proceeding
         executor.runAndWait();
 
         // Report results
