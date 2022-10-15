@@ -39,19 +39,12 @@ public class CostFunctionCalculator {
         adjacencyMatrix = g;
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
-
-        for (Node n : visitedNodes){
-
-            // calculate the bottom level for the node
-            bottomLevels.put(n, calculateBottomLevel(n));
-
-            // find the start time for node n
-            while (st != null) {
-                if (st.getNode() == n){
-                    startingTimes.put(n,st.getStartTime());
-                }
-                st = st.parent;
-            }
+        
+        // find the start time for node n
+        while (st != null) {
+            startingTimes.put(st.getNode(),st.getStartTime());
+            bottomLevels.put(st.getNode(), calculateBottomLevel(st.getNode()));
+            st = st.parent;
         }
 
         return findMaxLowerBound(bottomLevels,startingTimes,visitedNodes);
