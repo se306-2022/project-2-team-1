@@ -20,6 +20,8 @@ public class GraphController {
      */
 
     private void parseGraphviz(BufferedReader br) throws IOException {
+        // Reset ID to 0 in the case we reuse this instance of graphcontroller
+        ID=0;
         ArrayList<Node> nodes = new ArrayList<>();
         ArrayList<Edge> edges = new ArrayList<>();
         String input;
@@ -83,8 +85,6 @@ public class GraphController {
             }
 
         }
-
-
         this.graph = new Graph(nodes,edges);
     }
 
