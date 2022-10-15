@@ -178,7 +178,6 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
                     list = tree.depthMap.get(1);
                     depth = 1;
                 }
-
                 var step = 360.0f / list.size();
 
                 boolean done = true;

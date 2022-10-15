@@ -294,6 +294,7 @@ public class MainController {
         tasks.add(Utils.createPrintGraphTask());
         //tasks.add(new DepthFirstSearch());
         tasks.add(new BranchAndBound());
+        tasks.add(new BranchAndBoundSerial());
 
         taskList = FXCollections.observableList(tasks);
     }

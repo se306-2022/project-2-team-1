@@ -5,6 +5,7 @@ import com.team01.scheduler.matrix.exception.NonExistingNodeException;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -12,7 +13,7 @@ import java.util.HashMap;
  */
 public class CostFunctionCalculator {
     private static CostFunctionCalculator instance;
-    private HashMap<Node,Integer> bottomLevels = new HashMap<>();
+    public static HashMap<Node,Integer> bottomLevels = new HashMap<>();
     private Graph adjacencyMatrix;
 
     private CostFunctionCalculator(){
@@ -60,9 +61,54 @@ public class CostFunctionCalculator {
      */
 
     private Integer calculateBottomLevel(Node node) {
-
-        return traverseChildrenNode(node);
+        return bottomLevels.get(node);
     }
+
+    /**
+     * do calc_bottom_level
+     *
+     * 	for children of node
+     * 		# we calculate child bottom level
+     * 		recursive call calc_bottom_level
+     *
+     * 		# exists at this point
+     * 		node_bottom_levels.put(child.bottom_level)
+     * 	end
+     *
+     * 	# since all children levels exist at this point
+     * 	this node’s bottom level = max(children bottom levels) + current node cost
+     * end
+     *
+     */
+
+    public void setGraph(Graph g){
+        this.adjacencyMatrix = g;
+    }
+
+    //Node startNode = adjacencyMatrix.getExitNodes().get(0); // get a leaf node to start off with
+    public int setBottomLevel(Node node) {
+        for (Node s : adjacencyMatrix.getChildrenForNode(node)) {
+            int childBottomLevel = setBottomLevel(s);
+            bottomLevels.put(s, childBottomLevel);
+        }
+        ArrayList<Integer> childrenBottomLevels = new ArrayList<>();
+
+        for(Node n : adjacencyMatrix.getChildrenForNode(node)){
+            childrenBottomLevels.add(bottomLevels.get(n));
+        }
+
+        int bottomLevel;
+        if(childrenBottomLevels.isEmpty()){
+            bottomLevel = node.getComputationCost();
+        } else{
+            bottomLevel = Collections.max(childrenBottomLevels) + node.getComputationCost();
+        }
+        bottomLevels.put(node,bottomLevel);
+        return bottomLevel;
+    }
+
+
+
 
     public int traverseChildrenNode(Node startingNode){
         int bottomLevel = 0;
