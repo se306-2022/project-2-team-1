@@ -33,11 +33,9 @@ public class CostFunctionCalculator {
      * partial schedule.
      * @param visitedNodes
      * @param st
-     * @param g
      * @return lowerBound
      */
-    public Integer findCostFunction(ArrayList<Node> visitedNodes, ScheduledTask st, Graph g) {
-        adjacencyMatrix = g;
+    public Integer findCostFunction(ArrayList<Node> visitedNodes, ScheduledTask st ) {
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
         

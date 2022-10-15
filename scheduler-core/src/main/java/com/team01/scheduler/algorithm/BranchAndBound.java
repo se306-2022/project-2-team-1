@@ -145,10 +145,10 @@ public class BranchAndBound implements IRunnable {
         int pathLength = calculateFinishTime(task);
 
         // Bound the algorithm by the currently determined shortest path
-        /*CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
-        int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task,state.graph);
+        CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
+        int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task);
         if (projectedPathLength >= state.currentShortestPath.get())
-            return;*/
+            return;
 
         // Bound the algorithm by the currently determined shortest path
         if (pathLength >= state.currentShortestPath.get())
