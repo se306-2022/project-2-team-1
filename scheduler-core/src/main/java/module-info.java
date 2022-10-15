@@ -9,4 +9,6 @@ module com.team01.scheduler {
     exports com.team01.scheduler.graph.util;
     exports com.team01.scheduler.algorithm.matrixModels;
     exports com.team01.scheduler.visualizer;
+    exports com.team01.scheduler.algorithm.branchandbound;
+    exports com.team01.scheduler.algorithm.astar;
 }

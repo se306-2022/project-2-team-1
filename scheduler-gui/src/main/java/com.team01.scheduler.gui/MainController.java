@@ -3,14 +3,15 @@ package com.team01.scheduler.gui;
 import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.Utils;
 import com.team01.scheduler.algorithm.*;
+import com.team01.scheduler.algorithm.astar.AStarScheduler;
+import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
+import com.team01.scheduler.algorithm.branchandbound.BranchAndBoundSerial;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.gui.views.PathLengthColorStrategy;
 import com.team01.scheduler.gui.views.RadialTree;
 import com.team01.scheduler.gui.views.ScheduleView;
-import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.gui.views.Console;
-import com.team01.scheduler.visualizer.CumulativeTree;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -293,6 +294,7 @@ public class MainController {
 
         tasks.add(Utils.createPrintGraphTask());
         //tasks.add(new DepthFirstSearch());
+        tasks.add(new AStarScheduler());
         tasks.add(new BranchAndBound());
         tasks.add(new BranchAndBoundSerial());
 

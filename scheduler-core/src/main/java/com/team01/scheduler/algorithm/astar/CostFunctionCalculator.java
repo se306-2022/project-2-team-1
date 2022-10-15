@@ -1,5 +1,6 @@
-package com.team01.scheduler.algorithm;
+package com.team01.scheduler.algorithm.astar;
 
+import com.team01.scheduler.algorithm.ScheduledTask;
 import com.team01.scheduler.matrix.exception.NodeInvalidIDMapping;
 import com.team01.scheduler.matrix.exception.NonExistingNodeException;
 import com.team01.scheduler.algorithm.matrixModels.Node;
@@ -33,11 +34,9 @@ public class CostFunctionCalculator {
      * partial schedule.
      * @param visitedNodes
      * @param st
-     * @param g
      * @return lowerBound
      */
-    public Integer findCostFunction(ArrayList<Node> visitedNodes, ScheduledTask st, Graph g) {
-        adjacencyMatrix = g;
+    public Integer findCostFunction(ArrayList<Node> visitedNodes, ScheduledTask st ) {
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
         

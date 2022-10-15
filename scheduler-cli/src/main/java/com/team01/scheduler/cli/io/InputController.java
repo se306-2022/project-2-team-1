@@ -3,7 +3,7 @@ package com.team01.scheduler.cli.io;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.TaskRunner;
-import com.team01.scheduler.algorithm.BranchAndBound;
+import com.team01.scheduler.algorithm.astar.AStarScheduler;
 import com.team01.scheduler.algorithm.Schedule;
 
 import com.team01.scheduler.graph.util.ExportToDotFile;
@@ -64,7 +64,7 @@ public class InputController {
 
             int numCores = commandLineParser.getNumCores();
             int numProcessors = commandLineParser.getNumProcessors();
-            schedule = taskRunner.safeRun(new BranchAndBound(), graph, numProcessors,numCores); // run branch and bound
+            schedule = taskRunner.safeRun(new AStarScheduler(), graph, numProcessors,numCores); // run branch and bound
 
             try{
                 // export to dot file
