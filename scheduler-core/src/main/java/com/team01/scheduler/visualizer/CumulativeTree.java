@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CumulativeTree {
-
-    public ConcurrentLinkedQueue receivedStates;
 
     // CumulativeTree: Since we are dealing with enormous trees, it is
     // far too expensive to actually store the entire search space at
@@ -33,98 +30,102 @@ public class CumulativeTree {
     // The drawing algorithm starts with the root node and draws
     // each sector, subdividing itself further for each child sector.
 
+    // TODO: Implement clustering (average out child solutions at higher depths)
+
 
     public static class State {
         // Drawable
-        int pathLength;
-        int parentId;
-        int numChildren;
+        public int depth;
+        public int pathLength;
+        public State parent;
+
+        // Layout
+        public double startAngle;
+        public double endAngle;
+        public double xPos;
+        public double yPos;
 
         // Dirty
         public boolean dirty;
+        public boolean dirtyChild;
 
-        public State(int pathLength, /*int numChildren, */int parentId) {
+        public State(int pathLength, int depth, State parent) {
             this.pathLength = pathLength;
-            //this.numChildren = numChildren;
-            this.parentId = parentId;
-        }
-
-        public int getPathLength() {
-            return pathLength;
-        }
-
-        public boolean isDirty() {
-            return dirty;
+            this.depth = depth;
+            this.parent = parent;
         }
     }
 
     // Map between sectorId and sector description
     public Map<Integer, State> stateMap = new HashMap<>();
 
-    // Map between sectorId and child sectorIds
-    public Map<Integer, List<Integer>> outwardRelation = new HashMap<>();
+    // Map between sector and child sectors
+    public Map<State, List<State>> outwardRelation = new HashMap<>();
 
     // Map between depth and sectorId
-    public Map<Integer, List<Integer>> depthMap = new HashMap<>();
+    public Map<Integer, List<State>> depthMap = new HashMap<>();
+    List<State> startStates = new ArrayList<>();
 
-    // Map between depth and total children
-    public Map<Integer, Integer> numSolutions = new HashMap();
     private int sectorId = ROOT_ID;
 
     State rootState;
 
     public static final int ROOT_ID = 0;
     public static final int INITIAL_DEPTH = 1;
-    private static final int EXIT_ID = -1;
 
     public CumulativeTree() {
-        rootState = stateMap.put(ROOT_ID, new State(0, EXIT_ID));
+        rootState = new State(0, 0, null);
+        stateMap.put(ROOT_ID, rootState);
     }
 
     private void markDirtyAndPropagate(State state) {
-        State parent;
-        int parentId = state.parentId;
         state.dirty = true;
+        state = state.parent;
 
-        while ((parent = stateMap.getOrDefault(parentId, null)) != null) {
-            parent.dirty = true;
-            parentId = parent.parentId;
-
-            if (parent.parentId == EXIT_ID)
-                break;
+        while (state != null) {
+            state.dirtyChild = true;
+            state = state.parent;
         }
     }
 
-    private int createChildSector(int parentSector, int depth) {
-        outwardRelation.putIfAbsent(parentSector, new ArrayList<>());
-        outwardRelation.get(parentSector).add(++sectorId);
+    private int createChildSector(int pathLength, int depth, State parent) {
+        var childState = new State(pathLength, depth, parent);
+
+        if (parent != null) {
+            outwardRelation.putIfAbsent(parent, new ArrayList<>());
+            outwardRelation.get(parent).add(childState);
+        } else {
+            startStates.add(childState);
+        }
 
         depthMap.putIfAbsent(depth, new ArrayList<>());
-        depthMap.get(depth).add(sectorId);
+        depthMap.get(depth).add(childState);
+
+        stateMap.put(++sectorId, childState);
 
         return sectorId;
     }
 
-    public List<Integer> getStartStates() {
-        return outwardRelation.get(ROOT_ID);
-    }
-
-    public void addSolutions(int depth, int solutions) {
-        /*numSolutions.putIfAbsent(depth, 0);
-
-        var current = numSolutions.get(depth);
-        numSolutions.put(depth, current + solutions);*/
+    public List<State> getStartStates() {
+        return startStates;
     }
 
     public int pushState(int depth, int pathLength, int parentSector) {
+
+        if (parentSector == ROOT_ID) {
+            int id;
+            synchronized (this) {
+                id = createChildSector(pathLength, 1, null);
+            }
+            return id;
+        }
 
         int newSectorId;
 
         // Create sector
         synchronized (this) {
-            newSectorId = createChildSector(parentSector, depth);
-            stateMap.put(newSectorId, new State(pathLength, /*numChildren, */parentSector));
-
+            var parent = stateMap.get(parentSector);
+            newSectorId = createChildSector(pathLength, depth, parent);
 
             // Update total children
             // TODO: Don't actually need this?

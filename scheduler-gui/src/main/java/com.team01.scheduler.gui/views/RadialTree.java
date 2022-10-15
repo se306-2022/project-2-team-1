@@ -1,13 +1,13 @@
 package com.team01.scheduler.gui.views;
 
 import com.team01.scheduler.visualizer.CumulativeTree;
-import javafx.scene.Node;
+import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.*;
 
-import java.util.Random;
+import java.util.*;
 
 public class RadialTree extends StackPane {
 
@@ -40,15 +40,15 @@ public class RadialTree extends StackPane {
     }
 
     interface ColorStrategy {
-        Color getColor(int stateId, CumulativeTree.State state);
+        Color getColor(CumulativeTree.State state);
         Paint getBackdrop();
     }
 
     class BrightColorStrategy implements ColorStrategy {
-        public Color getColor(int stateId, CumulativeTree.State state)
+        public Color getColor(CumulativeTree.State state)
         {
             // Ensure the generated hues are at least 20deg apart
-            double hue = stateId * COLOR_MULTIPLIER % 360;
+            double hue = state.hashCode() * COLOR_MULTIPLIER % 360;
             double discrete_hue = Math.round(hue/20.0f)*20;
 
             // See: https://mdigi.tools/random-bright-color/
@@ -61,10 +61,10 @@ public class RadialTree extends StackPane {
     }
 
     class PathLengthColorStrategy implements ColorStrategy {
-        public Color getColor(int stateId, CumulativeTree.State state)
+        public Color getColor(CumulativeTree.State state)
         {
             // Ensure the generated hues are at least 20deg apart
-            double hue = (state.getPathLength() * 1) % 360;
+            double hue = (state.pathLength * 2) % 360;
             // System.out.println("Path Length: " + state.getPathLength() + " (hue: " + hue + "deg)");
 
             // See: https://mdigi.tools/random-bright-color/
@@ -93,101 +93,155 @@ public class RadialTree extends StackPane {
     }
 
     private void drawGradientBackdrop() {
+        gc.save();
+
         var backdrop = colorStrategy.getBackdrop();
         gc.setFill(backdrop);
 
         gc.fillRect(0, 0, getWidth(), getHeight());
+
+        gc.restore();
     }
 
-    private void drawRecursive(CumulativeTree.State state, int stateId, int depth, double parentX, double parentY, double startRangeAngle, double endRangeAngle) {
+    private void drawRadialTree(List<CumulativeTree.State> startStates) {
 
-        if (depth > DEPTH_LIMIT)
-            return;
+        Queue<CumulativeTree.State> queue = new LinkedList<>(startStates);
 
-        if (!tree.depthMap.containsKey(depth))
-            return;
+        long startTime, endTime;
 
-        if (!state.isDirty())
-            return;
+        startTime = System.nanoTime();
 
-        var children = tree.outwardRelation.get(stateId);
+        System.out.println("Start Render");
 
-        if (children == null)
-            return;
+        int getOutTimer = 0;
+        int getOutTimerCmp = 100000;
 
-        double range = endRangeAngle - startRangeAngle;
-        double step = range / children.size();
+        gc.save();
+        gc.translate(getWidth()/2, getHeight()/2);
 
-        for (int i = 0; i < children.size(); i++) {
-            var childStateId = children.get(i);
-            var childState = tree.stateMap.get(childStateId);
+        // BFS
+        while (!queue.isEmpty()) {
+            var state = queue.poll();
+            var depth = state.depth;
 
-            double childStartAngle = step * i + startRangeAngle;
-            double childEndAngle = childStartAngle + step;
-            double childCentreAngle = (childEndAngle + childStartAngle) / 2;
+            if (depth > DEPTH_LIMIT)
+                break;
 
-            var startXY = getCoordsForAngle(childStartAngle, depth);
-            var endXY = getCoordsForAngle(childEndAngle, depth);
-            var centreXY = getCoordsForAngle(childCentreAngle, depth);
+            if (getOutTimer > getOutTimerCmp)
+                break;
 
-            var color = colorStrategy.getColor(childStateId, childState);
-            gc.setFill(color);
+            if (!state.dirty && !state.dirtyChild)
+                break;
 
-            // gc.fillOval(x, y, 8, 8);
-            gc.fillPolygon(
-                    new double[] {parentX, startXY.x, endXY.x },
-                    new double[] {parentY, startXY.y, endXY.y}, 3);
+            var children = tree.outwardRelation.get(state);
 
-            drawRecursive(childState, childStateId, depth + 1, centreXY.x, centreXY.y, childStartAngle, childEndAngle);
+            if (children == null)
+                break;
+
+            double startAngle;
+            double endAngle;
+            double parentX;
+            double parentY;
+
+            if (state.parent == null) {
+                startAngle = 0.0f;
+                endAngle = 360.0f;
+                parentX = 0.0f;
+                parentY = 0.0f;
+            } else {
+                startAngle = state.startAngle;
+                endAngle = state.endAngle;
+                parentX = state.xPos;
+                parentY = state.yPos;
+            }
+
+            double range = endAngle - startAngle;
+            double step = range / children.size();
+
+            for (int i = 0; i < children.size(); i++) {
+                var childState = children.get(i);
+
+                if (childState.dirty) {
+                    double childStartAngle = step * i + startAngle;
+                    double childEndAngle = childStartAngle + step;
+                    double childCentreAngle = (childEndAngle + childStartAngle) / 2;
+
+                    var startXY = getCoordsForAngle(childStartAngle, depth);
+                    var endXY = getCoordsForAngle(childEndAngle, depth);
+                    var centreXY = getCoordsForAngle(childCentreAngle, depth);
+
+                    var color = colorStrategy.getColor(childState);
+                    gc.setFill(color);
+
+                    gc.fillPolygon(
+                            new double[]{parentX, startXY.x, endXY.x},
+                            new double[]{parentY, startXY.y, endXY.y}, 3);
+
+                    childState.startAngle = childStartAngle;
+                    childState.endAngle = childEndAngle;
+                    childState.xPos = centreXY.x;
+                    childState.yPos = centreXY.y;
+                }
+
+                queue.add(childState);
+                getOutTimer++;
+            }
+
+            state.dirty = false;
+            // TODO: Find way to mark subtree as not dirty
+            // Can we even do it with BFS??
         }
 
-        state.dirty = false;
+        endTime = System.nanoTime();
+
+        System.out.println("Finish Render");
+        System.out.println(" - Elapsed time: " + (endTime - startTime) / (1000f*1000f) + "ms");
+
+        if (getOutTimer > getOutTimerCmp)
+            System.out.println(" - Partial render (" + getOutTimer + " items)");
+
+        gc.restore();
     }
 
     private void draw() {
 
-        long startTime, endTime;
-
-        gc.save();
-
-        startTime = System.nanoTime();
-
         gc.clearRect(0, 0, getWidth(), getHeight());
         drawGradientBackdrop();
 
-        gc.translate(getWidth()/2, getHeight()/2);
+
 
         System.out.println("Start Render");
 
-        var depth = 0;
-        var list = tree.getStartStates();
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
 
-        // If we only have one root state (i.e. single start node)
-        // then consider the subnodes only.
-        if (list.size() == 1) {
-            list = tree.depthMap.get(1);
-            depth = 1;
-        }
+                // If we only have one root state (i.e. single start node)
+                // then consider the subnodes only.
+                /*if (list.size() == 1) {
+                    list = tree.depthMap.get(1);
+                    // depth = 1;
+                }*/
 
-        var step = 360.0f / list.size();
+                // var step = 360.0f / list.size();
 
-        var startAngle = 0.0f;
+                var list = tree.getStartStates();
+                drawRadialTree(list);
+            }
+        };
+
+        timer.start();
+
+        /*var startAngle = 0.0f;
         for (var stateId : list) {
             var state = tree.stateMap.get(stateId);
             drawRecursive(state, stateId, depth, 0, 0, startAngle, startAngle + step);
             startAngle += step;
-        }
+        }*/
 
         if (tree.depthMap.size() > DEPTH_LIMIT) {
             var leaves = tree.depthMap.get(tree.depthMap.size()-1);
             System.out.println("Number of Leaves: " + leaves.size());
         }
-
-        endTime = System.nanoTime();
-
-        gc.restore();
-
-        System.out.println("Finish Render");
-        System.out.println(" - Elapsed time: " + (endTime - startTime) / (1000f*1000f) + "ms");
     }
 }

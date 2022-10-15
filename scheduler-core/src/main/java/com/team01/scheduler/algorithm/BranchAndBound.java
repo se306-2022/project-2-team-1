@@ -223,7 +223,7 @@ public class BranchAndBound implements IRunnable {
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
                 nextSolution.visualizerId = state.cumulativeTree.pushState(nextSolution.depth, pathLength + child.getComputationCost(), current.visualizerId);
-                state.cumulativeTree.addSolutions(nextSolution.depth, current.queuedChildren.size() * state.numProcessors.get());
+                // state.cumulativeTree.addSolutions(nextSolution.depth, current.queuedChildren.size() * state.numProcessors.get());
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
 
                 // create instance of ThreadPoolWorker
