@@ -49,12 +49,12 @@ public class BranchAndBound implements IRunnable {
          * @param numProcessors     The number of processors that we declare for the task graph
          * @param map               The edge-node map object
          */
-        public State(int numProcessors, int[][] map,Graph graph) {
+        public State(int numProcessors, int[][] map, Graph graph, CumulativeTree tree) {
             this.numProcessors = new AtomicInteger(numProcessors);
             this.map = map;
             this.currentShortestPath = new AtomicInteger(Integer.MAX_VALUE);
             this.graph = graph;
-            this.cumulativeTree = new CumulativeTree();
+            this.cumulativeTree = tree;
         }
     }
 
@@ -221,8 +221,9 @@ public class BranchAndBound implements IRunnable {
 
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
-                nextSolution.visualizerId = state.cumulativeTree.pushState(nextSolution.depth, pathLength + child.getComputationCost(), current.visualizerId);
-                state.cumulativeTree.addSolutions(nextSolution.depth, current.queuedChildren.size() * state.numProcessors.get());
+                if (state.cumulativeTree != null) {
+                    nextSolution.visualizerId = state.cumulativeTree.pushState(nextSolution.depth, pathLength + child.getComputationCost(), current.visualizerId);
+                }
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
 
                 // create instance of ThreadPoolWorker
@@ -257,8 +258,15 @@ public class BranchAndBound implements IRunnable {
         executor = Executors.newFixedThreadPool(numCores);
 
         // Setup state
-        state = new State(numProcessors, map, graph);
-        updateVisualizer.setCumulativeTree(state.cumulativeTree);
+        var cumulativeTree = (updateVisualizer != null)
+                ? new CumulativeTree()
+                : null;
+
+        state = new State(numProcessors, map, graph, cumulativeTree);
+
+
+        if (updateVisualizer != null)
+            updateVisualizer.setCumulativeTree(state.cumulativeTree);
 
         // Queue a thread worker for each starting node
         try {
@@ -274,7 +282,10 @@ public class BranchAndBound implements IRunnable {
                 // Add children to DFS solution tree
                 ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
                 PartialSolution ps = new PartialSolution(newTask, numProcessors);
-                ps.visualizerId = state.cumulativeTree.pushState(ps.depth, n.getComputationCost(), CumulativeTree.ROOT_ID);
+
+                if (state.cumulativeTree != null) {
+                    ps.visualizerId = state.cumulativeTree.pushState(ps.depth, n.getComputationCost(), CumulativeTree.ROOT_ID);
+                }
 
                 ps.getQueuedChildren().putAll(queuedChildren);
 
@@ -312,8 +323,13 @@ public class BranchAndBound implements IRunnable {
         long duration = (endTime - startTime);
 
         System.out.println("The algorithm took " + Duration.ofNanos(duration).toMillis() + " milliseconds");
-        updateVisualizer.notifyFinished();
-        completionVisualizer.setSchedule(schedule);
+
+        if (updateVisualizer != null)
+            updateVisualizer.notifyFinished();
+
+        if (completionVisualizer != null)
+            completionVisualizer.setSchedule(schedule);
+
         return schedule;
     }
 

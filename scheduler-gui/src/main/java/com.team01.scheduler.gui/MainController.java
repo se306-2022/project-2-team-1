@@ -55,6 +55,9 @@ public class MainController {
     @FXML
     public Spinner<Integer> cpuCores;
 
+    @FXML
+    public CheckBox runVisualizer;
+
     /**
      * Run a task using TaskRunner
      *
@@ -84,7 +87,8 @@ public class MainController {
         }
 
         // Run the task asynchronously
-        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, addProgressView(), addResultsView());
+        var progressView = runVisualizer.isSelected() ? addProgressView() : null;
+        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, progressView, addResultsView());
     }
 
     /**
@@ -214,6 +218,9 @@ public class MainController {
         factory.setValue(1);
 
         cpuCores.setValueFactory(factory);
+
+        // Setup run visualizer checkbox
+        runVisualizer.setSelected(true);
 
     }
 
