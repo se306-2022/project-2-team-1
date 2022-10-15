@@ -116,4 +116,8 @@ public class Graph {
         return this.edges;
     }
 
+    public Map<Node, EdgesLinkedList> getAdjacencyMap() {
+        return this.adjacencyMap;
+    }
+
 }
