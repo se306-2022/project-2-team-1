@@ -1,7 +1,6 @@
 package com.team01.scheduler.algorithm.branchandbound;
 
 import com.team01.scheduler.algorithm.*;
-import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;

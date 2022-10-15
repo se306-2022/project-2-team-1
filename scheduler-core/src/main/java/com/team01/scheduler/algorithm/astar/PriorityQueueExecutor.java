@@ -1,17 +1,19 @@
-package com.team01.scheduler.algorithm.branchandbound;
+package com.team01.scheduler.algorithm.astar;
 
 import java.util.ArrayList;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
-public class StackExecutor {
+public class PriorityQueueExecutor {
 
-    private final BlockingDeque<Runnable> stack = new LinkedBlockingDeque<>();
+    private final PriorityBlockingQueue<ThreadPoolWorker> queue;
 
     private final int nThreads;
 
-    public StackExecutor(int nThreads) {
+    public PriorityQueueExecutor(int nThreads) {
         this.nThreads = nThreads;
+        this.queue = new PriorityBlockingQueue<>(1024, new CostFunctionComparator());
     }
 
     public void runAndWait() {
@@ -20,9 +22,9 @@ public class StackExecutor {
 
             for (int i = 0; i < nThreads; i++) {
                 var thread = new Thread(() -> {
-                    while (!stack.isEmpty()) {
+                    while (!queue.isEmpty()) {
                         try {
-                            var runnable = stack.takeLast();
+                            var runnable = queue.take();
                             runnable.run();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -35,7 +37,7 @@ public class StackExecutor {
                 thread.start();
             }
 
-            System.out.println("Running Stack Executor with " + threads.size() + " threads (expected: " + nThreads + ")");
+            System.out.println("Running Priority Queue Executor with " + threads.size() + " threads (expected: " + nThreads + ")");
 
             for (var thread : threads) {
                 thread.join();
@@ -46,12 +48,7 @@ public class StackExecutor {
         }
     }
 
-    public void execute(Runnable runnable) {
-        try {
-            stack.putLast(runnable);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+    public void execute(ThreadPoolWorker runnable) {
+        queue.put(runnable);
     }
 }

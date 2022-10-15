@@ -1,6 +1,6 @@
 package com.team01.algorithm;
 
-import com.team01.scheduler.algorithm.astar.AStarScheduler;
+import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
 
 
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-public class AStarSchedulerTest {
+public class BranchAndBoundTest {
 
     @Test
     void testBranchAndBound() {
@@ -37,7 +37,7 @@ public class AStarSchedulerTest {
 
         Graph graph = new Graph(nodes,edges);
 
-        AStarScheduler bnb = new AStarScheduler();
+        BranchAndBound bnb = new BranchAndBound();
         Schedule s = bnb.run(graph, 2,1, null, null);
 
         Assertions.assertEquals(shortestPath, s.getPathLength());
@@ -64,7 +64,7 @@ public class AStarSchedulerTest {
 
         Graph graph = new Graph(nodes,edges);
 
-        AStarScheduler bnb = new AStarScheduler();
+        BranchAndBound bnb = new BranchAndBound();
         Schedule s = bnb.run(graph, 2,1, null, null);
 
         Assertions.assertEquals(shortestPath, s.getPathLength());
@@ -74,7 +74,7 @@ public class AStarSchedulerTest {
     @Test
     void testTaskName() {
 
-        AStarScheduler bnb = new AStarScheduler();
+        BranchAndBound bnb = new BranchAndBound();
 
         Assertions.assertEquals("Scheduler - DFS Branch and Bound", bnb.getTaskName());
 

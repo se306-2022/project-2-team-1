@@ -1,6 +1,6 @@
 package com.team01.scheduler.algorithm.branchandbound;
 
-import com.team01.scheduler.algorithm.PartialSolution;
+import com.team01.scheduler.algorithm.branchandbound.PartialSolution;
 
 public class ThreadPoolWorker implements Runnable {
 

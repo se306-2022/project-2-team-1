@@ -1,5 +1,6 @@
-package com.team01.scheduler.algorithm;
+package com.team01.scheduler.algorithm.branchandbound;
 
+import com.team01.scheduler.algorithm.ScheduledTask;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.visualizer.CumulativeTree;
 
@@ -45,6 +46,7 @@ public class PartialSolution {
         this.visitedChildren.add(task.getNode());
 
         this.depth = CumulativeTree.INITIAL_DEPTH;
+
     }
 
     /**

@@ -39,7 +39,7 @@ public class CostFunctionCalculator {
     public Integer findCostFunction(ArrayList<Node> visitedNodes, ScheduledTask st ) {
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
-        
+
         // find the start time for node n
         while (st != null) {
             startingTimes.put(st.getNode(),st.getStartTime());
