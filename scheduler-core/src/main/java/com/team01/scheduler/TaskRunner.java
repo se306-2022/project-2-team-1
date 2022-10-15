@@ -1,9 +1,14 @@
 package com.team01.scheduler;
 
-import com.team01.scheduler.algorithm.INotifyCompletion;
+import com.team01.scheduler.algorithm.ICompletionVisualizer;
 import com.team01.scheduler.algorithm.IRunnable;
+import com.team01.scheduler.algorithm.IUpdateVisualizer;
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class TaskRunner {
@@ -25,7 +30,7 @@ public class TaskRunner {
         Schedule schedule;
 
         try {
-            schedule = runnable.run(graph, numProcessors, numCores);
+            schedule = runnable.run(graph, numProcessors, numCores, null, null);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -36,20 +41,22 @@ public class TaskRunner {
 
         return schedule;
     }
-    public void safeRunAsync(IRunnable runnable, Graph graph, int numProcessors, int numCores, INotifyCompletion notifyCompletion) {
+    public void safeRunAsync(IRunnable runnable, Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer) {
 
         System.out.println("Running task: " + runnable.getTaskName());
 
-        System.out.println("\nTASK START\n");
+        CompletableFuture.runAsync(() -> {
+            System.out.println("\nTASK START\n");
 
-        try {
-            notifyCompletion.notifyComplete(runnable.run(graph, numProcessors,numCores));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                runnable.run(graph, numProcessors, numCores, updateVisualizer, completionVisualizer);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        System.out.println("\nTASK END\n\n");
+            System.out.println("\nTASK END\n\n");
+        });
 
     }
 }

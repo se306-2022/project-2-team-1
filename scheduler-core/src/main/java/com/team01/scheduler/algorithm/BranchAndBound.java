@@ -1,6 +1,5 @@
 package com.team01.scheduler.algorithm;
 
-import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
@@ -246,7 +245,7 @@ public class BranchAndBound implements IRunnable {
      * @return                  Return the optimal schedule
      */
     @Override
-    public Schedule run(Graph graph, int numProcessors, int numCores) {
+    public Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer) {
 
         // Start Timer
         long startTime = System.nanoTime();
@@ -259,6 +258,7 @@ public class BranchAndBound implements IRunnable {
 
         // Setup state
         state = new State(numProcessors, map, graph);
+        updateVisualizer.setCumulativeTree(state.cumulativeTree);
 
         // Queue a thread worker for each starting node
         try {
@@ -312,7 +312,8 @@ public class BranchAndBound implements IRunnable {
         long duration = (endTime - startTime);
 
         System.out.println("The algorithm took " + Duration.ofNanos(duration).toMillis() + " milliseconds");
-        schedule.tree = state.cumulativeTree;
+        updateVisualizer.notifyFinished();
+        completionVisualizer.setSchedule(schedule);
         return schedule;
     }
 

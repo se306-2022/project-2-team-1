@@ -3,6 +3,7 @@ package com.team01.scheduler.gui;
 import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.Utils;
 import com.team01.scheduler.algorithm.BranchAndBound;
+import com.team01.scheduler.algorithm.ICompletionVisualizer;
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
@@ -85,13 +86,18 @@ public class MainController {
         }
 
         // Run the task (currently synchronous, but later in async)
-        // TODO need to add numcores as argument here
-        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, schedule -> {
-            if (schedule != null) {
-                showProgress(schedule.tree);
-                showResults(schedule);
+        var updateVisualizer = addProgressView();
+        /*var completionVisualizer = new ICompletionVisualizer() {
+
+            @Override
+            public void setSchedule(Schedule schedule) {
+                var scheduleView = addResultsView();
+                scheduleView.setSchedule(schedule);
             }
-        });
+        };*/
+        var completionVisualizer = addResultsView();
+
+        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, updateVisualizer, completionVisualizer);
     }
 
     /**
@@ -248,18 +254,18 @@ public class MainController {
         addTab(title, content, false);
     }
 
-    private void showProgress(CumulativeTree cumulativeTree) {
-        var radialTree = new RadialTree(cumulativeTree);
+    private RadialTree addProgressView() {
+        var radialTree = new RadialTree();
         addTab("Progress", radialTree, true);
+        return radialTree;
     }
 
     /**
      * Show schedule in new tab
-     * @param schedule Schedule to display
      */
-    private void showResults(Schedule schedule) {
+    private ScheduleView addResultsView() {
         // Scheduler View is a custom control which displays a schedule
-        var schedulerView = new ScheduleView(schedule);
+        var schedulerView = new ScheduleView();
         VBox.setVgrow(schedulerView, Priority.ALWAYS);
 
         // Add zoom controls
@@ -276,6 +282,8 @@ public class MainController {
 
         // Create new tab
         addTab("Job Results", vbox);
+
+        return schedulerView;
     }
 
     /**
