@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class CostFunctionCalculator {
     private static CostFunctionCalculator instance;
-    public HashMap<Node,Integer> bottomLevels = new HashMap<>();
+    public static HashMap<Node,Integer> bottomLevels = new HashMap<>();
     private Graph adjacencyMatrix;
 
     private CostFunctionCalculator(){
