@@ -14,6 +14,8 @@ public class PartialSolution {
     // Nodes which have already been visited
     public ArrayList<Node> visitedChildren;
 
+    private int costFunctionValue;
+    private CostFunctionCalculator functionCalculator;
     // contains tasks that have been discovered but not processed
     public Map<Node, List<ScheduledTask>> queuedChildren;
     public int[] processorBusyUntilTime;
@@ -45,6 +47,14 @@ public class PartialSolution {
         this.visitedChildren.add(task.getNode());
 
         this.depth = CumulativeTree.INITIAL_DEPTH;
+
+        functionCalculator = CostFunctionCalculator.getInstance();
+        this.costFunctionValue = functionCalculator.findCostFunction(visitedChildren, task);
+
+    }
+
+    public int getCostFunction(){
+        return this.costFunctionValue;
     }
 
     /**
