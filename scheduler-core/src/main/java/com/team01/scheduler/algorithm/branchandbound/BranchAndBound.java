@@ -8,10 +8,7 @@ import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMappin
 import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -28,7 +25,7 @@ public class BranchAndBound implements IRunnable {
 
     private State state;
 
-    private ExecutorService executor;
+    private StackExecutor executor;
 
     @Override
     public String getTaskName() {
@@ -265,7 +262,7 @@ public class BranchAndBound implements IRunnable {
         int[][] map = graph.getAdjacencyMatrix();
 
         // Create thread pool
-        executor = Executors.newFixedThreadPool(numCores);
+        executor = new StackExecutor(numCores);
 
         // Setup state
         var cumulativeTree = (updateVisualizer != null)
@@ -306,13 +303,8 @@ public class BranchAndBound implements IRunnable {
             throw new RuntimeException(e);
         }
 
-        var threadPool = (ThreadPoolExecutor) executor;
-
         // Wait for all tasks to arrive before proceeding
-        while (threadPool.getActiveCount() != 0 || threadPool.getQueue().size() != 0)
-            threadSleep();
-
-        threadPool.shutdown();
+        executor.runAndWait();
 
         // Report results
         List<ScheduledTask> taskList = new ArrayList<>();

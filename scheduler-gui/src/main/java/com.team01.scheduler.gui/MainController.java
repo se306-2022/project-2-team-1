@@ -4,6 +4,7 @@ import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.Utils;
 import com.team01.scheduler.algorithm.*;
 import com.team01.scheduler.algorithm.astar.AStarScheduler;
+import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBoundSerial;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
@@ -294,6 +295,7 @@ public class MainController {
         tasks.add(Utils.createPrintGraphTask());
         //tasks.add(new DepthFirstSearch());
         tasks.add(new AStarScheduler());
+        tasks.add(new BranchAndBound());
         tasks.add(new BranchAndBoundSerial());
 
         taskList = FXCollections.observableList(tasks);
