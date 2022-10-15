@@ -37,17 +37,15 @@ public class CostFunctionCalculator {
      * @return lowerBound
      */
     public Integer findCostFunction(ArrayList<Node> visitedNodes, ScheduledTask st ) {
-        HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
 
         // find the start time for node n
         while (st != null) {
             startingTimes.put(st.getNode(),st.getStartTime());
-            bottomLevels.put(st.getNode(), calculateBottomLevel(st.getNode()));
             st = st.parent;
         }
 
-        return findMaxLowerBound(bottomLevels,startingTimes,visitedNodes);
+        return findMaxLowerBound(startingTimes, visitedNodes);
     }
 
     /**
@@ -143,16 +141,17 @@ public class CostFunctionCalculator {
      * in a partial schedule, finds the node with the highest summation of the two.
      * The returned Lower bound summation is used as the heuristic for deciding whether to
      * continue with exploring that partial schedule or not.
-     * @param bottomLevels
      * @param startingTimes
      * @param partialScheduleNodes
      * @return
      */
-    private Integer findMaxLowerBound( HashMap<Node,Integer> bottomLevels, HashMap<Node,Integer> startingTimes, ArrayList<Node> partialScheduleNodes){
+    private Integer findMaxLowerBound(HashMap<Node,Integer> startingTimes, ArrayList<Node> partialScheduleNodes){
         HashMap<Node, Integer> lowerBounds = new HashMap<>();
 
         for (Node node : partialScheduleNodes){
-            int lowerBound = bottomLevels.get(node) + startingTimes.get(node);
+            int bottomLevel = bottomLevels.get(node);
+            int startingTime = startingTimes.get(node);
+            int lowerBound = bottomLevel + startingTime;
             lowerBounds.put(node, lowerBound);
         }
 
