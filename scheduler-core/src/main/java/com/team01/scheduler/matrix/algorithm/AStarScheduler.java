@@ -9,7 +9,7 @@ import com.team01.scheduler.graph.models.Graph;
 
 import java.util.*;
 
-public class AStarScheduler implements IRunnable {
+public class AStarScheduler {
     /**
      * Adjacency Matrix based implementation for the A* star exhaustive search algorithm.
      * Iterates through each possible partial schedule for the given number of processors and
@@ -70,12 +70,10 @@ public class AStarScheduler implements IRunnable {
         openList.add(root);
     }
 
-    @Override
     public String getTaskName() {
         return "A Star Scheduler";
     }
-
-    @Override
+    
     public Schedule run(Graph graph, int numProcessors) {
 
         Node startNode = graph.getPossibleStartNodes().get(0);
