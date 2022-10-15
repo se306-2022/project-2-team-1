@@ -36,25 +36,15 @@ public class CumulativeTree {
 
     public static class State {
         // Drawable
-        int pathLength;
+        public int pathLength;
         int parentId;
-        int numChildren;
 
         // Dirty
         public boolean dirty;
 
-        public State(int pathLength, /*int numChildren, */int parentId) {
+        public State(int pathLength, int parentId) {
             this.pathLength = pathLength;
-            //this.numChildren = numChildren;
             this.parentId = parentId;
-        }
-
-        public int getPathLength() {
-            return pathLength;
-        }
-
-        public boolean isDirty() {
-            return dirty;
         }
     }
 

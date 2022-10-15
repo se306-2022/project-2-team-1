@@ -6,7 +6,7 @@ import javafx.scene.paint.*;
 public class PathLengthColorStrategy implements IColorStrategy {
     public Color getColor(int stateId, CumulativeTree.State state) {
         // Ensure the generated hues are at least 20deg apart
-        double hue = (state.getPathLength() * 3) % 360;
+        double hue = (state.pathLength * 3) % 360;
         // System.out.println("Path Length: " + state.getPathLength() + " (hue: " + hue + "deg)");
 
         // See: https://mdigi.tools/random-bright-color/
