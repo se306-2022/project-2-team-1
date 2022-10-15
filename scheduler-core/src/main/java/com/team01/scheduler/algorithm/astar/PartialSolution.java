@@ -1,5 +1,6 @@
-package com.team01.scheduler.algorithm;
+package com.team01.scheduler.algorithm.astar;
 
+import com.team01.scheduler.algorithm.ScheduledTask;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.visualizer.CumulativeTree;
 
@@ -101,5 +102,9 @@ public class PartialSolution {
         int result = Objects.hash(visitedChildren, queuedChildren, task, depth);
         result = 31 * result + Arrays.hashCode(processorBusyUntilTime);
         return result;
+    }
+
+    public int getNumberOfNodes() {
+        return this.visitedChildren.size();
     }
 }

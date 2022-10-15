@@ -1,5 +1,10 @@
 package com.team01.scheduler.algorithm;
 
+<<<<<<< Updated upstream:scheduler-core/src/main/java/com/team01/scheduler/algorithm/BranchAndBound.java
+=======
+import com.team01.scheduler.algorithm.*;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
+>>>>>>> Stashed changes:scheduler-core/src/main/java/com/team01/scheduler/algorithm/branchandbound/BranchAndBound.java
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
@@ -7,9 +12,15 @@ import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
 import java.util.*;
+<<<<<<< Updated upstream:scheduler-core/src/main/java/com/team01/scheduler/algorithm/BranchAndBound.java
 import java.util.concurrent.*;
+=======
+>>>>>>> Stashed changes:scheduler-core/src/main/java/com/team01/scheduler/algorithm/branchandbound/BranchAndBound.java
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Implementation of parallel branch and bound
+ */
 public class BranchAndBound implements IRunnable {
 
     /**
@@ -36,7 +47,7 @@ public class BranchAndBound implements IRunnable {
     /**
      * A state class that keeps track of the current shortest path in the algorithm.
      */
-    public final class State {
+    public static final class State {
         AtomicInteger numProcessors;
         final int[][] map;
         AtomicInteger currentShortestPath;
@@ -64,7 +75,7 @@ public class BranchAndBound implements IRunnable {
      * @param state     The state of the algorithm that keeps track of the current shortest path
      * @param current   The current partial solution that is checked
      * @param node      The current node that requires dependency checks
-     * @return
+     * @return Returns true if all dependencies have been visited
      */
     private boolean haveVisitedDependencies(State state, PartialSolution current, Node node) {
 
@@ -126,7 +137,7 @@ public class BranchAndBound implements IRunnable {
      * @param state     The state of the algorithm
      * @param source    The source node
      * @param target    The target node
-     * @return
+     * @return Returns the weight of the edge
      */
     private int getEdgeWeight(State state, Node source, Node target) {
         return state.map[source.getId()][target.getId()];
@@ -253,6 +264,7 @@ public class BranchAndBound implements IRunnable {
 
         // Start Timer
         long startTime = System.nanoTime();
+<<<<<<< Updated upstream:scheduler-core/src/main/java/com/team01/scheduler/algorithm/BranchAndBound.java
         try{
             Node startNode = graph.getEntryNodes().get(0); // get a leaf node to start off with
             CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
@@ -263,6 +275,8 @@ public class BranchAndBound implements IRunnable {
         catch (Exception e){
             e.printStackTrace();
         }
+=======
+>>>>>>> Stashed changes:scheduler-core/src/main/java/com/team01/scheduler/algorithm/branchandbound/BranchAndBound.java
 
 
 
@@ -291,7 +305,7 @@ public class BranchAndBound implements IRunnable {
                 Map<Node, List<ScheduledTask>> queuedChildren = new HashMap<>();
 
                 for (Node s : graph.getEntryNodes()) {
-                    if (s != n){
+                    if (s != n) {
                         queuedChildren.put(s, new ArrayList<>());
                     }
                 }
@@ -348,13 +362,5 @@ public class BranchAndBound implements IRunnable {
             completionVisualizer.setSchedule(schedule);
 
         return schedule;
-    }
-
-    private static void threadSleep() {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }

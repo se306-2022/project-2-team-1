@@ -23,7 +23,7 @@ public class AStar implements IRunnable{
 
     private AStar.State state;
 
-    private ExecutorService executor;
+    private PriorityQueueExecutor executor;
 
     @Override
     public String getTaskName() {
@@ -38,7 +38,7 @@ public class AStar implements IRunnable{
     /**
      * A state class that keeps track of the current shortest path in the algorithm.
      */
-    public final class State {
+    public static final class State {
         AtomicInteger numProcessors;
         final int[][] map;
         AtomicInteger currentShortestPath;
@@ -66,7 +66,7 @@ public class AStar implements IRunnable{
      * @param state     The state of the algorithm that keeps track of the current shortest path
      * @param current   The current partial solution that is checked
      * @param node      The current node that requires dependency checks
-     * @return
+     * @return Returns true if dependencies have been visited
      */
     private boolean haveVisitedDependencies(AStar.State state, PartialSolution current, Node node) {
 
@@ -128,7 +128,7 @@ public class AStar implements IRunnable{
      * @param state     The state of the algorithm
      * @param source    The source node
      * @param target    The target node
-     * @return
+     * @return Returns the edge weight
      */
     private int getEdgeWeight(AStar.State state, Node source, Node target) {
         return state.map[source.getId()][target.getId()];
@@ -274,9 +274,13 @@ public class AStar implements IRunnable{
         priorityBlockingQueue = new PriorityBlockingQueue(new CostFunctionComparator());
 
         // Create thread pool
+<<<<<<< Updated upstream:scheduler-core/src/main/java/com/team01/scheduler/algorithm/AStar.java
         //executor = Executors.newFixedThreadPool(numCores);
         executor = new ThreadPoolExecutor(numCores,numCores,10,TimeUnit.HOURS, priorityBlockingQueue);
 
+=======
+        executor = new PriorityQueueExecutor(numCores);
+>>>>>>> Stashed changes:scheduler-core/src/main/java/com/team01/scheduler/algorithm/astar/AStarScheduler.java
 
         // Setup state
         var cumulativeTree = (updateVisualizer != null)
@@ -317,13 +321,7 @@ public class AStar implements IRunnable{
             throw new RuntimeException(e);
         }
 
-        var threadPool = (ThreadPoolExecutor) executor;
-
-        // Wait for all tasks to arrive before proceeding
-        while (threadPool.getActiveCount() != 0 || threadPool.getQueue().size() != 0)
-            threadSleep();
-
-        threadPool.shutdown();
+        executor.runAndWait();
 
         // Report results
         List<ScheduledTask> taskList = new ArrayList<>();
@@ -352,13 +350,5 @@ public class AStar implements IRunnable{
             completionVisualizer.setSchedule(schedule);
 
         return schedule;
-    }
-
-    private static void threadSleep() {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
