@@ -1,8 +1,11 @@
 package com.team01.scheduler.gui.views;
 
 import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +21,9 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,9 +57,9 @@ public class DashboardController implements Initializable {
     @FXML
     private Label FPSLabel;
     @FXML
-    private Label ;
+    private Label shortestCostLabel;
     @FXML
-    private Label memoryNumberLabel;
+    private Label costLabel;
 
 
     @Override
@@ -77,21 +83,53 @@ public class DashboardController implements Initializable {
     }
 
     private void displayStatistics() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                displayMemory();
-                //displayFPS();
-                //displayCurrentShortestTime();
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), ev -> {
+            double info [] = computeMemory();
+
+            memoryNumberLabel.setText(String.valueOf(info[0]));
+
+            switch ((int) info[1]) {
+                case 0:
+                    memoryTypeLabel.setText("B");
+                    break;
+
+                case 1:
+                    memoryTypeLabel.setText("KB");
+                    break;
+
+                case 2:
+                    memoryTypeLabel.setText("MB");
+                    break;
+
+                case 3:
+                    memoryTypeLabel.setText("GB");
+                    break;
+
             }
-        };
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(runnable, 0, 500, TimeUnit.MILLISECONDS);
+
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
     }
 
-    private void displayMemory() {
+    private double [] computeMemory() {
+
+        double info [] = new double [2];
+
         double usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024;
 
+        double byteMultiplier = 0;
+
+        while (usedMemory > 999) {
+            usedMemory /= 1024;
+            byteMultiplier++;
+        }
+
+        info[0] = Math.round(usedMemory*100.0)/100.0;
+        info[1] = byteMultiplier;
+
+        return info;
     }
 
 
