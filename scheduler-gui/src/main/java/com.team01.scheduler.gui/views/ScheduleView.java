@@ -1,5 +1,6 @@
 package com.team01.scheduler.gui.views;
 
+import com.team01.scheduler.algorithm.ICompletionVisualizer;
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.ScheduledTask;
 import javafx.beans.Observable;
@@ -16,9 +17,10 @@ import javafx.scene.text.TextAlignment;
  * ScheduleView displays a schedule in a table-like format. It handles sizing,
  * scrolling, painting, and other display features.
  */
-public class ScheduleView extends GridPane {
+public class ScheduleView extends GridPane implements ICompletionVisualizer {
 
     public static final int OFFSET = 15;
+    private boolean initialized;
     private Schedule schedule;
     private GraphicsContext gc;
     private ScrollBar horizontalScroll;
@@ -85,6 +87,9 @@ public class ScheduleView extends GridPane {
      * @param observable not used
      */
     private void updateHorizontalScroll(Observable observable) {
+        if (schedule == null)
+            return;
+
         totalWidth = calculateViewWidth(schedule);
         horizontalScroll.setMax(totalWidth);
         horizontalScroll.setVisibleAmount(getWidth());
@@ -95,33 +100,12 @@ public class ScheduleView extends GridPane {
      * @param observable not used
      */
     private void updateVerticalScroll(Observable observable) {
+        if (schedule == null)
+            return;
+
         totalHeight = calculateViewHeight(schedule, step);
         verticalScroll.setMax(totalHeight);
         verticalScroll.setVisibleAmount(getHeight());
-    }
-
-    /**
-     * Container for a Canvas control which handles resizing and painting
-     * whenever the available space changes.
-     *
-     * See: https://stackoverflow.com/questions/68011270/how-to-make-canvas-fill-up-the-center-of-borderpane-in-javafx
-     */
-    private class CanvasPane extends Region {
-        private Canvas canvas;
-
-        public CanvasPane(Canvas canvas) {
-            this.canvas = canvas;
-            getChildren().add(canvas);
-        }
-
-        @Override
-        protected void layoutChildren() {
-            super.layoutChildren();
-
-            canvas.setWidth(getWidth());
-            canvas.setHeight(getHeight());
-            draw();
-        }
     }
 
     /**
@@ -148,20 +132,9 @@ public class ScheduleView extends GridPane {
         draw();
     }
 
-    /**
-     * Create a new schedule view control and display the provided schedule
-     * @param schedule Schedule to display
-     */
-    public ScheduleView(Schedule schedule) {
 
-        if (schedule == null)
-            throw new IllegalArgumentException("Must provide a valid schedule");
-
-        this.schedule = schedule;
-
-        // Calculate content width based on schedule length (seconds) and num processors
-        totalWidth = calculateViewWidth(schedule);
-        totalHeight = calculateViewHeight(schedule, step);
+    public ScheduleView() {
+        this.initialized = false;
 
         // Setup scrollbars
         // See: https://stackoverflow.com/questions/35327437/javafx-navigating-through-a-canvas-within-a-scrollpane-of-equal-dimensions
@@ -173,12 +146,10 @@ public class ScheduleView extends GridPane {
         // Resize scrollbars whenever the control resizes
         widthProperty().addListener(this::updateHorizontalScroll);
         heightProperty().addListener(this::updateVerticalScroll);
-        updateHorizontalScroll(null);
-        updateVerticalScroll(null);
 
         // Add to Grid Pane
         var canvas = new Canvas();
-        var canvasPane = new CanvasPane(canvas);
+        var canvasPane = new CanvasPane(canvas, this::draw);
         addColumn(0, canvasPane, horizontalScroll);
         add(verticalScroll, 1, 0);
 
@@ -204,6 +175,30 @@ public class ScheduleView extends GridPane {
         canvas.setWidth(400);
         setVgrow(canvas, Priority.ALWAYS);
         setHgrow(canvas, Priority.ALWAYS);
+    }
+
+    /**
+     * Initialise the schedule view control and display the provided schedule
+     * @param schedule Schedule to display
+     */
+    @Override
+    public void setSchedule(Schedule schedule) {
+
+        if (initialized)
+            return;
+
+        if (schedule == null)
+            throw new IllegalArgumentException("Must provide a valid schedule");
+
+        this.schedule = schedule;
+        this.initialized = true;
+
+        // Calculate content width based on schedule length (seconds) and num processors
+        totalWidth = calculateViewWidth(schedule);
+        totalHeight = calculateViewHeight(schedule, step);
+
+        updateHorizontalScroll(null);
+        updateVerticalScroll(null);
 
         // Draw the schedule
         draw();
@@ -213,6 +208,10 @@ public class ScheduleView extends GridPane {
      * Drawing function. Draws a table for the schedule.
      */
     private void draw() {
+
+        if (schedule == null)
+            return;
+
         // Calculate information about the schedule
         int numProcessors = schedule.getNumProcessors();
         var taskList = schedule.getScheduledTaskList();

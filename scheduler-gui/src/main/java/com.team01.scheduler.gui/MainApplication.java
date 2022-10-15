@@ -26,7 +26,7 @@ public class MainApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(uiPath);
 
         // Create scene and display
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();

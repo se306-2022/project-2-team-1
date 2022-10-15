@@ -1,6 +1,8 @@
 package com.team01.scheduler;
 
+import com.team01.scheduler.algorithm.ICompletionVisualizer;
 import com.team01.scheduler.algorithm.IRunnable;
+import com.team01.scheduler.algorithm.IUpdateVisualizer;
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.Node;
@@ -55,7 +57,7 @@ public class Utils {
             }
 
             @Override
-            public Schedule run(Graph graph, int numProcessors, int numCores) {
+            public Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer) {
                 /*
                 for (EdgesLinkedList currentList: graph.getGraph().values()) {
                     int listSize = currentList.size();

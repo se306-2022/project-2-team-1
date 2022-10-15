@@ -39,7 +39,7 @@ public class BranchAndBoundTest {
         Graph graph = new Graph(nodes,edges);
 
         BranchAndBound bnb = new BranchAndBound();
-        Schedule s = bnb.run(graph, 2,1);
+        Schedule s = bnb.run(graph, 2,1, null, null);
 
         Assertions.assertEquals(shortestPath, s.getPathLength());
 
@@ -66,7 +66,7 @@ public class BranchAndBoundTest {
         Graph graph = new Graph(nodes,edges);
 
         BranchAndBound bnb = new BranchAndBound();
-        Schedule s = bnb.run(graph, 2,1);
+        Schedule s = bnb.run(graph, 2,1, null, null);
 
         Assertions.assertEquals(shortestPath, s.getPathLength());
 

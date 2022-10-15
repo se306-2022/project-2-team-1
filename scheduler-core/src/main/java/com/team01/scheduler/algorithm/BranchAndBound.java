@@ -1,9 +1,9 @@
 package com.team01.scheduler.algorithm;
 
-import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
+import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
 import java.util.*;
@@ -42,19 +42,19 @@ public class BranchAndBound implements IRunnable {
         AtomicInteger currentShortestPath;
         final Graph graph;
         ScheduledTask currentShortestPathTask;
-        final Phaser phaser;
+        CumulativeTree cumulativeTree;
 
         /**
          * Constructs a state object to keep track of the graph map along with the current shortest path
          * @param numProcessors     The number of processors that we declare for the task graph
          * @param map               The edge-node map object
          */
-        public State(int numProcessors, int[][] map,Graph graph) {
+        public State(int numProcessors, int[][] map, Graph graph, CumulativeTree tree) {
             this.numProcessors = new AtomicInteger(numProcessors);
             this.map = map;
             this.currentShortestPath = new AtomicInteger(Integer.MAX_VALUE);
             this.graph = graph;
-            this.phaser = new Phaser();
+            this.cumulativeTree = tree;
         }
     }
 
@@ -221,6 +221,9 @@ public class BranchAndBound implements IRunnable {
 
                 // Add children to DFS solution tree
                 var nextSolution = new PartialSolution(current, newTask);
+                if (state.cumulativeTree != null) {
+                    nextSolution.visualizerId = state.cumulativeTree.pushState(nextSolution.depth, pathLength + child.getComputationCost(), current.visualizerId);
+                }
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
 
                 // create instance of ThreadPoolWorker
@@ -243,7 +246,7 @@ public class BranchAndBound implements IRunnable {
      * @return                  Return the optimal schedule
      */
     @Override
-    public Schedule run(Graph graph, int numProcessors, int numCores) {
+    public Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer) {
 
         // Start Timer
         long startTime = System.nanoTime();
@@ -255,7 +258,15 @@ public class BranchAndBound implements IRunnable {
         executor = Executors.newFixedThreadPool(numCores);
 
         // Setup state
-        state = new State(numProcessors, map, graph);
+        var cumulativeTree = (updateVisualizer != null)
+                ? new CumulativeTree()
+                : null;
+
+        state = new State(numProcessors, map, graph, cumulativeTree);
+
+
+        if (updateVisualizer != null)
+            updateVisualizer.setCumulativeTree(state.cumulativeTree);
 
         // Queue a thread worker for each starting node
         try {
@@ -271,6 +282,11 @@ public class BranchAndBound implements IRunnable {
                 // Add children to DFS solution tree
                 ScheduledTask newTask = new ScheduledTask(null, 0, 0, n);
                 PartialSolution ps = new PartialSolution(newTask, numProcessors);
+
+                if (state.cumulativeTree != null) {
+                    ps.visualizerId = state.cumulativeTree.pushState(ps.depth, n.getComputationCost(), CumulativeTree.ROOT_ID);
+                }
+
                 ps.getQueuedChildren().putAll(queuedChildren);
 
                 var worker = new ThreadPoolWorker(this, ps);
@@ -307,6 +323,13 @@ public class BranchAndBound implements IRunnable {
         long duration = (endTime - startTime);
 
         System.out.println("The algorithm took " + Duration.ofNanos(duration).toMillis() + " milliseconds");
+
+        if (updateVisualizer != null)
+            updateVisualizer.notifyFinished();
+
+        if (completionVisualizer != null)
+            completionVisualizer.setSchedule(schedule);
+
         return schedule;
     }
 

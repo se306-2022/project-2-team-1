@@ -13,6 +13,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.CheckBox?>
 <SplitPane orientation="VERTICAL" xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.team01.scheduler.gui.MainController"
            fx:id="splitPane">
@@ -27,6 +28,9 @@
                     <Spinner fx:id="numProcessors" />
                     <Label text="CPU Cores:" labelFor="$cpuCores"/>
                     <Spinner fx:id="cpuCores" />
+                    <Separator/>
+                    <Label text="Run Visualizer" labelFor="$runVisualizer"/>
+                    <CheckBox fx:id="runVisualizer" />
                 </ToolBar>
                 <SplitPane VBox.vgrow="ALWAYS">
                     <TextArea fx:id="graphEditor" />
