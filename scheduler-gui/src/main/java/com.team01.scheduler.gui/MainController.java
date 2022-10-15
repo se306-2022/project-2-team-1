@@ -10,16 +10,24 @@ import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.gui.views.Console;
+import javafx.animation.Animation;
+import javafx.animation.RotateTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +37,9 @@ public class MainController {
     private PrintStream stdOutput;
     private PrintStream stdError;
     private PrintStream consoleOutput;
+
+
+    private int tabIndex = 2;
 
     // State Variables
     private boolean useInternalConsole = false;
@@ -51,13 +62,16 @@ public class MainController {
     @FXML
     public Spinner<Integer> numProcessors;
 
+    @FXML
+    private Button dashboardTest;
+
     /**
      * Run a task using TaskRunner
      *
      * @param actionEvent ignored
      */
     @FXML
-    public void onRunTask(ActionEvent actionEvent) {
+    public void onRunTask(ActionEvent actionEvent) throws IOException {
         // Get runnable from list
         IRunnable runnable = listView.getSelectionModel().getSelectedItem();
 
@@ -84,6 +98,8 @@ public class MainController {
                 showResults(schedule);
             }
         });
+
+        switchToDashboard();
     }
 
     /**
@@ -263,4 +279,23 @@ public class MainController {
 
         taskList = FXCollections.observableList(tasks);
     }
+
+
+    public void switchToDashboard() throws IOException {
+        URL uiPath = MainApplication.class.getClassLoader().getResource("dashboard.fxml");
+        FXMLLoader fxmlLoader = new FXMLLoader(uiPath);
+
+        // Create scene and display
+        GridPane pane = fxmlLoader.load();
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(pane);
+
+        addTab("Dashboard", pane);
+        tabPane.getSelectionModel().select(2);
+
+
+
+    }
+
 }
