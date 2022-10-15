@@ -2,15 +2,13 @@ package com.team01.scheduler.gui;
 
 import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.Utils;
-import com.team01.scheduler.algorithm.BranchAndBound;
-import com.team01.scheduler.algorithm.ICompletionVisualizer;
-import com.team01.scheduler.algorithm.Schedule;
+import com.team01.scheduler.algorithm.*;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
+import com.team01.scheduler.gui.views.PathLengthColorStrategy;
 import com.team01.scheduler.gui.views.RadialTree;
 import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
-import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.gui.views.Console;
 import com.team01.scheduler.visualizer.CumulativeTree;
 import javafx.collections.FXCollections;
@@ -85,19 +83,8 @@ public class MainController {
             return;
         }
 
-        // Run the task (currently synchronous, but later in async)
-        var updateVisualizer = addProgressView();
-        /*var completionVisualizer = new ICompletionVisualizer() {
-
-            @Override
-            public void setSchedule(Schedule schedule) {
-                var scheduleView = addResultsView();
-                scheduleView.setSchedule(schedule);
-            }
-        };*/
-        var completionVisualizer = addResultsView();
-
-        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, updateVisualizer, completionVisualizer);
+        // Run the task asynchronously
+        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, addProgressView(), addResultsView());
     }
 
     /**
@@ -254,8 +241,8 @@ public class MainController {
         addTab(title, content, false);
     }
 
-    private RadialTree addProgressView() {
-        var radialTree = new RadialTree();
+    private IUpdateVisualizer addProgressView() {
+        var radialTree = new RadialTree<>(new PathLengthColorStrategy());
         addTab("Progress", radialTree, true);
         return radialTree;
     }
@@ -263,7 +250,7 @@ public class MainController {
     /**
      * Show schedule in new tab
      */
-    private ScheduleView addResultsView() {
+    private ICompletionVisualizer addResultsView() {
         // Scheduler View is a custom control which displays a schedule
         var schedulerView = new ScheduleView();
         VBox.setVgrow(schedulerView, Priority.ALWAYS);

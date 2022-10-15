@@ -3,33 +3,34 @@ package com.team01.scheduler.gui.views;
 import com.team01.scheduler.algorithm.IUpdateVisualizer;
 import com.team01.scheduler.visualizer.CumulativeTree;
 import javafx.animation.AnimationTimer;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.*;
 import javafx.util.Pair;
 
 import java.util.*;
 
-public class RadialTree extends StackPane implements IUpdateVisualizer {
+public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane implements IUpdateVisualizer {
 
-    private GraphicsContext gc;
+    // Configuration
+    private static final double CIRCLE_DISTANCE = 60;
+    private static final double DEPTH_LIMIT = 6;
+    private static final int FRAME_BUDGET = 10000;
+
+    // Visualiser State
+    private final GraphicsContext gc;
     private CumulativeTree tree;
-
-    private final double CIRCLE_DISTANCE = 40;
-    private final double COLOR_MULTIPLIER = 1234;
-    private final double DEPTH_LIMIT = 6;
-    private final int FRAME_BUDGET = 10000;
+    ColorStrategy colorStrategy;
     private int frameCounter = 0;
     private boolean algorithmTerminated = false;
 
-    public RadialTree() {
+    public RadialTree(ColorStrategy colorStrategy) {
         var canvas = new Canvas();
         var pane = new CanvasPane(canvas, this::draw);
         getChildren().add(pane);
 
         this.gc = canvas.getGraphicsContext2D();
+        this.colorStrategy = colorStrategy;
     }
 
     @Override
@@ -48,50 +49,7 @@ public class RadialTree extends StackPane implements IUpdateVisualizer {
         }
     }
 
-    interface ColorStrategy {
-        Color getColor(int stateId, CumulativeTree.State state);
-        Paint getBackdrop();
-    }
 
-    class BrightColorStrategy implements ColorStrategy {
-        public Color getColor(int stateId, CumulativeTree.State state)
-        {
-            // Ensure the generated hues are at least 20deg apart
-            double hue = stateId * COLOR_MULTIPLIER % 360;
-            double discrete_hue = Math.round(hue/20.0f)*20;
-
-            // See: https://mdigi.tools/random-bright-color/
-            return Color.hsb(discrete_hue, 0.8, 1.0);
-        }
-
-        public Paint getBackdrop() {
-            return Color.WHITESMOKE;
-        }
-    }
-
-    class PathLengthColorStrategy implements ColorStrategy {
-        public Color getColor(int stateId, CumulativeTree.State state)
-        {
-            // Ensure the generated hues are at least 20deg apart
-            double hue = (state.getPathLength() * 3) % 360;
-            // System.out.println("Path Length: " + state.getPathLength() + " (hue: " + hue + "deg)");
-
-            // See: https://mdigi.tools/random-bright-color/
-            return Color.hsb(hue, 0.8, 1.0);
-        }
-
-        public Paint getBackdrop() {
-            var stops = new Stop[] {
-                    new Stop(0, Color.rgb(15, 32, 39)),
-                    new Stop(0.5, Color.rgb(32, 58, 67)),
-                    new Stop(1, Color.rgb(44, 83, 100))
-            };
-
-            return new LinearGradient(0, 1, 0, 0, true, CycleMethod.NO_CYCLE, stops);
-        }
-    }
-
-    ColorStrategy colorStrategy = new PathLengthColorStrategy();
 
     private Point getCoordsForAngle(double angle, int depth) {
         double radians = Math.toRadians(angle);
