@@ -28,6 +28,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.team01.scheduler.algorithm.BranchAndBound.globalShortestPath;
+import static com.team01.scheduler.algorithm.BranchAndBound.globalSolutionsFound;
+
 public class DashboardController implements Initializable {
 
     @FXML
@@ -53,20 +56,32 @@ public class DashboardController implements Initializable {
     @FXML
     private Label memoryTypeLabel;
     @FXML
-    private Label FPS;
+    private Label shortestPath;
     @FXML
-    private Label FPSLabel;
+    private Label shortestPathLabel;
     @FXML
-    private Label shortestCostLabel;
+    private Label numberOfSolutions;
     @FXML
-    private Label costLabel;
+    private Label numberOfSolutionsLabel;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         performRotationAnimation();
-        displayStatistics();
+
+        //Updates display every time period stated in Keyframe(DURATION)
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), ev -> {
+            displayStatistics();
+            displayNumberOfSolutionsFound();
+            displayShortestPath();
+
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+
     }
+
+
 
     private void performRotationAnimation() {
         setRotate(c1, true, 360, 5);
@@ -83,39 +98,38 @@ public class DashboardController implements Initializable {
     }
 
     private void displayStatistics() {
+        //To stop display from jumping numbers when idle, set the lowest memory
+        //identifier to be MB
+        double info [] = computeMemory();
+        switch ((int) info[1]) {
+            case 0:
+                memoryTypeLabel.setText("MB");
+                info[0] /= (1024 ^ 2);
+                break;
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), ev -> {
-            double info [] = computeMemory();
+            case 1:
+                memoryTypeLabel.setText("MB");
+                info[0] /= 1024;
+                break;
 
-            memoryNumberLabel.setText(String.valueOf(info[0]));
+            case 2:
+                memoryTypeLabel.setText("MB");
+                break;
 
-            switch ((int) info[1]) {
-                case 0:
-                    memoryTypeLabel.setText("B");
-                    break;
+            case 3:
+                memoryTypeLabel.setText("GB");
+                break;
 
-                case 1:
-                    memoryTypeLabel.setText("KB");
-                    break;
-
-                case 2:
-                    memoryTypeLabel.setText("MB");
-                    break;
-
-                case 3:
-                    memoryTypeLabel.setText("GB");
-                    break;
-
-            }
-
-        }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+            default:
+                memoryTypeLabel.setText("TOO MUCH MEM");
+        }
+        info[0] = twoDecimalRounding(info[0]);
+        memoryNumberLabel.setText(String.valueOf(info[0]));
     }
 
     private double [] computeMemory() {
 
-        double info [] = new double [2];
+        double info[] = new double[2];
 
         double usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024;
 
@@ -126,10 +140,14 @@ public class DashboardController implements Initializable {
             byteMultiplier++;
         }
 
-        info[0] = Math.round(usedMemory*100.0)/100.0;
+        info[0] = usedMemory;
         info[1] = byteMultiplier;
 
         return info;
+    }
+
+    private double twoDecimalRounding(double number) {
+        return Math.round(number * 100.0) / 100.0;
     }
 
 
@@ -150,4 +168,14 @@ public class DashboardController implements Initializable {
         rt.play();
 
     }
+
+    private void displayShortestPath() {
+        shortestPath.setText(String.valueOf(globalShortestPath));
+    }
+
+    private void displayNumberOfSolutionsFound() {
+        numberOfSolutions.setText(String.valueOf(globalSolutionsFound));
+
+    }
+
 }

@@ -9,6 +9,8 @@ import java.util.*;
 
 public class BranchAndBound implements IRunnable {
 
+    public static int globalShortestPath = 0;
+    public static int globalSolutionsFound = 0;
     /**
      * Default Constructor
      */
@@ -239,6 +241,10 @@ public class BranchAndBound implements IRunnable {
 
                 // Notify success
                 printPath(task);
+
+                // Global shortest path to be accessed by front end
+                globalShortestPath = state.currentShortestPath;
+                globalSolutionsFound++;
             }
         }
 
@@ -297,6 +303,9 @@ public class BranchAndBound implements IRunnable {
      */
     @Override
     public Schedule run(Graph graph, int numProcessors) {
+
+        globalShortestPath = 0;
+        globalSolutionsFound = 0;
 
         Map<Node, EdgesLinkedList> map = graph.getGraph();
 

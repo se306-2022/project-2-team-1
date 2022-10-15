@@ -103,12 +103,12 @@
                         <Circle fx:id="c4" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
                         <Circle fx:id="c5" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
                         <Circle fx:id="c6" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
-                        <Label fx:id="FPS" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="FPS" textFill="WHITE">
+                        <Label fx:id="shortestPath" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="numCost" textFill="WHITE">
                            <font>
                               <Font name="Lucida Console" size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="FPSLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="FPS" textFill="#b3b3b3" />
+                        <Label fx:id="shortestPathLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="Shortest Path" textFill="#b3b3b3" />
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutX="10.0" layoutY="99.0" prefWidth="154.0">
@@ -116,12 +116,12 @@
                         <Circle fx:id="c7" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
                         <Circle fx:id="c8" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
                         <Circle fx:id="c9" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
-                        <Label fx:id="shortestCostLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="Shortest" textFill="WHITE">
+                        <Label fx:id="numberOfSolutions" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="numSolution" textFill="WHITE">
                            <font>
                               <Font name="Lucida Console" size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="costLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="Cost" textFill="#b3b3b3" />
+                        <Label fx:id="numberOfSolutionsLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="Solutions Found" textFill="#b3b3b3" />
                      </children>
                   </AnchorPane>
                </children>
