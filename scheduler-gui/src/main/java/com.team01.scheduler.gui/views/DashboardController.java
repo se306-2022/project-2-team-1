@@ -14,6 +14,8 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
@@ -55,7 +57,7 @@ public class DashboardController {
     @FXML
     private ProgressIndicator progressCircle1;
     @FXML
-    public AnchorPane visualizerContainer;
+    public VBox visualizerContainer;
 
     // Instance state
     private final TaskRunner taskRunner;
@@ -73,15 +75,12 @@ public class DashboardController {
 
         if (useVisualization) {
             radialTree = new RadialTree<>(new PathLengthColorStrategy());
-            AnchorPane.setTopAnchor(radialTree, 0.0);
-            AnchorPane.setLeftAnchor(radialTree, 0.0);
-            AnchorPane.setRightAnchor(radialTree, 0.0);
-            AnchorPane.setBottomAnchor(radialTree, 0.0);
+            VBox.setVgrow(radialTree, Priority.ALWAYS);
             visualizerContainer.getChildren().add(radialTree);
         }
 
         //Updates display every time period stated in Keyframe(DURATION)
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), ev -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), ev -> {
             displayMemory();
             displayNumberOfSolutionsFound();
             displayShortestPath();
@@ -176,21 +175,21 @@ public class DashboardController {
         //identifier to be MB
         double info [] = computeMemory();
         switch ((int) info[1]) {
-            case 0:
+            case 0: // bytes
                 memoryTypeLabel.setText("MB");
                 info[0] /= (1024 ^ 2);
                 break;
 
-            case 1:
+            case 1: // kilobytes
                 memoryTypeLabel.setText("MB");
                 info[0] /= 1024;
                 break;
 
-            case 2:
+            case 2: // megabytes
                 memoryTypeLabel.setText("MB");
                 break;
 
-            case 3:
+            case 3: // gigabytes
                 memoryTypeLabel.setText("GB");
                 break;
 
@@ -206,11 +205,11 @@ public class DashboardController {
 
     private double [] computeMemory() {
 
-        double info[] = new double[2];
+        var info = new double[2];
 
-        double usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024;
+        double usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
 
-        double byteMultiplier = 0;
+        double byteMultiplier = 0; // i.e. bytes
 
         while (usedMemory > 999) {
             usedMemory /= 1024;
