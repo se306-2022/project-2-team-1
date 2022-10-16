@@ -21,15 +21,19 @@ public class MainApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
+
         // Get main view FXML file
         URL uiPath = MainApplication.class.getClassLoader().getResource("main-view.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(uiPath);
 
         // Create scene and display
-        Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 840);
+
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+
+
     }
 
     /**
