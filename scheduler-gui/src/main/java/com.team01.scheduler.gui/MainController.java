@@ -12,6 +12,7 @@ import com.team01.scheduler.gui.views.PathLengthColorStrategy;
 import com.team01.scheduler.gui.views.RadialTree;
 import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.gui.views.Console;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -89,7 +90,16 @@ public class MainController {
 
         // Run the task asynchronously
         var progressView = runVisualizer.isSelected() ? addProgressView() : null;
-        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, progressView, addResultsView());
+        var completionVisualizer = new ICompletionVisualizer() {
+            @Override
+            public void setSchedule(Schedule schedule) {
+                Platform.runLater(() -> {
+                    addResultsView().setSchedule(schedule);
+                });
+            }
+        };
+
+        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, progressView, completionVisualizer);
     }
 
     /**

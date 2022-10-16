@@ -3,10 +3,11 @@ package com.team01.scheduler.algorithm.branchandbound;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 public class StackExecutor {
 
-    private final BlockingDeque<Runnable> stack = new LinkedBlockingDeque<>();
+    private final BlockingDeque<ThreadPoolWorker> stack = new LinkedBlockingDeque<>();
 
     private final int nThreads;
 
@@ -22,10 +23,13 @@ public class StackExecutor {
                 var thread = new Thread(() -> {
                     while (!stack.isEmpty()) {
                         try {
-                            var runnable = stack.takeLast();
+                            var runnable = stack.pollLast(1, TimeUnit.MILLISECONDS);
+
+                            if (runnable == null)
+                                continue;
+
                             runnable.run();
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
                             throw new RuntimeException(e);
                         }
                     }
@@ -46,7 +50,7 @@ public class StackExecutor {
         }
     }
 
-    public void execute(Runnable runnable) {
+    public void execute(ThreadPoolWorker runnable) {
         try {
             stack.putLast(runnable);
         } catch (InterruptedException e) {

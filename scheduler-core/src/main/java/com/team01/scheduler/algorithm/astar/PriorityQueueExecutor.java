@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class PriorityQueueExecutor {
 
@@ -24,10 +25,13 @@ public class PriorityQueueExecutor {
                 var thread = new Thread(() -> {
                     while (!queue.isEmpty()) {
                         try {
-                            var runnable = queue.take();
+                            var runnable = queue.poll(1, TimeUnit.MILLISECONDS);
+
+                            if (runnable == null)
+                                continue;
+
                             runnable.run();
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
                             throw new RuntimeException(e);
                         }
                     }

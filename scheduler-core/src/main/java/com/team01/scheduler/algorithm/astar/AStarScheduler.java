@@ -255,11 +255,11 @@ public class AStarScheduler implements IRunnable {
         // Start Timer
         long startTime = System.nanoTime();
         try{
-            Node startNode = graph.getEntryNodes().get(0); // get a leaf node to start off with
-            CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
-            functionCalculator.setGraph(graph);
-            functionCalculator.setBottomLevel(startNode);
-            //System.out.println(functionCalculator.bottomLevels.toString());
+            for (var startNode : graph.getEntryNodes()) {
+                CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
+                functionCalculator.setGraph(graph);
+                functionCalculator.setBottomLevel(startNode);
+            }
         }
         catch (Exception e){
             e.printStackTrace();
