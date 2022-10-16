@@ -88,8 +88,8 @@ public class DashboardController {
             displayStatistics();
             displayNumberOfSolutionsFound();
             displayShortestPath();
-
         }));
+
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
 

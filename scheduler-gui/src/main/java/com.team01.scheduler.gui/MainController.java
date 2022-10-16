@@ -282,6 +282,27 @@ public class MainController {
         // Create scene and display
         GridPane pane = fxmlLoader.load();
 
+
+        // Get Task from List
+        IRunnable runnable = listView.getSelectionModel().getSelectedItem();
+
+        if (runnable == null) {
+            System.err.println("No task selected");
+            return;
+        }
+
+        // Get Task Arguments
+        int processorCount = numProcessors.getValue();
+        String inputGraph = graphEditor.getText();
+
+        // Setup Controller Properties
+        DashboardController controller = fxmlLoader.getController();
+        controller.runWithTask(runnable, inputGraph, processorCount, 0, schedule -> {
+            if (schedule != null) {
+                showResults(schedule);
+            }
+        });
+
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(pane);
 
