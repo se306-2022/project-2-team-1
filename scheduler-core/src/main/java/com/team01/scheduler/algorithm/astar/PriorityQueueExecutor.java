@@ -12,11 +12,19 @@ public class PriorityQueueExecutor {
 
     private final int nThreads;
 
+    /**
+     * Constructor
+     * @param nThreads
+     */
     public PriorityQueueExecutor(int nThreads) {
         this.nThreads = nThreads;
         this.queue = new PriorityBlockingQueue<>(1024, new CostFunctionComparator());
     }
 
+    /**
+     * Custom implementation of a priority queue. Gets the partial solution with the least
+     * cost function value first
+     */
     public void runAndWait() {
         try {
             var threads = new ArrayList<Thread>();
@@ -52,6 +60,10 @@ public class PriorityQueueExecutor {
         }
     }
 
+    /**
+     * Initialises the ThreadPoolWorker
+     * @param runnable
+     */
     public void execute(ThreadPoolWorker runnable) {
         queue.put(runnable);
     }
