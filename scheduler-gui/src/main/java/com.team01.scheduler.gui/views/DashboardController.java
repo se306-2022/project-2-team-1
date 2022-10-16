@@ -1,42 +1,22 @@
 package com.team01.scheduler.gui.views;
 
 import com.team01.scheduler.TaskRunner;
-import com.team01.scheduler.algorithm.BranchAndBound;
-import com.team01.scheduler.algorithm.INotifyCompletion;
+import com.team01.scheduler.algorithm.ICompletionVisualizer;
 import com.team01.scheduler.algorithm.IRunnable;
-import com.team01.scheduler.graph.models.Graph;
+import com.team01.scheduler.algorithm.IUpdateVisualizer;
+import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.shape.Circle;
-import javafx.scene.transform.Rotate;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import static com.team01.scheduler.algorithm.BranchAndBound.globalShortestPath;
-import static com.team01.scheduler.algorithm.BranchAndBound.globalSolutionsFound;
 
 public class DashboardController {
     private TaskRunner taskRunner;
@@ -76,12 +56,18 @@ public class DashboardController {
     @FXML
     private ProgressIndicator progressCircle1;
 
+    @FXML
+    private RadialTree<PathLengthColorStrategy> radialTree;
+    private IRunnable runnable;
+
     public DashboardController(){
         taskRunner = new TaskRunner();
     }
 
-    public void runWithTask(IRunnable runnable, String graphDescription, int numProcessors, int numCores, INotifyCompletion notifyCompletion) {
+    public void runWithTask(IRunnable runnable, String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer) {
         performRotationAnimation();
+
+        this.runnable = runnable;
 
         //Updates display every time period stated in Keyframe(DURATION)
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), ev -> {
@@ -94,23 +80,21 @@ public class DashboardController {
         timeline.play();
 
         try {
-            runTaskInternal(runnable, graphDescription, numProcessors, numCores, notifyCompletion);
+            runTaskInternal(graphDescription, numProcessors, numCores, useVisualization, completionVisualizer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void runTaskInternal(IRunnable runnable, String graphDescription, int numProcessors, int numCores, INotifyCompletion notifyCompletion) throws IOException {
+    private void runTaskInternal(String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer externalCompletion) throws IOException {
 
-        Task task = new Task<Void>() {
-            @Override public Void call() throws IOException, InterruptedException {
-                updateMessage("Staus");
+        var task = new Task<>() {
+            @Override
+            public Void call() throws IOException, InterruptedException {
+                updateMessage("Status");
 
-                //Thread.sleep(2000);
-                updateProgress(20,100);
+                updateProgress(20, 100);
                 updateMessage("Started Algorithm");
-                //progressCircle1.setProgress(1);
-                IRunnable runnable = new BranchAndBound();
 
                 if (runnable == null) {
                     System.err.println("No task selected");
@@ -124,23 +108,24 @@ public class DashboardController {
                     return null;
                 }
 
-                updateProgress(40,100);
+                updateProgress(40, 100);
                 updateMessage("Algorithm in progress");
-                //progressCircle2.setProgress(1);
-                // Run the task (currently synchronous, but later in async)
-                taskRunner.safeRunAsync(runnable, graph, numProcessors, schedule -> {
-                    if (schedule != null) {
-                        //showResults(schedule);
-                    }
-                    //Thread.sleep(3000);
-                    updateMessage("Algorithm Completed");
-                    updateProgress(85,100);
 
-                });
-                //Thread.sleep(2000);
-                updateMessage("Results Printed");
-                updateProgress(100,100);
-                //switchToDashboard();
+                // Run on completion
+                ICompletionVisualizer internalCompletion = schedule -> {
+                    updateMessage("Algorithm Completed");
+                    updateProgress(85, 100);
+
+                    externalCompletion.setSchedule(schedule);
+
+                    updateMessage("Results Printed");
+                    updateProgress(100, 100);
+                };
+
+                // Run the task
+                IUpdateVisualizer updateVisualizer = useVisualization ? radialTree : null;
+                taskRunner.safeRunAsync(runnable, graph, numProcessors, numCores, updateVisualizer, internalCompletion);
+
                 return null;
             }
         };
@@ -247,16 +232,14 @@ public class DashboardController {
         rt.setCycleCount(Animation.INDEFINITE);
 
         rt.play();
-
     }
 
     private void displayShortestPath() {
-        shortestPath.setText(String.valueOf(globalShortestPath));
+        shortestPath.setText(String.valueOf(runnable.getShortestPath()));
     }
 
     private void displayNumberOfSolutionsFound() {
-        numberOfSolutions.setText(String.valueOf(globalSolutionsFound));
-
+        numberOfSolutions.setText(String.valueOf(runnable.getNumberSolutions()));
     }
 
 }

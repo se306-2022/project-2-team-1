@@ -21,7 +21,6 @@
         <Tab text="Debug GUI" closable="false">
             <VBox>
                 <ToolBar>
-                    <Button fx:id="dashboardTest" text="Switch To Dashboard Test" onAction="#switchToDashboard"/>
                     <Button text="Run Task" onAction="#onRunTask"/>
                     <Button text="Toggle Console" onAction="#onToggleConsole"/>
                     <Separator/>

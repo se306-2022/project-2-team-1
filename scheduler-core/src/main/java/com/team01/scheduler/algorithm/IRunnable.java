@@ -7,4 +7,6 @@ public interface IRunnable {
     String getTaskName();
     Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer progressView, ICompletionVisualizer completionView);
 
+    int getShortestPath();
+    int getNumberSolutions();
 }
