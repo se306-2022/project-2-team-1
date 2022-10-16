@@ -17,6 +17,11 @@ public class Graph {
     private ArrayList<Node> entryNodes;
     private ArrayList<Node> exitNodes;
 
+    /**
+     * Constructor
+     * @param inputNodes
+     * @param inputEdges
+     */
     public Graph(ArrayList<Node> inputNodes, ArrayList<Edge> inputEdges) {
         this.inputNodes = inputNodes;
         this.inputEdges = inputEdges;
@@ -24,26 +29,50 @@ public class Graph {
         this.initialize();
     }
 
+    /**
+     * Getter for adjacency matrix
+     * @return 2D int array
+     */
     public int[][] getAdjacencyMatrix() {
         return adjacencyMatrix;
     }
 
+    /**
+     * Getter for number of nodes
+     * @return int: number of nodes
+     */
     public int getNumberofNodes(){
         return SIZE;
     }
 
+    /**
+     * Getter for list of nodes
+     * @return list of nodes
+     */
     public ArrayList<Node> getNodes(){
         return inputNodes;
     }
 
+    /**
+     * Getter for list of edges
+     * @return list od edges
+     */
     public ArrayList<Edge> getEdges(){
         return inputEdges;
     }
 
+    /**
+     * Setter for input nodes
+     * @param inputNodes list
+     */
     public void setInputNodes(ArrayList<Node> inputNodes) {
         this.inputNodes = inputNodes;
     }
 
+    /**
+     * Setter for input edges
+     * @param inputEdges list
+     */
     public void setInputEdges(ArrayList<Edge> inputEdges) {
         this.inputEdges = inputEdges;
     }

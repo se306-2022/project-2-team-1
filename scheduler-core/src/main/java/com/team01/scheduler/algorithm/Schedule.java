@@ -13,9 +13,6 @@ public class Schedule {
     private int numProcessors;
     private List<ScheduledTask> scheduledTaskList;
 
-    // TODO: Remove
-    public CumulativeTree tree;
-
     /**
      * A constructor to create a new schedule whenever the shortest path is updated
      *
@@ -27,12 +24,20 @@ public class Schedule {
         this.scheduledTaskList = scheduledTaskList;
     }
 
+    /**
+     * Setter for shortest path
+     * @param shortestPath
+     */
     public void setShortestPath(int shortestPath) {
         this.shortestPath = shortestPath;
     }
 
     private int shortestPath;
 
+    /**
+     * Getter for shortest path
+     * @return
+     */
     public int getShortestPath() {
         return shortestPath;
     }
@@ -58,10 +63,18 @@ public class Schedule {
 
     }
 
+    /**
+     * Getter for number of processors
+     * @return number of processors
+     */
     public int getNumProcessors() {
         return numProcessors;
     }
 
+    /**
+     * Getter for schedule task list
+     * @return schedule task list
+     */
     public List<ScheduledTask> getScheduledTaskList() {
         return scheduledTaskList;
     }

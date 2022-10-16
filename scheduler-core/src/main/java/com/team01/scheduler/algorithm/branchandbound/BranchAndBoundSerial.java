@@ -368,11 +368,19 @@ public class BranchAndBoundSerial implements IRunnable {
         }
     }
 
+    /**
+     * Getter to get the current shortest path
+     * @return int: current shortest path
+     */
     @Override
     public int getShortestPath() {
         return state.currentShortestPath;
     }
 
+    /**
+     * Getter to get the number of partial solutions considered
+     * @return int: number of partial solutions considered
+     */
     @Override
     public int getNumberSolutions() {
         return state.solutionsConsidered;

@@ -19,40 +19,78 @@ public class Node implements Comparable<Node>{
      */
     private int computationCost;
 
+    /**
+     * Default constructor
+     */
     public Node(){
 
     }
 
+    /**
+     * Constructor
+     * @param id
+     * @param name
+     * @param computationCost
+     */
     public Node(int id, String name, int computationCost) {
         this.id = id;
         this.name = name;
         this.computationCost = computationCost;
     }
 
+    /**
+     * Getter for node ID
+     * @return int: node ID
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Getter for node name
+     * @return node name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Getter for node computation cost
+     * @return int: computation cost
+     */
     public int getComputationCost() {
         return computationCost;
     }
 
+    /**
+     * Setter for node ID
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Setter for node name
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Setter for node computation cost
+     * @param computationCost
+     */
     public void setComputationCost(int computationCost) {
         this.computationCost = computationCost;
     }
 
+    /**
+     * Function to compare two node objects
+     * @param o: node object
+     * @return boolean: True if node objects are equal, False otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,6 +99,10 @@ public class Node implements Comparable<Node>{
         return id == node.id && computationCost == node.computationCost && Objects.equals(name, node.name);
     }
 
+    /**
+     * Function to generate the hash code for a node object
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id, name, computationCost);
@@ -79,6 +121,10 @@ public class Node implements Comparable<Node>{
         return (this.computationCost > o.computationCost) ? 1 : -1;
     }
 
+    /**
+     * Function to convert a node object to a human-readable string
+     * @return node object as a human-readable string
+     */
     @Override
     public String toString() {
         return "Node: " + name;

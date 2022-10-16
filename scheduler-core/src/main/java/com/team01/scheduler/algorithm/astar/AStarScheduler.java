@@ -346,11 +346,19 @@ public class AStarScheduler implements IRunnable {
         return schedule;
     }
 
+    /**
+     * Getter to get the current shortest path
+     * @return int: shortest path
+     */
     @Override
     public int getShortestPath() {
         return state.currentShortestPath.get();
     }
 
+    /**
+     * Getter to get the number of solutions considered by the algorithm
+     * @return int: number of solutions considered
+     */
     @Override
     public int getNumberSolutions() {
         return state.solutionsConsidered.get();

@@ -39,18 +39,34 @@ public class ScheduledTask {
         return "processorId: " + getProcessorId() + " | startTime: " + getStartTime() + " | node: " + getNode().getName();
     }
 
+    /**
+     * Getter for task start time
+     * @return int: task time
+     */
     public int getStartTime() {
         return startTime;
     }
 
+    /**
+     * Getter for processor ID
+     * @return int: processor ID
+     */
     public int getProcessorId() {
         return processorId;
     }
 
+    /**
+     * Getter for the node associated with the task
+     * @return
+     */
     public Node getNode() {
         return node;
     }
 
+    /**
+     * Getter for task work time
+     * @return int: work time
+     */
     public int getWorkTime() {
         return node.getComputationCost();
     }
