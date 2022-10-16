@@ -3,7 +3,6 @@ package com.team01.scheduler.gui.views;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Region;
 
-import java.util.function.Function;
 
 /**
  * Container for a Canvas control which handles resizing and painting

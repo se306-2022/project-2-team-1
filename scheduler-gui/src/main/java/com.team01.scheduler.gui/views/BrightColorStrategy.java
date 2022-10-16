@@ -17,6 +17,11 @@ public class BrightColorStrategy implements IColorStrategy {
         return Color.hsb(discrete_hue, 0.8, 1.0);
     }
 
+    /**
+     * Get the backdrop colour of the dashboard
+     *
+     * @return Color.WHITESMOKE
+     */
     public Paint getBackdrop() {
         return Color.WHITESMOKE;
     }

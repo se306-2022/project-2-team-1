@@ -18,7 +18,6 @@ public class Console extends TextArea {
      * Create a new OutputStream implementation which writes to
      * the textarea.
      *
-     * TODO: Does this need synchronisation?
      */
     private OutputStream outputStream = new OutputStream() {
         @Override
