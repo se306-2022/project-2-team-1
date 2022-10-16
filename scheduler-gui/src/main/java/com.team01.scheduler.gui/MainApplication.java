@@ -29,7 +29,8 @@ public class MainApplication extends Application {
         // Create scene and display
         Scene scene = new Scene(fxmlLoader.load(), 1250, 840);
 
-        stage.setTitle("Hello!");
+        stage.setResizable(false);
+        stage.setTitle("Team 01 - Scheduler");
         stage.setScene(scene);
         stage.show();
 
