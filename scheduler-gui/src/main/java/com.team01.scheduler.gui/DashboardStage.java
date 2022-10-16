@@ -1,7 +1,6 @@
 package com.team01.scheduler.gui;
 
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class DashboardStage {
@@ -25,7 +24,7 @@ public class DashboardStage {
         finished.set(isFinished);
     }
 
-    public boolean getFinished(boolean isFinished) {
+    public boolean getFinished() {
         return finished.get();
     }
 }

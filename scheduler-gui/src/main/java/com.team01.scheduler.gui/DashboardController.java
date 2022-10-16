@@ -13,13 +13,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
@@ -60,18 +56,21 @@ public class DashboardController {
     public VBox visualizerContainer;
     @FXML
     public VBox stagesVbox;
+    @FXML
+    public Label timeElapsed;
 
     // Instance state
     private final TaskRunner taskRunner;
     private RadialTree<PathLengthColorStrategy> radialTree;
     private IRunnable runnable;
+    private long startingElapsedTime;
 
     // Stages
     private final DashboardStage started = new DashboardStage("Started");
     private final DashboardStage parsing = new DashboardStage("Graph Parsing");
     private final DashboardProgressStage algorithm = new DashboardProgressStage("Algorithm");
     private final DashboardStage finished = new DashboardStage("Finished");
-    private final DashboardStage printed = new DashboardStage("Printed");
+    private final DashboardStage printed = new DashboardStage("Presented");
 
     private final DashboardStage[] stages = {
             started,
@@ -101,6 +100,7 @@ public class DashboardController {
             displayMemory();
             displayNumberOfSolutionsFound();
             displayShortestPath();
+            displayElapsedTime();
         }));
 
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -155,7 +155,10 @@ public class DashboardController {
         for (var stage : stages)
             createViewForStage(stage);
 
+        startingElapsedTime = System.currentTimeMillis();
+
         var thread = new Thread(() -> {
+
             Platform.runLater(() -> started.setFinished(true));
 
             var graph = safeParseGraph(graphDescription);
@@ -177,6 +180,8 @@ public class DashboardController {
                 externalCompletion.setSchedule(schedule);
 
                 Platform.runLater(() -> printed.setFinished(true));
+
+                Platform.runLater(() -> timeElapsed.setText("Time Taken: " + (System.currentTimeMillis() - startingElapsedTime) + "ms"));
             };
 
             // Run the task
@@ -292,6 +297,11 @@ public class DashboardController {
 
     private void displayNumberOfSolutionsFound() {
         numberOfSolutions.setText(String.valueOf(runnable.getNumberSolutions()));
+    }
+
+    private void displayElapsedTime() {
+        if (!printed.getFinished())
+            timeElapsed.setText("Elapsed Time: " + (System.currentTimeMillis() - startingElapsedTime) + "ms");
     }
 
 }
