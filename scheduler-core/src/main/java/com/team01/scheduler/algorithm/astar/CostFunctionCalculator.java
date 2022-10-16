@@ -61,28 +61,16 @@ public class CostFunctionCalculator {
         return bottomLevels.get(node);
     }
 
-    /**
-     * do calc_bottom_level
-     *
-     * 	for children of node
-     * 		# we calculate child bottom level
-     * 		recursive call calc_bottom_level
-     *
-     * 		# exists at this point
-     * 		node_bottom_levels.put(child.bottom_level)
-     * 	end
-     *
-     * 	# since all children levels exist at this point
-     * 	this node’s bottom level = max(children bottom levels) + current node cost
-     * end
-     *
-     */
 
     public void setGraph(Graph g){
         this.adjacencyMatrix = g;
     }
 
-    //Node startNode = adjacencyMatrix.getExitNodes().get(0); // get a leaf node to start off with
+    /**
+     * Function to calculate the bottom level of a node
+     * @param node
+     * @return int: bottom level value
+     */
     public int setBottomLevel(Node node) {
         for (Node s : adjacencyMatrix.getChildrenForNode(node)) {
             int childBottomLevel = setBottomLevel(s);
@@ -104,37 +92,6 @@ public class CostFunctionCalculator {
         return bottomLevel;
     }
 
-
-
-
-    public int traverseChildrenNode(Node startingNode){
-        int bottomLevel = 0;
-        ArrayList<Node> leafNodes = adjacencyMatrix.getExitNodes();
-        ArrayList<Node> childrenNodes = adjacencyMatrix.getChildrenForNode(startingNode);
-
-        // create hash map
-        HashMap<Integer,Node> bottomLevelsPerNode = new HashMap<>();
-        for (Node cn : childrenNodes){
-            bottomLevelsPerNode.put(cn.getComputationCost(),cn);
-        }
-
-
-        int temp = startingNode.getComputationCost();
-        for (Node cn : childrenNodes){
-            temp += cn.getComputationCost();
-            if (!leafNodes.contains(cn)){
-                traverseChildrenNode(cn);
-            } else {
-                if (temp > bottomLevel){
-                    bottomLevel = temp;
-                    // reset temp
-                    temp = startingNode.getComputationCost();
-                }
-            }
-        }
-
-        return bottomLevel;
-    }
 
     /**
      * Helper function which given the bottom level and the starting time for each node/task

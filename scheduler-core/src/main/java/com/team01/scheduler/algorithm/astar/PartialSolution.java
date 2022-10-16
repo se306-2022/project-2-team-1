@@ -54,6 +54,10 @@ public class PartialSolution {
 
     }
 
+    /**
+     * Getter to get cost function value for the partial solution
+     * @return int: cost function value
+     */
     public int getCostFunction(){
         return this.costFunctionValue;
     }
@@ -89,6 +93,11 @@ public class PartialSolution {
         this.depth = parent.depth + 1;
     }
 
+    /**
+     * Function to check if a partial solution object equals another
+     * @param o: partial solution object
+     * @return boolean: True if objects are the same, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -97,6 +106,10 @@ public class PartialSolution {
         return depth == that.depth && Objects.equals(visitedChildren, that.visitedChildren) && Objects.equals(queuedChildren, that.queuedChildren) && Arrays.equals(processorBusyUntilTime, that.processorBusyUntilTime) && Objects.equals(task, that.task);
     }
 
+    /**
+     * Function to generate the hashcode for a partial solution
+     * @return hash code
+     */
     @Override
     public int hashCode() {
         int result = Objects.hash(visitedChildren, queuedChildren, task, depth);
@@ -104,6 +117,10 @@ public class PartialSolution {
         return result;
     }
 
+    /**
+     * Getter to get number of nodes in the partial solution
+     * @return int: number of nodes
+     */
     public int getNumberOfNodes() {
         return this.visitedChildren.size();
     }

@@ -335,11 +335,19 @@ public class BranchAndBound implements IRunnable {
         return schedule;
     }
 
+    /**
+     * Getter to get current shortest path
+     * @return int: current shortest path
+     */
     @Override
     public int getShortestPath() {
         return state.currentShortestPath.get();
     }
 
+    /**
+     * Getter to get number of solutions considered
+     * @return int: number of solutions considered
+     */
     @Override
     public int getNumberSolutions() {
         return state.solutionsConsidered.get();

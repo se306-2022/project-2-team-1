@@ -17,6 +17,11 @@ public class CommandLineParser{
     private boolean debugGui;
     private InputController.Algorithm algorithm;
 
+    /**
+     * Getters for the command line arguments, so that the InputController class
+     * can access these values
+     * @return
+     */
     public String getInputFileName() {
         return inputFileName;
     }
@@ -139,7 +144,9 @@ public class CommandLineParser{
     }
 
     /**
-     *  Debugging funciton
+     *  Debugging function: lists the available parameters/options that can be supplied in the command
+     *  line alongside the two mandatory parameters. This method is invoked when the --help optional
+     *  paramter is used.
      * @param parser
      */
     private void helpUser(OptionsParser parser){
