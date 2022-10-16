@@ -89,6 +89,8 @@ public class BranchAndBoundSerial implements IRunnable {
 
             // Add the current node to visited as an optimisation
             this.visitedChildren.add(task.getNode());
+
+            this.depth = CumulativeTree.INITIAL_DEPTH;
         }
 
         /**

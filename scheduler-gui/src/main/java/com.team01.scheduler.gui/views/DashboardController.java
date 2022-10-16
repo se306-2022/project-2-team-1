@@ -81,7 +81,7 @@ public class DashboardController {
         }
 
         //Updates display every time period stated in Keyframe(DURATION)
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), ev -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), ev -> {
             displayMemory();
             displayNumberOfSolutionsFound();
             displayShortestPath();

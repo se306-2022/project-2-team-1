@@ -353,6 +353,6 @@ public class AStarScheduler implements IRunnable {
 
     @Override
     public int getNumberSolutions() {
-        return 0;
+        return state.solutionsConsidered.get();
     }
 }
