@@ -177,7 +177,9 @@ public class DashboardController {
         });
 
         // Add progress indicator only if needed
-        if (stage instanceof DashboardProgressStage progressStage) {
+        if (stage instanceof DashboardProgressStage) {
+
+            var progressStage = (DashboardProgressStage) stage;
 
             var indicator = new ProgressBar();
             indicator.prefWidthProperty().bind(vbox.widthProperty());
