@@ -8,7 +8,7 @@ plugins {
 
 allprojects {
     group = 'com.team01.scheduler'
-    version = '1.0'
+    version = '2.0'
 }
 
 repositories {
@@ -31,7 +31,6 @@ javafx {
 dependencies {
 
     implementation 'com.github.pcj:google-options:1.0.0'
-    implementation 'org.slf4j:slf4j-api:2.0.1'
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
