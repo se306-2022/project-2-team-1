@@ -1,9 +1,6 @@
 package com.team01.graphparser;
 
-import com.team01.scheduler.cli.io.CommandLineOptions;
 import com.team01.scheduler.cli.io.CommandLineParser;
-import com.team01.scheduler.graph.exceptions.InvalidEdgeWeightException;
-import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

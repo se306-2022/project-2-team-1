@@ -1,15 +1,13 @@
 package com.team01.scheduler.algorithm.astar;
 
 import com.team01.scheduler.algorithm.*;
-import com.team01.scheduler.algorithm.matrixModels.Node;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
-import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
-import com.team01.scheduler.matrix.algorithm.CostFunctionComparator;
+import com.team01.scheduler.graph.model.Node;
+import com.team01.scheduler.graph.model.Graph;
+import com.team01.scheduler.graph.exceptions.NodeInvalidIDMapping;
 import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AStarScheduler implements IRunnable {

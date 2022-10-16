@@ -2,19 +2,10 @@ package com.team01.scheduler.cli.io;
 
 import com.team01.scheduler.Invocation;
 import com.team01.scheduler.algorithm.astar.AStarScheduler;
-import com.team01.scheduler.algorithm.branchandbound.BranchAndBoundSerial;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
-import com.team01.scheduler.graph.models.GraphController;
-import com.team01.scheduler.TaskRunner;
+import com.team01.scheduler.graph.model.Graph;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
-import com.team01.scheduler.algorithm.Schedule;
 
-import com.team01.scheduler.graph.util.ExportToDotFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.team01.scheduler.graph.ExportToDotFile;
 
 public class InputController {
 

@@ -1,4 +1,4 @@
-package com.team01.scheduler.algorithm.matrixModels.exception;
+package com.team01.scheduler.graph.exceptions;
 
 public class DuplicateEdgeException extends RuntimeException{
     public DuplicateEdgeException(String message){

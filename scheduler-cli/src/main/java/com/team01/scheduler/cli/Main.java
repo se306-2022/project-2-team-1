@@ -5,8 +5,8 @@ import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.cli.io.InputController;
-import com.team01.scheduler.graph.models.GraphController;
-import com.team01.scheduler.graph.util.ExportToDotFile;
+import com.team01.scheduler.graph.GraphController;
+import com.team01.scheduler.graph.ExportToDotFile;
 import com.team01.scheduler.gui.MainApplication;
 
 import java.io.File;

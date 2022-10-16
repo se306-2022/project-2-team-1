@@ -1,7 +1,5 @@
 package com.team01.scheduler.algorithm.astar;
 
-import com.team01.scheduler.matrix.algorithm.PartialSchedule;
-
 import java.util.Comparator;
 
 public class CostFunctionComparator implements Comparator<ThreadPoolWorker> {

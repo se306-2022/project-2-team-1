@@ -1,4 +1,4 @@
-package com.team01.scheduler.matrix.exception;
+package com.team01.scheduler.graph.exceptions;
 
 public class NodeNotScheduledException extends Exception{
     public NodeNotScheduledException(String message){

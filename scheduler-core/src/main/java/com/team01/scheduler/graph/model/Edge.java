@@ -1,4 +1,4 @@
-package com.team01.scheduler.matrix.model;
+package com.team01.scheduler.graph.model;
 
 import java.util.Objects;
 
@@ -19,11 +19,11 @@ public class Edge {
         this.weight = weight;
     }
 
-    public Node getSrcNode() {
+    public Node getSource() {
         return srcNode;
     }
 
-    public Node getDestNode() {
+    public Node getTarget() {
         return destNode;
     }
 

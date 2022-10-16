@@ -1,9 +1,10 @@
-package com.team01.scheduler.matrix.model;
+package com.team01.scheduler.graph.model;
 
-import com.team01.scheduler.matrix.exception.DuplicateEdgeException;
-import com.team01.scheduler.matrix.exception.InvalidEdgeException;
-import com.team01.scheduler.matrix.exception.NodeInvalidIDMapping;
-import com.team01.scheduler.matrix.exception.NonExistingNodeException;
+
+import com.team01.scheduler.graph.exceptions.DuplicateEdgeException;
+import com.team01.scheduler.graph.exceptions.InvalidEdgeException;
+import com.team01.scheduler.graph.exceptions.NodeInvalidIDMapping;
+import com.team01.scheduler.graph.exceptions.NonExistingNodeException;
 
 import java.util.*;
 
@@ -11,27 +12,39 @@ public class Graph {
 
     private int[][] adjacencyMatrix;
     private final int SIZE;
-    private List<Node> inputNodes;
-    private List<Edge> inputEdges;
-    private List<Node> entryNodes;
-    private List<Node> exitNodes;
+    private ArrayList<Node> inputNodes;
+    private ArrayList<Edge> inputEdges;
+    private ArrayList<Node> entryNodes;
+    private ArrayList<Node> exitNodes;
 
-    public Graph(List<Node> inputNodes, List<Edge> inputEdges) {
+    public Graph(ArrayList<Node> inputNodes, ArrayList<Edge> inputEdges) {
         this.inputNodes = inputNodes;
         this.inputEdges = inputEdges;
         this.SIZE = inputNodes.size();
+        this.initialize();
     }
-
 
     public int[][] getAdjacencyMatrix() {
         return adjacencyMatrix;
     }
 
-    public void setInputNodes(List<Node> inputNodes) {
+    public int getNumberofNodes(){
+        return SIZE;
+    }
+
+    public ArrayList<Node> getNodes(){
+        return inputNodes;
+    }
+
+    public ArrayList<Edge> getEdges(){
+        return inputEdges;
+    }
+
+    public void setInputNodes(ArrayList<Node> inputNodes) {
         this.inputNodes = inputNodes;
     }
 
-    public void setInputEdges(List<Edge> inputEdges) {
+    public void setInputEdges(ArrayList<Edge> inputEdges) {
         this.inputEdges = inputEdges;
     }
 
@@ -57,10 +70,10 @@ public class Graph {
         for (Edge e : inputEdges){
 
             // check edge validity
-            checkEdgeValidity(e.getSrcNode(),e.getDestNode());
+            checkEdgeValidity(e.getSource(),e.getTarget());
 
-            int row = e.getSrcNode().getId();
-            int dest = e.getSrcNode().getId();
+            int row = e.getSource().getId();
+            int dest = e.getTarget().getId();
             int communicationCost = e.getWeight();
 
             if (adjacencyMatrix[row][dest] != 0){
@@ -93,9 +106,8 @@ public class Graph {
      * Gets the leaf nodes for the graph through identifying the nodes
      * which have no outgoing edges in the adjacency matrix.
      * @return
-     * @throws NodeInvalidIDMapping
      */
-    public List<Node> getExitNodes() throws NodeInvalidIDMapping {
+    public ArrayList<Node> getExitNodes() {
         exitNodes = new ArrayList<>();
 
         for (int i=0; i<SIZE; i++) {
@@ -113,13 +125,13 @@ public class Graph {
      * @param node
      * @return
      * @throws NonExistingNodeException
-     * @throws NodeInvalidIDMapping
      */
-    public ArrayList<Node> getChildrenForNode(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
+    public ArrayList<Node> getChildrenForNode(Node node) {
         ArrayList<Node> childrenNodes = new ArrayList<>();
         // first check that the node indeed does exist in the graph
         if (!inputNodes.contains(node)){
-            throw new NonExistingNodeException("The node does not exist in the graph: " + node);
+            System.out.println("The node does not exist in the graph: " + node);
+            return null;
         }
 
         for (int j=0; j<SIZE; j++) {
@@ -137,13 +149,12 @@ public class Graph {
      * @param node
      * @return
      * @throws NonExistingNodeException
-     * @throws NodeInvalidIDMapping
      */
-    public ArrayList<Node> getParentsForNode(Node node) throws NonExistingNodeException, NodeInvalidIDMapping {
+    public ArrayList<Node> getParentsForNode(Node node) {
         ArrayList<Node> parentNodes = new ArrayList<>();
         // first check that the node indeed does exist in the graph
         if (!inputNodes.contains(node)){
-            throw new NonExistingNodeException("The node does not exist in the graph: " + node);
+            System.out.println("The node does not exist in the graph: " + node);
         }
 
         for (int i=0; i<SIZE; i++) {
@@ -239,13 +250,13 @@ public class Graph {
      * @return
      * @throws NodeInvalidIDMapping
      */
-    private Node getNodeById(int id) throws NodeInvalidIDMapping {
+    public Node getNodeById(int id) {
         for (Node n : inputNodes){
             if (n.getId() == id){
                 return n;
             }
         }
-        throw new NodeInvalidIDMapping("Can't find Node for given ID");
+        return null;
     }
 
     /**

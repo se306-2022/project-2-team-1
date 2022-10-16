@@ -1,6 +1,8 @@
-package com.team01.scheduler.matrix.model;
+package com.team01.scheduler.graph.model;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Node implements Comparable<Node>{
     /**
@@ -77,4 +79,19 @@ public class Node implements Comparable<Node>{
         return (this.computationCost > o.computationCost) ? 1 : -1;
     }
 
+    @Override
+    public String toString() {
+        return "Node: " + name;
+    }
+
+    /**
+     * Method to check if Node already exists in the list of nodes
+     * for the current graph being read
+     * @param list
+     * @param name
+     * @return Optional<Node> that will the node object if it exists in the list
+     */
+    static public Optional<Node> containsName(final List<Node> list, final String name) {
+        return list.stream().filter(o -> o.getName().equals(name)).findFirst();
+    }
 }

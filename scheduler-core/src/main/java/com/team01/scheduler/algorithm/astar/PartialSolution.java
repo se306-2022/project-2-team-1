@@ -1,7 +1,7 @@
 package com.team01.scheduler.algorithm.astar;
 
 import com.team01.scheduler.algorithm.ScheduledTask;
-import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.graph.model.Node;
 import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.util.*;

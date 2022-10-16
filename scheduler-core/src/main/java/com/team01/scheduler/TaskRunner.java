@@ -4,7 +4,7 @@ import com.team01.scheduler.algorithm.ICompletionVisualizer;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.algorithm.IUpdateVisualizer;
 import com.team01.scheduler.algorithm.Schedule;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.graph.model.Graph;
 
 import java.util.concurrent.CompletableFuture;
 

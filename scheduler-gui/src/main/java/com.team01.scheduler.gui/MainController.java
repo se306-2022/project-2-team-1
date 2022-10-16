@@ -6,8 +6,8 @@ import com.team01.scheduler.algorithm.*;
 import com.team01.scheduler.algorithm.astar.AStarScheduler;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBoundSerial;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
-import com.team01.scheduler.graph.models.GraphController;
+import com.team01.scheduler.graph.model.Graph;
+import com.team01.scheduler.graph.GraphController;
 import com.team01.scheduler.gui.views.*;
 import com.team01.scheduler.gui.views.Console;
 import javafx.application.Platform;
@@ -15,16 +15,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 

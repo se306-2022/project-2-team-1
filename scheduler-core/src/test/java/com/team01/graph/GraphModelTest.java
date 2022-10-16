@@ -3,9 +3,6 @@ package com.team01.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.team01.scheduler.graph.models.Edge;
-import com.team01.scheduler.graph.models.Graph;
-import com.team01.scheduler.graph.models.Node;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
