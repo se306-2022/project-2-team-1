@@ -1,6 +1,5 @@
 package com.team01.scheduler.graph.util;
 
-
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.ScheduledTask;
 import com.team01.scheduler.algorithm.matrixModels.Edge;
