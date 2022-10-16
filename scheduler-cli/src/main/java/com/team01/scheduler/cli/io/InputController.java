@@ -1,5 +1,6 @@
 package com.team01.scheduler.cli.io;
 
+import com.team01.scheduler.Invocation;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.TaskRunner;
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class InputController {
 
@@ -21,9 +24,10 @@ public class InputController {
 
     private ExportToDotFile export;
 
-    public enum InvocationType {
-        VISUALIZATION,
-        HEADLESS,
+    public enum Algorithm {
+        BRANCH_AND_BOUND,
+        BRANCH_AND_BOUND_SERIAL,
+        A_STAR
     }
 
     /**
@@ -36,52 +40,20 @@ public class InputController {
     }
 
     /**
-     * Method returns how the program was called
-     * Headless by default
-     * @return enum of invocation type
+     * Get an Invocation from the command line args
+     * @return Invocation to execute
      */
-    public InvocationType getInvocationType() {
-        if (commandLineParser.isVisualize())
-            return InvocationType.VISUALIZATION;
+    public Invocation getInvocation() {
 
-        return InvocationType.HEADLESS;
-    }
+        var invocation = new Invocation();
+        invocation.numCores = commandLineParser.getNumCores();
+        invocation.numProcessors = commandLineParser.getNumProcessors();
+        invocation.useVisualization = commandLineParser.isVisualize();
+        invocation.outputFileName = commandLineParser.getOutputFileName();
+        invocation.inputFileName = commandLineParser.getInputFileName();
+        invocation.runnable = new BranchAndBound();
 
-    /**
-     * Run scheduler with inputs from command line.
-     * Inputs from command line are parsed and graph is retrieved from file.
-     *
-     */
-
-    public void runScheduler() {
-
-        Schedule schedule;
-        TaskRunner taskRunner = new TaskRunner();
-        try {
-            var file = new File(commandLineParser.getInputFileName()); // grab file based on provided file name
-            var graphController = new GraphController(file);
-            graph = graphController.getGraph(); // parse dot file to graph model
-
-            int numCores = commandLineParser.getNumCores();
-            int numProcessors = commandLineParser.getNumProcessors();
-            schedule = taskRunner.safeRun(new BranchAndBound(), graph, numProcessors,numCores); // run branch and bound
-
-            try{
-                // export to dot file
-                var outputFileName = commandLineParser.getOutputFileName();
-                ExportToDotFile export = new ExportToDotFile(graph, outputFileName, schedule);
-                export.writeDotWithSchedule();
-
-                System.out.println("Wrote to file: " + outputFileName);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-
-
-        } catch (IOException e){
-            System.out.println("Error with graph parsing: " + e.getMessage());
-            System.out.println("Ensure the dot file is valid.");
-        }
+        return invocation;
     }
 
 }

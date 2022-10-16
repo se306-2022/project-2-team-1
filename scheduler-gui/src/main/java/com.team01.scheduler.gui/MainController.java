@@ -28,6 +28,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.team01.scheduler.gui.MainApplication.runTaskWithDashboard;
+
 public class MainController {
     private TaskRunner taskRunner;
     private ObservableList<IRunnable> taskList;
@@ -101,29 +103,8 @@ public class MainController {
             }
         };
 
-        runTaskWithDashboard(runnable, inputGraph, processorCount, coreCount, useVisualization, completionVisualizer);
-    }
-
-    public void runTaskWithDashboard(IRunnable runnable, String inputGraph, int processorCount, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer) {
-        URL uiPath = MainApplication.class.getClassLoader().getResource("dashboard.fxml");
-        FXMLLoader fxmlLoader = new FXMLLoader(uiPath);
-
-        // Create scene and display
-        GridPane gridPane;
-        try {
-            gridPane = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Setup Controller Properties
-        DashboardController controller = fxmlLoader.getController();
-        controller.runWithTask(runnable, inputGraph, processorCount, numCores, useVisualization, completionVisualizer);
-
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(gridPane);
-
-        addTab(makeTitle("Dashboard", runnable), gridPane, true);
+        var dashboard = runTaskWithDashboard(runnable, inputGraph, processorCount, coreCount, useVisualization, null, completionVisualizer);
+        addTab(makeTitle("Dashboard", runnable), dashboard, true);
     }
 
     private String makeTitle(String tabName, IRunnable runnable) {

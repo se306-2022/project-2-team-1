@@ -6,6 +6,7 @@ import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.algorithm.IUpdateVisualizer;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
+import com.team01.scheduler.graph.util.ExportToDotFile;
 import com.team01.scheduler.gui.views.PathLengthColorStrategy;
 import com.team01.scheduler.gui.views.RadialTree;
 import javafx.animation.Animation;
@@ -75,8 +76,9 @@ public class DashboardController {
     private final DashboardProgressStage algorithm = new DashboardProgressStage("Algorithm");
     private final DashboardStage finished = new DashboardStage("Finished");
     private final DashboardStage printed = new DashboardStage("Presented");
+    private final DashboardStage exported = new DashboardStage("Exported");
 
-    private final DashboardStage[] stages = {
+    private final DashboardStage[] requiredStages = {
             started,
             parsing,
             algorithm,
@@ -89,7 +91,7 @@ public class DashboardController {
     }
 
     /**
-     * Run task when a graph and algorithm is selected
+     * Run task when a graph and algorithm is selected. Do not output a file
      *
      * @param runnable              Run program
      * @param graphDescription      Description of graph
@@ -99,6 +101,21 @@ public class DashboardController {
      * @param completionVisualizer  The visualisation object
      */
     public void runWithTask(IRunnable runnable, String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer) {
+        runWithTask(runnable, graphDescription, numProcessors, numCores, useVisualization, completionVisualizer, null);
+    }
+
+    /**
+     * Run task when a graph and algorithm is selected
+     *
+     * @param runnable              Run program
+     * @param graphDescription      Description of graph
+     * @param numProcessors         The number of processors to display along with scheduled tasks
+     * @param numCores              The number of threads used to find optimal schedule
+     * @param useVisualization      Toggle visualisation
+     * @param completionVisualizer  The visualisation object
+     * @param outputFileName        File to output
+     */
+    public void runWithTask(IRunnable runnable, String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer, String outputFileName) {
         performRotationAnimation();
 
         this.runnable = runnable;
@@ -121,7 +138,7 @@ public class DashboardController {
         timeline.play();
 
         try {
-            runTaskInternal(graphDescription, numProcessors, numCores, useVisualization, completionVisualizer);
+            runTaskInternal(graphDescription, numProcessors, numCores, useVisualization, completionVisualizer, outputFileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -175,10 +192,13 @@ public class DashboardController {
     /**
      * Update status checks of dashboard
      */
-    private void runTaskInternal(String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer externalCompletion) throws IOException {
+    private void runTaskInternal(String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer externalCompletion, String outputFileName) throws IOException {
 
-        for (var stage : stages)
+        for (var stage : requiredStages)
             createViewForStage(stage);
+
+        if (outputFileName != null)
+            createViewForStage(exported);
 
         startingElapsedTime = System.currentTimeMillis();
 
@@ -205,6 +225,18 @@ public class DashboardController {
                 externalCompletion.setSchedule(schedule);
 
                 Platform.runLater(() -> printed.setFinished(true));
+
+                // export to dot file
+                if (outputFileName != null) {
+                    ExportToDotFile export = new ExportToDotFile(graph, outputFileName, schedule);
+                    try {
+                        export.writeDotWithSchedule();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                Platform.runLater(() -> exported.setFinished(true));
 
                 Platform.runLater(() -> timeElapsed.setText("Time Taken: " + (System.currentTimeMillis() - startingElapsedTime) + "ms"));
             };
