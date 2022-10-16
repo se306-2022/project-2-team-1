@@ -21,6 +21,11 @@ together whilst not overloading the main project with an excessive amount of fil
 
 ### Running CLI
 
+#### Notes
+Some key information for running the scheduler:
+ - The visualiser adds some level of overhead to visualise the solution search space. While every effort has been made to keep it running optimally, it is recommended to disable the visualisation for exceptionally large graphs.
+ - The algorithm uses DFS Branch and Bound by default. It can be switched to an alternate A-Star algorithm using a 'bottom level' heuristic, which may prove faster in some cases.
+
 #### IntelliJ
 
 To run the CLI of our project via IntelliJ, click on the Gradle tab and locate **scheduler-cli**. Click the dropdown
@@ -55,9 +60,9 @@ Input components like the graph and the number of processors can be edited in th
 ./gradlew projects
 
 # run just the cli
-./gradlew :scheduler-cli:run
+./gradlew :scheduler-cli:run --args="MyGraphFile.dot 4 -p 2 -v"
 
-# run the gui
+# run the debug gui
 ./gradlew :scheduler-gui:run
 
 # build the stand alone jar file
@@ -76,6 +81,8 @@ java -jar scheduler.jar INPUT.dot P [OPTION(S)]
 
 ```
 Options category 'misc':
+  --algorithm [-a] (a string; default: "BRANCH_AND_BOUND")
+    The algorithm to use (BRANCH_AND_BOUND or A_STAR)
   --[no]help [-h] (a boolean; default: "false")
     Prints usage info.
 
