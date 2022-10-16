@@ -6,25 +6,19 @@ import com.team01.scheduler.algorithm.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.graph.models.Graph;
 import com.team01.scheduler.graph.models.GraphController;
+import com.team01.scheduler.gui.views.Console;
+import com.team01.scheduler.gui.views.DashboardController;
 import com.team01.scheduler.gui.views.ScheduleView;
 import com.team01.scheduler.prototype.DepthFirstSearch;
 import com.team01.scheduler.algorithm.IRunnable;
-import com.team01.scheduler.gui.views.Console;
-import javafx.animation.Animation;
-import javafx.animation.RotateTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.util.Duration;
 
 import java.io.*;
 import java.net.URL;
@@ -99,7 +93,7 @@ public class MainController {
             }
         });
 
-        switchToDashboard();
+        //switchToDashboard();
     }
 
     /**
