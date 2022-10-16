@@ -274,6 +274,7 @@ public class MainController {
         newTab.setClosable(true);
         tabPane.getTabs().add(newTab);
 
+        //Focus on new tab
         if (makeCurrent)
             tabPane.getSelectionModel().select(newTab);
     }
