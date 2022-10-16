@@ -4,20 +4,25 @@ import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.algorithm.ICompletionVisualizer;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.algorithm.IUpdateVisualizer;
+import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.graph.util.ExportToDotFile;
 import com.team01.scheduler.gui.views.PathLengthColorStrategy;
 import com.team01.scheduler.gui.views.RadialTree;
+import com.team01.scheduler.gui.views.ScheduleView;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -63,12 +68,15 @@ public class DashboardController {
     public VBox stagesVbox;
     @FXML
     public Label timeElapsed;
+    @FXML
+    public Button showScheduleBtn;
 
     // Instance state
     private final TaskRunner taskRunner;
     private RadialTree<PathLengthColorStrategy> radialTree;
     private IRunnable runnable;
     private long startingElapsedTime;
+    private Schedule schedule = null;
 
     // Stages
     private final DashboardStage started = new DashboardStage("Started");
@@ -169,8 +177,7 @@ public class DashboardController {
         });
 
         // Add progress indicator only if needed
-        if (stage instanceof DashboardProgressStage) {
-            var progressStage = (DashboardProgressStage) stage;
+        if (stage instanceof DashboardProgressStage progressStage) {
 
             var indicator = new ProgressBar();
             indicator.prefWidthProperty().bind(vbox.widthProperty());
@@ -219,10 +226,15 @@ public class DashboardController {
 
             // Run on completion
             ICompletionVisualizer internalCompletion = schedule -> {
-                Platform.runLater(() -> algorithm.setProgress(1));
-                Platform.runLater(() -> finished.setFinished(true));
+                Platform.runLater(() -> {
+                    algorithm.setProgress(1);
+                    finished.setFinished(true);
+                    showScheduleBtn.setDisable(false);
+                });
 
-                externalCompletion.setSchedule(schedule);
+                if (externalCompletion != null)
+                    externalCompletion.setSchedule(schedule);
+                this.schedule = schedule;
 
                 Platform.runLater(() -> printed.setFinished(true));
 
@@ -393,4 +405,33 @@ public class DashboardController {
             timeElapsed.setText("Elapsed Time: " + (System.currentTimeMillis() - startingElapsedTime) + "ms");
     }
 
+    public void showSchedule(MouseEvent mouseEvent) {
+        if (schedule == null)
+            return;
+
+        // Scheduler View is a custom control which displays a schedule
+        var schedulerView = new ScheduleView();
+        schedulerView.setSchedule(schedule);
+        VBox.setVgrow(schedulerView, Priority.ALWAYS);
+
+        // Add zoom controls
+        var zoomInButton = new Button("Zoom In");
+        var zoomOutButton = new Button("Zoom Out");
+        zoomInButton.setOnMouseClicked(x -> schedulerView.zoomIn());
+        zoomOutButton.setOnMouseClicked(x -> schedulerView.zoomOut());
+
+        // Add to toolbar
+        var toolbar = new ToolBar(zoomInButton, zoomOutButton);
+
+        var vbox = new VBox();
+        vbox.getChildren().addAll(toolbar, schedulerView);
+
+        // Create new tab
+        var scene = new Scene(vbox, 600, 600);
+
+        var stage = new Stage();
+        stage.setTitle("Schedule");
+        stage.setScene(scene);
+        stage.show();
+    }
 }

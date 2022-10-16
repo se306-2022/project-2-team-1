@@ -69,7 +69,7 @@ public class MainApplication extends Application {
                 invocation.numCores,
                 invocation.useVisualization,
                 invocation.outputFileName,
-                schedule -> Platform.runLater(() -> showResultsPopup(schedule)));
+                null);
 
         Scene scene = new Scene(node, 1250, 800);
 
@@ -113,46 +113,6 @@ public class MainApplication extends Application {
         borderPane.setCenter(gridPane);
 
         return borderPane;
-    }
-
-    /**
-     * Show schedule in new tab
-     */
-    private void showResultsPopup(Schedule schedule) {
-
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ignored) {}
-
-            Platform.runLater(() -> {
-
-                // Scheduler View is a custom control which displays a schedule
-                var schedulerView = new ScheduleView();
-                schedulerView.setSchedule(schedule);
-                VBox.setVgrow(schedulerView, Priority.ALWAYS);
-
-                // Add zoom controls
-                var zoomInButton = new Button("Zoom In");
-                var zoomOutButton = new Button("Zoom Out");
-                zoomInButton.setOnMouseClicked(x -> schedulerView.zoomIn());
-                zoomOutButton.setOnMouseClicked(x -> schedulerView.zoomOut());
-
-                // Add to toolbar
-                var toolbar = new ToolBar(zoomInButton, zoomOutButton);
-
-                var vbox = new VBox();
-                vbox.getChildren().addAll(toolbar, schedulerView);
-
-                // Create new tab
-                var scene = new Scene(vbox, 600, 600);
-
-                var stage = new Stage();
-                stage.setTitle("Schedule");
-                stage.setScene(scene);
-                stage.show();
-            });
-        }).start();
     }
 
     public static void setInvocation(Invocation args) {
