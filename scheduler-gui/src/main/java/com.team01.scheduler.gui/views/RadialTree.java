@@ -6,6 +6,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -18,7 +19,6 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
 
     // Configuration
     private static final double CIRCLE_DISTANCE = 60;
-    private static final double DEPTH_LIMIT = 6;
     private static final int FRAME_BUDGET = 10000;
 
     // Visualiser State
@@ -114,9 +114,6 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
         if (frameCounter > FRAME_BUDGET)
             return RecursiveResult.GET_OUT;
 
-        if (depth > DEPTH_LIMIT)
-            return RecursiveResult.NO_DRAW;
-
         if (!state.dirty)
             return RecursiveResult.NO_DRAW;
 
@@ -155,7 +152,6 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
                     var color = colorStrategy.getColor(childStateId, childState);
                     gc.setFill(color);
 
-                    // gc.fillOval(x, y, 8, 8);
                     gc.fillPolygon(
                             new double[] {parentX, startXY.x, endXY.x },
                             new double[] {parentY, startXY.y, endXY.y}, 3);
@@ -248,10 +244,5 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
         };
 
         timer.start();
-
-        if (tree.depthMap.size() > DEPTH_LIMIT) {
-            var leaves = tree.depthMap.get(tree.depthMap.size()-1);
-            System.out.println("Number of Leaves: " + leaves.size());
-        }
     }
 }

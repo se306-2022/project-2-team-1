@@ -1,4 +1,4 @@
-package com.team01.scheduler.gui.views;
+package com.team01.scheduler.gui;
 
 import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.algorithm.ICompletionVisualizer;
@@ -6,15 +6,16 @@ import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.algorithm.IUpdateVisualizer;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
+import com.team01.scheduler.gui.views.PathLengthColorStrategy;
+import com.team01.scheduler.gui.views.RadialTree;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
-import javafx.concurrent.Task;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
@@ -56,16 +57,32 @@ public class DashboardController {
     @FXML
     private Label numberOfSolutionsLabel;
     @FXML
-    private Label statusLabel;
-    @FXML
-    private ProgressIndicator progressCircle1;
-    @FXML
     public VBox visualizerContainer;
+    @FXML
+    public VBox stagesVbox;
+    @FXML
+    public Label timeElapsed;
 
     // Instance state
     private final TaskRunner taskRunner;
     private RadialTree<PathLengthColorStrategy> radialTree;
     private IRunnable runnable;
+    private long startingElapsedTime;
+
+    // Stages
+    private final DashboardStage started = new DashboardStage("Started");
+    private final DashboardStage parsing = new DashboardStage("Graph Parsing");
+    private final DashboardProgressStage algorithm = new DashboardProgressStage("Algorithm");
+    private final DashboardStage finished = new DashboardStage("Finished");
+    private final DashboardStage printed = new DashboardStage("Presented");
+
+    private final DashboardStage[] stages = {
+            started,
+            parsing,
+            algorithm,
+            finished,
+            printed
+    };
 
     public DashboardController(){
         taskRunner = new TaskRunner();
@@ -97,6 +114,7 @@ public class DashboardController {
             displayMemory();
             displayNumberOfSolutionsFound();
             displayShortestPath();
+            displayElapsedTime();
         }));
 
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -110,55 +128,93 @@ public class DashboardController {
     }
 
     /**
+     * Create a new view for a given dashboard stage
+     * @param stage stage to bind to
+     */
+    private void createViewForStage(DashboardStage stage) {
+
+        var vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.getStyleClass().add("stageVbox");
+        vbox.setOpacity(0.5);
+
+        var label = new Label(stage.getTitle());
+        label.getStyleClass().add("stageLabel");
+        vbox.getChildren().add(label);
+
+        // Adjust label state depending on finished property
+        stage.finishedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                vbox.setOpacity(1.0);
+            } else {
+                vbox.setOpacity(0.5);
+            }
+        });
+
+        // Add progress indicator only if needed
+        if (stage instanceof DashboardProgressStage) {
+            var progressStage = (DashboardProgressStage) stage;
+
+            var indicator = new ProgressBar();
+            indicator.prefWidthProperty().bind(vbox.widthProperty());
+            indicator.progressProperty().bind(progressStage.progressProperty());
+            vbox.getChildren().add(indicator);
+        }
+
+        stagesVbox.getChildren().add(vbox);
+    }
+
+    /**
+     * Print an error to the console
+     * @param error error to print
+     */
+    private void fail(String error) {
+        System.err.println(error);
+    }
+
+    /**
      * Update status checks of dashboard
      */
     private void runTaskInternal(String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer externalCompletion) throws IOException {
 
-        var task = new Task<>() {
-            @Override
-            public Void call() throws IOException, InterruptedException {
-                updateMessage("Status");
+        for (var stage : stages)
+            createViewForStage(stage);
 
-                updateProgress(20, 100);
-                updateMessage("Started Algorithm");
+        startingElapsedTime = System.currentTimeMillis();
 
-                if (runnable == null) {
-                    System.err.println("No task selected");
-                    return null;
-                }
+        var thread = new Thread(() -> {
 
-                var graph = safeParseGraph(graphDescription);
+            Platform.runLater(() -> started.setFinished(true));
 
-                if (graph == null) {
-                    System.err.println("Could not parse graph");
-                    return null;
-                }
+            var graph = safeParseGraph(graphDescription);
 
-                updateProgress(40, 100);
-                updateMessage("Algorithm in progress");
-
-                // Run on completion
-                ICompletionVisualizer internalCompletion = schedule -> {
-                    updateMessage("Algorithm Completed");
-                    updateProgress(85, 100);
-
-                    externalCompletion.setSchedule(schedule);
-
-                    updateMessage("Results Printed");
-                    updateProgress(100, 100);
-                };
-
-                // Run the task
-                IUpdateVisualizer updateVisualizer = useVisualization ? radialTree : null;
-                taskRunner.safeRunAsync(runnable, graph, numProcessors, numCores, updateVisualizer, internalCompletion);
-
-                return null;
+            if (graph == null) {
+                fail("Could not parse graph");
+                return;
             }
-        };
 
-        statusLabel.textProperty().bind(task.messageProperty());
-        progressCircle1.progressProperty().bind(task.progressProperty());
-        new Thread(task).start();
+            Platform.runLater(() -> parsing.setFinished(true));
+            Platform.runLater(() -> algorithm.setFinished(true));
+            Platform.runLater(() -> algorithm.setProgress(-1));
+
+            // Run on completion
+            ICompletionVisualizer internalCompletion = schedule -> {
+                Platform.runLater(() -> algorithm.setProgress(1));
+                Platform.runLater(() -> finished.setFinished(true));
+
+                externalCompletion.setSchedule(schedule);
+
+                Platform.runLater(() -> printed.setFinished(true));
+
+                Platform.runLater(() -> timeElapsed.setText("Time Taken: " + (System.currentTimeMillis() - startingElapsedTime) + "ms"));
+            };
+
+            // Run the task
+            IUpdateVisualizer updateVisualizer = useVisualization ? radialTree : null;
+            taskRunner.safeRunAsync(runnable, graph, numProcessors, numCores, updateVisualizer, internalCompletion);
+        });
+
+        thread.start();
     }
 
     /**
@@ -257,6 +313,7 @@ public class DashboardController {
         return Math.round(number * 100.0) / 100.0;
     }
 
+
     /**
      * Rotation animation for circles, creates mechanised effect
      *
@@ -294,6 +351,14 @@ public class DashboardController {
      */
     private void displayNumberOfSolutionsFound() {
         numberOfSolutions.setText(String.valueOf(runnable.getNumberSolutions()));
+    }
+
+    /**
+     * Displays the current elapsed time
+     */
+    private void displayElapsedTime() {
+        if (!printed.getFinished())
+            timeElapsed.setText("Elapsed Time: " + (System.currentTimeMillis() - startingElapsedTime) + "ms");
     }
 
 }

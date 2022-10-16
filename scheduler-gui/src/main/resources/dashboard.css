@@ -24,3 +24,19 @@
     -fx-text-fill: white;
     -fx-font-size: 10pt;
 }
+
+.stageVbox {
+    -fx-padding: 20px;
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-background-radius: 8px;
+}
+
+.stageLabel {
+    -fx-text-fill: white;
+    -fx-font-size: 10pt;
+}
+
+.timeElapsed {
+    -fx-text-fill: white;
+    -fx-font-size: 10pt;
+}
