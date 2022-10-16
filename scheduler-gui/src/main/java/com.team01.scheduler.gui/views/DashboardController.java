@@ -84,17 +84,17 @@ public class DashboardController implements Initializable {
 
 
     private void performRotationAnimation() {
-        setRotate(c1, true, 360, 5);
-        setRotate(c2, true, 180, 10);
-        setRotate(c3, true, 145, 15);
+        setRotate(c1, true, 360, 20);
+        setRotate(c2, false, 360, 15);
+        setRotate(c3, true, 360, 10);
 
-        setRotate(c4, true, 360, 6);
-        setRotate(c5, true, 180, 12);
-        setRotate(c6, true, 145, 18);
+        setRotate(c4, false, 360, 20);
+        setRotate(c5, true, 360, 15);
+        setRotate(c6, false, 360, 10);
 
-        setRotate(c7, true, 360, 7);
-        setRotate(c8, true, 180, 14);
-        setRotate(c9, true, 145, 21);
+        setRotate(c7, true, 360, 20);
+        setRotate(c8, false, 360, 15);
+        setRotate(c9, true, 360, 10);
     }
 
     private void displayStatistics() {
@@ -125,6 +125,9 @@ public class DashboardController implements Initializable {
         }
         info[0] = twoDecimalRounding(info[0]);
         memoryNumberLabel.setText(String.valueOf(info[0]));
+
+        //updateRotationSpeed(info[0]);
+
     }
 
     private double [] computeMemory() {
