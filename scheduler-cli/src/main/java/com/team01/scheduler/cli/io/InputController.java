@@ -1,6 +1,8 @@
 package com.team01.scheduler.cli.io;
 
 import com.team01.scheduler.Invocation;
+import com.team01.scheduler.algorithm.astar.AStarScheduler;
+import com.team01.scheduler.algorithm.branchandbound.BranchAndBoundSerial;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
 import com.team01.scheduler.TaskRunner;
@@ -26,7 +28,6 @@ public class InputController {
 
     public enum Algorithm {
         BRANCH_AND_BOUND,
-        BRANCH_AND_BOUND_SERIAL,
         A_STAR
     }
 
@@ -51,7 +52,12 @@ public class InputController {
         invocation.useVisualization = commandLineParser.isVisualize();
         invocation.outputFileName = commandLineParser.getOutputFileName();
         invocation.inputFileName = commandLineParser.getInputFileName();
-        invocation.runnable = new BranchAndBound();
+
+        if (commandLineParser.getAlgorithm() == Algorithm.A_STAR) {
+            invocation.runnable = new AStarScheduler();
+        } else {
+            invocation.runnable = new BranchAndBound();
+        }
 
         return invocation;
     }

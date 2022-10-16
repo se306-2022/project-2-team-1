@@ -74,7 +74,7 @@ public class MainApplication extends Application {
         Scene scene = new Scene(node, 1250, 800);
 
         stage.setResizable(false);
-        stage.setTitle("Team 01 - Scheduler");
+        stage.setTitle("Team 01 - Visualiser [" + invocation.runnable.getTaskName() + "]");
         stage.setScene(scene);
         stage.show();
     }
