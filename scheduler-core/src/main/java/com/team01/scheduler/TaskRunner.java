@@ -7,9 +7,6 @@ import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-
 
 public class TaskRunner {
 
@@ -29,6 +26,7 @@ public class TaskRunner {
         System.out.println("\nTASK START\n");
         Schedule schedule;
 
+        //Try running the scheduler and catch exception if one is thrown
         try {
             schedule = runnable.run(graph, numProcessors, numCores, null, null);
         }
@@ -44,6 +42,8 @@ public class TaskRunner {
     public void safeRunAsync(IRunnable runnable, Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer) {
 
         System.out.println("Running task: " + runnable.getTaskName());
+
+        //Try running the scheduler asynchronously and catch exception if one is thrown
 
         CompletableFuture.runAsync(() -> {
             System.out.println("\nTASK START\n");

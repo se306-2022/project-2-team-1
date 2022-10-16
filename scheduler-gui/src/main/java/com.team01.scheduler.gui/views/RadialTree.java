@@ -11,6 +11,10 @@ import javafx.util.Pair;
 
 import java.util.*;
 
+/**
+ * Displays a real time radial tree as the algorithm progresses. A depth limiter and
+ * visualisation restriction is implemented to prevent the application from lagging.
+ */
 public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane implements IUpdateVisualizer {
 
     // Configuration
@@ -24,6 +28,10 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
     private int frameCounter = 0;
     private boolean algorithmTerminated = false;
 
+    /**
+     * Constructor for creating a radial tree
+     * @param colorStrategy     The desired colour palette
+     */
     public RadialTree(ColorStrategy colorStrategy) {
         var canvas = new Canvas();
         var pane = new CanvasPane(canvas, this::draw);
@@ -33,6 +41,11 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
         this.colorStrategy = colorStrategy;
     }
 
+    /**
+     * Cumulatively draw the tree as new partial solutions are found
+     *
+     * @param tree      CumulativeTree object
+     */
     @Override
     public void setCumulativeTree(CumulativeTree tree) {
         this.tree = tree;
@@ -50,7 +63,14 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
     }
 
 
-
+    /**
+     * Gets the angle in consideration of drawing the branches of the radial tree
+     *
+     * @param angle     Angle of branch or potential branch
+     * @param depth     Depth of branch
+     *
+     * @return
+     */
     private Point getCoordsForAngle(double angle, int depth) {
         double radians = Math.toRadians(angle);
         double x = Math.sin(radians) * CIRCLE_DISTANCE * depth;
@@ -66,12 +86,28 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
         gc.fillRect(0, 0, getWidth(), getHeight());
     }
 
+
+    /**
+     * Marks the state of drawing the tree
+     */
     enum RecursiveResult {
         DONE,
         GET_OUT,
         NO_DRAW,
     }
 
+    /**
+     * Recursively draw the tree which corresponds to the behaviour of the algorithm
+     *
+     * @param state             The state of the cumulative tree
+     * @param stateId           The id of the state
+     * @param depth             The depth of the radial tree
+     * @param parentX           The parent x coordinate to draw from
+     * @param parentY           The parent y coordinate to draw from
+     * @param startRangeAngle   The starting angle to draw from
+     * @param endRangeAngle     The ending angle to draw from
+     * @return                  Returns the DONE status of the recursive draw
+     */
     private RecursiveResult drawRecursive(CumulativeTree.State state, int stateId, int depth, double parentX, double parentY, double startRangeAngle, double endRangeAngle) {
 
         // Get Out Clause
@@ -93,8 +129,7 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
             }
         }
 
-        // TODO: Clear dirty sectors before redrawing (to avoid artifacts)
-
+        //Consider all children queued in the to draw queue, and draw the children branches
         if (!children.isEmpty()) {
             double range = endRangeAngle - startRangeAngle;
             double step = range / children.size();
@@ -139,6 +174,9 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
         this.algorithmTerminated = true;
     }
 
+    /**
+     * Starting function for drawing the tree. Keeps track of
+     */
     private void draw() {
 
         if (this.tree == null)

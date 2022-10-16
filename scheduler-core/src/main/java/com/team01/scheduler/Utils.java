@@ -1,21 +1,13 @@
 package com.team01.scheduler;
 
-import com.team01.scheduler.algorithm.ICompletionVisualizer;
-import com.team01.scheduler.algorithm.IRunnable;
-import com.team01.scheduler.algorithm.IUpdateVisualizer;
-import com.team01.scheduler.algorithm.Schedule;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 
 import com.team01.scheduler.algorithm.matrixModels.Edge;
-import com.team01.scheduler.graph.models.EdgesLinkedList;
-
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 

@@ -49,15 +49,24 @@ public class EdgesLinkedList implements Iterable<Edge> {
             throw new InvalidPositionException("Position " + pos + " is invalid");
         }
 
+        //Start at first edge
         int count = 0;
         Edge currentEdge = head;
+
+        //Return first edge if it matches position
         if (pos == 0) {
             return head;
         } else {
+
+            //Until no more edges are present
             while (currentEdge != null) {
+
+                //Retrieve edge at indexing position
                 if (count == pos) {
                     return currentEdge;
                 }
+
+                //Get next edge
                 currentEdge = currentEdge.getNext();
                 count++;
             }
@@ -84,9 +93,12 @@ public class EdgesLinkedList implements Iterable<Edge> {
         if (pos == 0) {
             edge.setNext(head);
         } else {
+
+            //Get neighbouring edges of edge in current position
             Edge leftEdge = get(pos - 1);
             Edge rightEdge = get(pos);
 
+            //Set neighbouring to each other with new edge inserted
             edge.setNext(rightEdge);
             leftEdge.setNext(edge);
         }
@@ -102,12 +114,15 @@ public class EdgesLinkedList implements Iterable<Edge> {
             throw new InvalidPositionException("Position " + pos + " is invalid");
         }
 
+        //Handle cases if edge to remove is at the start or the end
         if (pos == 0) {
             head = get(pos + 1);
         } else if (pos == size() - 1) {
             Edge leftEdge = get(pos - 1);
             leftEdge.setNext(null);
         } else {
+
+            //Otherwise, set neighbouring edges to each other
             Edge leftEdge = get(pos - 1);
             Edge rightEdge = get(pos + 1);
 
@@ -122,10 +137,13 @@ public class EdgesLinkedList implements Iterable<Edge> {
     public int size() {
         int count = 0;
         Edge edge = head;
+
+        //Increment count for every edge
         while(edge != null) {
             count++;
             edge = edge.getNext();
         }
+
         return count;
     }
 

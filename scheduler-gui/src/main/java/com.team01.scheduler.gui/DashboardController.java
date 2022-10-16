@@ -21,6 +21,10 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
+/**
+ * A dashboard controller which outlines the functions for
+ * display statistics when the algorithm is run
+ */
 public class DashboardController {
     @FXML
     private Circle c1;
@@ -84,6 +88,16 @@ public class DashboardController {
         taskRunner = new TaskRunner();
     }
 
+    /**
+     * Run task when a graph and algorithm is selected
+     *
+     * @param runnable              Run program
+     * @param graphDescription      Description of graph
+     * @param numProcessors         The number of processors to display along with scheduled tasks
+     * @param numCores              The number of threads used to find optimal schedule
+     * @param useVisualization      Toggle visualisation
+     * @param completionVisualizer  The visualisation object
+     */
     public void runWithTask(IRunnable runnable, String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer) {
         performRotationAnimation();
 
@@ -113,6 +127,10 @@ public class DashboardController {
         }
     }
 
+    /**
+     * Create a new view for a given dashboard stage
+     * @param stage stage to bind to
+     */
     private void createViewForStage(DashboardStage stage) {
 
         var vbox = new VBox();
@@ -146,10 +164,17 @@ public class DashboardController {
         stagesVbox.getChildren().add(vbox);
     }
 
+    /**
+     * Print an error to the console
+     * @param error error to print
+     */
     private void fail(String error) {
         System.err.println(error);
     }
 
+    /**
+     * Update status checks of dashboard
+     */
     private void runTaskInternal(String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer externalCompletion) throws IOException {
 
         for (var stage : stages)
@@ -192,6 +217,12 @@ public class DashboardController {
         thread.start();
     }
 
+    /**
+     * Parses the graphviz string safely
+     *
+     * @param graphviz The graphviz String
+     * @return Gets the graph associated with the graphviz to process in this controller
+     */
     private Graph safeParseGraph(String graphviz) {
         try {
             var graphController = new GraphController(graphviz);
@@ -202,7 +233,9 @@ public class DashboardController {
         return null;
     }
 
-
+    /**
+     * Rotate display modules on right side of dashboard
+     */
     private void performRotationAnimation() {
         setRotate(c1, true, 360, 20);
         setRotate(c2, false, 360, 15);
@@ -217,6 +250,9 @@ public class DashboardController {
         setRotate(c9, true, 360, 10);
     }
 
+    /**
+     * Display memory used during application
+     */
     private void displayMemory() {
         //To stop display from jumping numbers when idle, set the lowest memory
         //identifier to be MB
@@ -250,6 +286,10 @@ public class DashboardController {
 
     }
 
+    /**
+     * Computes the memory used up by the application
+     * @return A double info array containing the number of bytes and the byte multiplier
+     */
     private double [] computeMemory() {
 
         var info = new double[2];
@@ -274,6 +314,14 @@ public class DashboardController {
     }
 
 
+    /**
+     * Rotation animation for circles, creates mechanised effect
+     *
+     * @param c         The circle object from FXML
+     * @param reverse   Boolean variable to reverse rotation after cycle ends
+     * @param angle     THe angle in which the circle rotates
+     * @param duration  The duration of the rotation per cycle
+     */
     private void setRotate(Circle c, boolean reverse, int angle, double duration) {
 
         RotateTransition rt = new RotateTransition(Duration.seconds(duration), c);
@@ -291,14 +339,23 @@ public class DashboardController {
         rt.play();
     }
 
+    /**
+     * Displays the current shortest path of the algorithm
+     */
     private void displayShortestPath() {
         shortestPath.setText(String.valueOf(runnable.getShortestPath()));
     }
 
+    /**
+     * Displays the number of whole solutions currently found
+     */
     private void displayNumberOfSolutionsFound() {
         numberOfSolutions.setText(String.valueOf(runnable.getNumberSolutions()));
     }
 
+    /**
+     * Displays the current elapsed time
+     */
     private void displayElapsedTime() {
         if (!printed.getFinished())
             timeElapsed.setText("Elapsed Time: " + (System.currentTimeMillis() - startingElapsedTime) + "ms");

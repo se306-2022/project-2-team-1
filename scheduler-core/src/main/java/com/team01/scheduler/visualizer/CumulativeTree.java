@@ -73,9 +73,16 @@ public class CumulativeTree {
         rootState = stateMap.put(ROOT_ID, new State(0, EXIT_ID));
     }
 
+    /**
+     * Marks current state as dirty (needs to be redrawn) and propagate to all parents
+     * @param state - state to mark dirty
+     */
+
     private void markDirtyAndPropagate(State state) {
+
         State parent;
         int parentId = state.parentId;
+
         state.dirty = true;
 
         while ((parent = stateMap.getOrDefault(parentId, null)) != null) {
@@ -87,6 +94,12 @@ public class CumulativeTree {
         }
     }
 
+    /**
+     * Create a new child state of provided parent state
+     * @param parentSector - parent state
+     * @param depth - depth
+     * @return ID of new sector
+     */
     private int createChildSector(int parentSector, int depth) {
         outwardRelation.putIfAbsent(parentSector, new ArrayList<>());
         outwardRelation.get(parentSector).add(++sectorId);
@@ -99,13 +112,6 @@ public class CumulativeTree {
 
     public List<Integer> getStartStates() {
         return outwardRelation.get(ROOT_ID);
-    }
-
-    public void addSolutions(int depth, int solutions) {
-        /*numSolutions.putIfAbsent(depth, 0);
-
-        var current = numSolutions.get(depth);
-        numSolutions.put(depth, current + solutions);*/
     }
 
     public int pushState(int depth, int pathLength, int parentSector) {
@@ -121,7 +127,7 @@ public class CumulativeTree {
         // Create sector
         synchronized (this) {
             newSectorId = createChildSector(parentSector, depth);
-            stateMap.put(newSectorId, new State(pathLength, /*numChildren, */parentSector));
+            stateMap.put(newSectorId, new State(pathLength, parentSector));
 
 
             // Update total children
@@ -134,6 +140,7 @@ public class CumulativeTree {
             // We only mark the parent sector as dirty, because when drawing we draw within
             // the bounds of our parent sector. This prevents having to reallocate the entire
             // thing.
+
             markDirtyAndPropagate(stateMap.get(parentSector));
         }
 

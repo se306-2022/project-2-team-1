@@ -20,6 +20,7 @@ public class GraphController {
      */
 
     private void parseGraphviz(BufferedReader br) throws IOException {
+
         // Reset ID to 0 in the case we reuse this instance of graphcontroller
         ID=0;
         ArrayList<Node> nodes = new ArrayList<>();
@@ -35,6 +36,7 @@ public class GraphController {
 
             input = input.replaceAll("\\s+","");
             input = input.trim();
+
             // Get index to determine whether it's an edge or a node later on
             int arrowIndex = input.indexOf("->");
             int bracketIndex = input.indexOf("[");
