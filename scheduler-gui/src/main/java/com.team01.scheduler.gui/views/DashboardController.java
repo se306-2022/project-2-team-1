@@ -13,14 +13,13 @@ import javafx.animation.Timeline;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
 import java.io.IOException;
 
 public class DashboardController {
-    private TaskRunner taskRunner;
-
     @FXML
     private Circle c1;
     @FXML
@@ -55,8 +54,11 @@ public class DashboardController {
     private Label statusLabel;
     @FXML
     private ProgressIndicator progressCircle1;
-
     @FXML
+    public AnchorPane visualizerContainer;
+
+    // Instance state
+    private final TaskRunner taskRunner;
     private RadialTree<PathLengthColorStrategy> radialTree;
     private IRunnable runnable;
 
@@ -68,6 +70,15 @@ public class DashboardController {
         performRotationAnimation();
 
         this.runnable = runnable;
+
+        if (useVisualization) {
+            radialTree = new RadialTree<>(new PathLengthColorStrategy());
+            AnchorPane.setTopAnchor(radialTree, 0.0);
+            AnchorPane.setLeftAnchor(radialTree, 0.0);
+            AnchorPane.setRightAnchor(radialTree, 0.0);
+            AnchorPane.setBottomAnchor(radialTree, 0.0);
+            visualizerContainer.getChildren().add(radialTree);
+        }
 
         //Updates display every time period stated in Keyframe(DURATION)
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), ev -> {

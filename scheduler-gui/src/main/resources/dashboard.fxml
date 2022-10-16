@@ -62,7 +62,7 @@
             </VBox>
          </children>
       </AnchorPane>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="700.0" GridPane.columnIndex="1" />
+      <AnchorPane fx:id="visualizerContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="700.0" GridPane.columnIndex="1" />
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="300.0" styleClass="backgroundColorRight" stylesheets="@dashboard.css" GridPane.columnIndex="2">
          <children>
             <VBox alignment="CENTER" layoutY="61.0" prefHeight="629.0" prefWidth="300.0">
