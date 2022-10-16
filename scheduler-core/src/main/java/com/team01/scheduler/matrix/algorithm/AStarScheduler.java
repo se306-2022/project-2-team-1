@@ -62,10 +62,12 @@ public class AStarScheduler {
     private void createRootNode() {
         Map<Integer, List<Task>> initialMap = new HashMap<>();
 
+        //Initialise map with processors
         for (int i = 1; i < root.numProcessors + 1; i++) {
             initialMap.put(i, new ArrayList<Task>());
         }
 
+        //Create and add root node to priority queue
         root = new ScheduleTreeNode(initialMap, this.numProcessors);
         openList.add(root);
     }
@@ -117,28 +119,33 @@ public class AStarScheduler {
             ScheduleTreeNode clone = parent.clone(parent);
             Node targetNode = edge.getTarget();
             int compTime = targetNode.getValue();
+
             for (int i =0; i < parent.numProcessors; i++) {
                 // TODO consider when last scheduled node was on a different processors and therefore incurs extra time
                 int startTime = parent.processorBusyTime[i];
+
                 // map of processorID and corresponding list of tasks
                 Map<Integer, List<Task>> childSchedule  = new HashMap<>();
                 childSchedule = parent.schedule;
                 childSchedule.put(i, (List<Task>) new Task(startTime, i, targetNode));
+
+                //Create new ScheduleTreeNode with updated time for when processor is busy
                 ScheduleTreeNode scheduleTreeNode = new ScheduleTreeNode(childSchedule, parent.numProcessors, parent);
                 scheduleTreeNode.processorBusyTime[i] = scheduleTreeNode.processorBusyTime[i] + compTime;
                 childSchedules.add(scheduleTreeNode);
             }
         }
+
         return childSchedules;
     }
-
-    //private PriorityQueue<PartialSchedule> priorityQueue = new PriorityQueue<>(new CostFunctionComparator());
 
     private class Task {
         private int startTime;
         private int processorID;
+
         public Node node;
 
+        //Constructor for a task
         public Task (int startTime, int processorID, Node node) {
             this.startTime = startTime;
             this.processorID = processorID;
@@ -163,6 +170,7 @@ public class AStarScheduler {
             return currentShortestPath;
         }
 
+        //Constructor with parent
         public ScheduleTreeNode(Map<Integer, List<Task>> schedule, int numProcessors, ScheduleTreeNode parent) {
             this.schedule = schedule;
             this.numProcessors = numProcessors;
@@ -170,6 +178,7 @@ public class AStarScheduler {
             this.processorBusyTime = new int[numProcessors];
         }
 
+        //Constructor without parent
         public ScheduleTreeNode(Map<Integer, List<Task>> schedule, int numProcessors) {
             this.schedule = schedule;
             this.numProcessors = numProcessors;
@@ -188,10 +197,12 @@ public class AStarScheduler {
                 var processorId = something.getKey();
                 var list = something.getValue();
 
+                //Insert retrieved processor ID and corresponding schedule to map
                 var clonedList = new ArrayList<>(list);
                 mapCopy.put(processorId, clonedList);
             }
 
+            //Properly copy over details to create new ScheduleTreeNode
             int[] array = Arrays.copyOf(node.processorBusyTime, node.processorBusyTime.length);
             ScheduleTreeNode newTing = new ScheduleTreeNode(mapCopy, node.numProcessors, node);
             newTing.processorBusyTime = array;
@@ -200,120 +211,5 @@ public class AStarScheduler {
         }
 
     }
-
-//    private class ScheduleTreeEdge {
-//
-//        private ScheduleTreeNode source;
-//        private ScheduleTreeNode dest;
-//
-//        private ScheduleTreeEdge next;
-//
-//        public ScheduleTreeEdge(ScheduleTreeNode source, ScheduleTreeNode dest) {
-//            this.source = source;
-//            this.dest = dest;
-//        }
-//
-//        public void setNext(ScheduleTreeEdge next) {
-//            this.next = next;
-//        }
-//
-//        public ScheduleTreeEdge getNext() {
-//            return this.next;
-//        }
-//
-//        public ScheduleTreeNode getSource() {
-//            return this.source;
-//        }
-//
-//        public ScheduleTreeNode getDest() {
-//            return this.dest;
-//        }
-//
-//    }
-
-//    private class ScheduleLinkedList {
-//
-//        private ScheduleTreeEdge head;
-//
-//        public ScheduleLinkedList(ScheduleTreeEdge head) {
-//            this.head = head;
-//        }
-//
-//        public void append(ScheduleTreeEdge edge) {
-//            int listSize = size();
-//
-//            if (listSize == 0) {
-//                head = edge;
-//            } else {
-//                ScheduleTreeEdge temp = get(listSize - 1);
-//                temp.setNext(edge);
-//            }
-//        }
-//
-//        public int size() {
-//            int count = 0;
-//            ScheduleTreeEdge edge = head;
-//            while(edge != null) {
-//                count++;
-//                edge = edge.getNext();
-//            }
-//            return count;
-//        }
-//
-//        public ScheduleTreeEdge get(int pos) {
-//
-//            if (pos > size() || pos < 0) {
-//                return null;
-//            }
-//
-//            int count = 0;
-//            ScheduleTreeEdge currentEdge = head;
-//            if (pos == 0) {
-//                return head;
-//            } else {
-//                while (currentEdge != null) {
-//                    if (count == pos) {
-//                        return currentEdge;
-//                    }
-//                    currentEdge = currentEdge.getNext();
-//                    count++;
-//                }
-//            }
-//
-//            return null;
-//        }
-//
-//    }
-
-//    private class ScheduleTree {
-//
-//        private Map<ScheduleTreeNode, ScheduleLinkedList> adjacencyMap;
-//
-//        private ScheduleTreeNode root;
-//
-//        private List<ScheduleTreeNode> nodes;
-//
-//        public ScheduleTree() {
-//
-//        }
-//
-//    }
-
-    // minheap priority queue which returns partial schedules with the lowest cost function/ lower bound value
-    // how would we determine if it is a complete solution
-        // if the last node in partial solution is a leaf
-        // or if partial solution contains all the nodes in the adjacency matrix graph
-    // what would be added initially into the pq, since there can be multiple entry nodes into the graph
-
-    // we will need way to determine cost function for each partial schedule >> DONE
-    // need to take into account nodes in a partial schedule are scheduled on different processors
-
-    // Steps:
-    // Maintain two lists, OPEN and CLOSED, to search the state space
-    // OPEN list(priority queue) holds all the stands awaiting expansion.
-    // CLOSED list holds all states that have been fully expanded
-
-
-
 
 }

@@ -19,8 +19,10 @@ public class GraphLogger {
     public void log(){
         for (EdgesLinkedList currentList: graph.values()) {
             int listSize = currentList.size();
-            Edge currentEdge = currentList.get(0);
 
+            Edge currentEdge;
+
+            //Iterate through edges and print them to console
             for (int i = 0; i < listSize; i++) {
                 currentEdge = currentList.get(i);
 

@@ -39,16 +39,19 @@ public class CostFunctionCalculator {
      * @throws NodeInvalidIDMapping
      * @throws NodeNotScheduledException
      */
-    public Integer findCostFunction(PartialSchedule partialSchedule, ArrayList<Processor> processorsList,Graph g) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
+    public Integer findCostFunction(PartialSchedule partialSchedule, ArrayList<Processor> processorsList, Graph g) throws NonExistingNodeException, NodeInvalidIDMapping, NodeNotScheduledException {
         adjacencyMatrix = g;
         HashMap<Node,Integer> bottomLevels = new HashMap<>();
         HashMap<Node,Integer> startingTimes = new HashMap<>();
 
         for (Node n : partialSchedule.getNodesInPartialSchedule()){
 
+            //Adds bottom level of node n to map
             bottomLevels.put(n, calculateBottomLevel(n));
 
             for (Processor processor : processorsList){
+
+                //If node has been scheduled in the processor, add start time to map
                 if (processor.getScheduledNodes().contains(n)){
                     startingTimes.put(n,processor.getStartTimeForNode(n));
                 }
@@ -71,6 +74,8 @@ public class CostFunctionCalculator {
 
         while (!childrenNodes.isEmpty()){
             for (Node n : childrenNodes){
+
+                //Add cost of node to find bottom level cost
                 bottomLevel += n.getComputationCost();
             }
         }
@@ -91,11 +96,13 @@ public class CostFunctionCalculator {
     private Integer findMaxLowerBound( HashMap<Node,Integer> bottomLevels, HashMap<Node,Integer> startingTimes, ArrayList<Node> partialScheduleNodes){
         HashMap<Node, Integer> lowerBounds = new HashMap<>();
 
+        //Add lower bound to map
         for (Node node : partialScheduleNodes){
             int lowerBound = bottomLevels.get(node) + startingTimes.get(node);
             lowerBounds.put(node, lowerBound);
         }
 
+        //Find the maximum lowest bound
         int maxLowerBound = 0;
         for (Integer lb : lowerBounds.values()){
             if (lb > maxLowerBound){
