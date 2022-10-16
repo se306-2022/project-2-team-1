@@ -148,14 +148,14 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
         if (this.tree == null)
             return;
 
-        gc.save();
-        gc.clearRect(0, 0, getWidth(), getHeight());
-        drawGradientBackdrop();
-        gc.restore();
+        if (this.getWidth() == 0 || this.getHeight() == 0)
+            return;
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+
+                System.out.println("Frame");
 
                 long startTime, endTime;
 

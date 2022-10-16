@@ -96,13 +96,14 @@ public class MainController {
             @Override
             public void setSchedule(Schedule schedule) {
                 Platform.runLater(() -> {
-                    addResultsView().setSchedule(schedule);
+                    addResultsView(runnable).setSchedule(schedule);
                 });
             }
         };
 
         runTaskWithDashboard(runnable, inputGraph, processorCount, coreCount, useVisualization, completionVisualizer);
     }
+
     public void runTaskWithDashboard(IRunnable runnable, String inputGraph, int processorCount, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer) {
         URL uiPath = MainApplication.class.getClassLoader().getResource("dashboard.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(uiPath);
@@ -122,7 +123,11 @@ public class MainController {
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(gridPane);
 
-        addTab("Dashboard", gridPane, true);
+        addTab(makeTitle("Dashboard", runnable), gridPane, true);
+    }
+
+    private String makeTitle(String tabName, IRunnable runnable) {
+        return tabName + " [" + runnable.getTaskName() + "]";
     }
 
     /**
@@ -282,16 +287,10 @@ public class MainController {
         addTab(title, content, false);
     }
 
-    private IUpdateVisualizer addProgressView() {
-        var radialTree = new RadialTree<>(new PathLengthColorStrategy());
-        addTab("Progress", radialTree, true);
-        return radialTree;
-    }
-
     /**
      * Show schedule in new tab
      */
-    private ICompletionVisualizer addResultsView() {
+    private ICompletionVisualizer addResultsView(IRunnable runnable) {
         // Scheduler View is a custom control which displays a schedule
         var schedulerView = new ScheduleView();
         VBox.setVgrow(schedulerView, Priority.ALWAYS);
@@ -309,7 +308,7 @@ public class MainController {
         vbox.getChildren().addAll(toolbar, schedulerView);
 
         // Create new tab
-        addTab("Job Results", vbox);
+        addTab(makeTitle("Job Results", runnable), vbox);
 
         return schedulerView;
     }
