@@ -15,6 +15,9 @@ public class StackExecutor {
         this.nThreads = nThreads;
     }
 
+    /**
+     * Custom implementation of a stack. Gets partial solution at the top of the stack
+     */
     public void runAndWait() {
         try {
             var threads = new ArrayList<Thread>();
@@ -50,6 +53,10 @@ public class StackExecutor {
         }
     }
 
+    /**
+     * Initialises ThreadPoolWorker
+     * @param runnable
+     */
     public void execute(ThreadPoolWorker runnable) {
         try {
             stack.putLast(runnable);
