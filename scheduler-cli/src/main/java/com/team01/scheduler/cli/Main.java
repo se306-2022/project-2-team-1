@@ -9,7 +9,11 @@ public class Main {
     }
 
     /**
-     * Different run configuration depending on how the application was called.
+     *  This is the entry point to the scheduler-cli subproject, the arguments invoked
+     *  from the InputController class specify whether the cli should be run with the
+     *  visualization, adding overhead, or without.
+     *
+     *  This method invokes the method that runs the scheduler in both instances.
      * @param args command line input
      */
     public static void main(String[] args) {

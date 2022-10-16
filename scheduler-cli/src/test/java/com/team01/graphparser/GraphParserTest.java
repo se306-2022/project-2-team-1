@@ -1,19 +1,22 @@
 package com.team01.graphparser;
 
-import com.team01.scheduler.cli.io.CommandLineOptions;
 import com.team01.scheduler.cli.io.CommandLineParser;
-import com.team01.scheduler.graph.exceptions.InvalidEdgeWeightException;
 import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GraphParserTest {
 
+    /**
+     * Junit test, checking if an invalid input graphviz file name is being handled
+     * correctly. The correct behaviour should be where it is identified that the
+     * input file is incorrect and an InvalidInputException is thrown to indicate that
+     * fact.
+     * 
+     */
     @Test
     void testInvalidInputExceptionForFileName() {
 
