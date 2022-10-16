@@ -1,15 +1,10 @@
 package com.team01.scheduler.graph.models;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Graph {
-
-    // Logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(Graph.class);
 
     // Adjacency Map
     private Map<Node, EdgesLinkedList> adjacencyMap;

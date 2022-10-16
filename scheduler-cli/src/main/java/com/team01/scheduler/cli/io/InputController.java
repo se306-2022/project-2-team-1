@@ -10,8 +10,6 @@ import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
 
 import com.team01.scheduler.graph.util.ExportToDotFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +18,6 @@ import java.nio.file.Path;
 
 public class InputController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InputController.class);
     public CommandLineParser commandLineParser;
     private Graph graph;
 
