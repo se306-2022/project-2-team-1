@@ -16,12 +16,14 @@ public class Edge {
     // Next Edge in linked list
     private Edge next;
 
+    // Constructor with wight
     public Edge(Node src, Node dest, int weight) {
         this.src = src;
         this.dest = dest;
         this.weight = weight;
     }
 
+    // Constructor without wight
     public Edge(Node src, Node dest) {
         this.src = src;
         this.dest = dest;
