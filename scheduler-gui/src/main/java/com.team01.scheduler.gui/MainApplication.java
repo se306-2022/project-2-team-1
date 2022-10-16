@@ -21,15 +21,20 @@ public class MainApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
+
         // Get main view FXML file
         URL uiPath = MainApplication.class.getClassLoader().getResource("main-view.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(uiPath);
 
         // Create scene and display
-        Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
-        stage.setTitle("Hello!");
+        Scene scene = new Scene(fxmlLoader.load(), 1250, 840);
+
+        stage.setResizable(false);
+        stage.setTitle("Team 01 - Scheduler");
         stage.setScene(scene);
         stage.show();
+
+
     }
 
     /**

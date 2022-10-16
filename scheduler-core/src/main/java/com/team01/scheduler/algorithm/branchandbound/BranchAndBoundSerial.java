@@ -1,7 +1,6 @@
 package com.team01.scheduler.algorithm.branchandbound;
 
 import com.team01.scheduler.algorithm.*;
-import com.team01.scheduler.algorithm.matrixModels.Edge;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
@@ -20,6 +19,8 @@ public class BranchAndBoundSerial implements IRunnable {
     }
     private int shortestPath;
 
+    State state;
+
     @Override
     public String getTaskName() {
         return "Scheduler - DFS Branch and Bound (Serial)";
@@ -32,6 +33,7 @@ public class BranchAndBoundSerial implements IRunnable {
         final int numProcessors;
         final int[][] map;
         int currentShortestPath;
+        public int solutionsConsidered;
         final Graph graph;
         ScheduledTask currentShortestPathTask;
         CumulativeTree cumulativeTree;
@@ -45,6 +47,7 @@ public class BranchAndBoundSerial implements IRunnable {
             this.numProcessors = numProcessors;
             this.map = map;
             this.currentShortestPath = Integer.MAX_VALUE;
+            this.solutionsConsidered = 0;
             this.graph = graph;
             this.cumulativeTree = cumulativeTree;
         }
@@ -86,6 +89,8 @@ public class BranchAndBoundSerial implements IRunnable {
 
             // Add the current node to visited as an optimisation
             this.visitedChildren.add(task.getNode());
+
+            this.depth = CumulativeTree.INITIAL_DEPTH;
         }
 
         /**
@@ -237,6 +242,9 @@ public class BranchAndBoundSerial implements IRunnable {
 
                 // Notify success
                 printPath(task);
+
+                // Mark solution found
+                state.solutionsConsidered++;
             }
         }
 
@@ -310,6 +318,7 @@ public class BranchAndBoundSerial implements IRunnable {
                 : null;
 
         State state = new State(numProcessors, map, graph, cumulativeTree);
+        this.state = state;
 
         if (updateVisualizer != null)
             updateVisualizer.setCumulativeTree(state.cumulativeTree);
@@ -357,5 +366,15 @@ public class BranchAndBoundSerial implements IRunnable {
         } catch (NodeInvalidIDMapping e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public int getShortestPath() {
+        return state.currentShortestPath;
+    }
+
+    @Override
+    public int getNumberSolutions() {
+        return state.solutionsConsidered;
     }
 }

@@ -4,6 +4,7 @@ import com.team01.scheduler.algorithm.*;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
+import com.team01.scheduler.matrix.algorithm.CostFunctionComparator;
 import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
@@ -12,17 +13,17 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AStarScheduler implements IRunnable {
-
     /**
      * Default Constructor
      */
-    public AStarScheduler() {}
+    public AStarScheduler() {
+    }
 
     private int shortestPath;
 
-    private State state;
+    private AStarScheduler.State state;
 
-    private ExecutorService executor;
+    private PriorityQueueExecutor executor;
 
     @Override
     public String getTaskName() {
@@ -37,13 +38,14 @@ public class AStarScheduler implements IRunnable {
     /**
      * A state class that keeps track of the current shortest path in the algorithm.
      */
-    public final class State {
+    public static final class State {
         AtomicInteger numProcessors;
         final int[][] map;
         AtomicInteger currentShortestPath;
         final Graph graph;
         ScheduledTask currentShortestPathTask;
         CumulativeTree cumulativeTree;
+        AtomicInteger solutionsConsidered;
 
         /**
          * Constructs a state object to keep track of the graph map along with the current shortest path
@@ -54,6 +56,7 @@ public class AStarScheduler implements IRunnable {
             this.numProcessors = new AtomicInteger(numProcessors);
             this.map = map;
             this.currentShortestPath = new AtomicInteger(Integer.MAX_VALUE);
+            this.solutionsConsidered = new AtomicInteger(0);
             this.graph = graph;
             this.cumulativeTree = tree;
         }
@@ -65,9 +68,9 @@ public class AStarScheduler implements IRunnable {
      * @param state     The state of the algorithm that keeps track of the current shortest path
      * @param current   The current partial solution that is checked
      * @param node      The current node that requires dependency checks
-     * @return
+     * @return Returns true if dependencies have been visited
      */
-    private boolean haveVisitedDependencies(State state, PartialSolution current, Node node) {
+    private boolean haveVisitedDependencies(AStarScheduler.State state, PartialSolution current, Node node) {
 
         for (Node dependencyNode : state.graph.getParentsForNode(node)){
             if (!current.visitedChildren.contains(dependencyNode))
@@ -127,9 +130,9 @@ public class AStarScheduler implements IRunnable {
      * @param state     The state of the algorithm
      * @param source    The source node
      * @param target    The target node
-     * @return
+     * @return Returns the edge weight
      */
-    private int getEdgeWeight(State state, Node source, Node target) {
+    private int getEdgeWeight(AStarScheduler.State state, Node source, Node target) {
         return state.map[source.getId()][target.getId()];
     }
 
@@ -140,16 +143,16 @@ public class AStarScheduler implements IRunnable {
      * @param state     The state of the algorithm
      * @param current   The current partial solution
      */
-    public void doBranchAndBoundRecursive(State state, PartialSolution current) {
+    public void doBranchAndBoundRecursive(AStarScheduler.State state, PartialSolution current) {
         // Consider current node
         var task = current.task;
         int pathLength = calculateFinishTime(task);
 
         // Bound the algorithm by the currently determined shortest path
-        CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
-        int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task);
+        /*CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
+        int projectedPathLength = functionCalculator.findCostFunction(current.visitedChildren,current.task,state.graph);
         if (projectedPathLength >= state.currentShortestPath.get())
-            return;
+            return;*/
 
         // Bound the algorithm by the currently determined shortest path
         if (pathLength >= state.currentShortestPath.get())
@@ -182,6 +185,9 @@ public class AStarScheduler implements IRunnable {
 
                 // Notify success
                 printPath(task);
+
+                // Mark solution found
+                state.solutionsConsidered.incrementAndGet();
             }
         }
 
@@ -230,7 +236,6 @@ public class AStarScheduler implements IRunnable {
                 }
                 nextSolution.processorBusyUntilTime[processorId] = realStartTime + child.getComputationCost();
 
-                // create instance of ThreadPoolWorker
                 ThreadPoolWorker tw = new ThreadPoolWorker(this, nextSolution);
 
                 // add to thread pool
@@ -255,33 +260,29 @@ public class AStarScheduler implements IRunnable {
         // Start Timer
         long startTime = System.nanoTime();
         try{
-            Node startNode = graph.getEntryNodes().get(0); // get a leaf node to start off with
-            CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
-            functionCalculator.setGraph(graph);
-            functionCalculator.setBottomLevel(startNode);
-            //System.out.println(functionCalculator.bottomLevels.toString());
+            for (var startNode : graph.getEntryNodes()) {
+                CostFunctionCalculator functionCalculator = CostFunctionCalculator.getInstance();
+                functionCalculator.setGraph(graph);
+                functionCalculator.setBottomLevel(startNode);
+            }
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
 
-
-
-
-    // Obtain adjacency matrix
+        // Obtain adjacency matrix
         int[][] map = graph.getAdjacencyMatrix();
 
         // Create thread pool
-        executor = Executors.newFixedThreadPool(numCores);
+        executor = new PriorityQueueExecutor(numCores);
 
         // Setup state
         var cumulativeTree = (updateVisualizer != null)
                 ? new CumulativeTree()
                 : null;
 
-        state = new State(numProcessors, map, graph, cumulativeTree);
-
+        state = new AStarScheduler.State(numProcessors, map, graph, cumulativeTree);
 
         if (updateVisualizer != null)
             updateVisualizer.setCumulativeTree(state.cumulativeTree);
@@ -314,13 +315,7 @@ public class AStarScheduler implements IRunnable {
             throw new RuntimeException(e);
         }
 
-        var threadPool = (ThreadPoolExecutor) executor;
-
-        // Wait for all tasks to arrive before proceeding
-        while (threadPool.getActiveCount() != 0 || threadPool.getQueue().size() != 0)
-            threadSleep();
-
-        threadPool.shutdown();
+        executor.runAndWait();
 
         // Report results
         List<ScheduledTask> taskList = new ArrayList<>();
@@ -351,11 +346,13 @@ public class AStarScheduler implements IRunnable {
         return schedule;
     }
 
-    private static void threadSleep() {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public int getShortestPath() {
+        return state.currentShortestPath.get();
+    }
+
+    @Override
+    public int getNumberSolutions() {
+        return state.solutionsConsidered.get();
     }
 }

@@ -9,4 +9,5 @@ module com.team01.scheduler.gui {
     opens com.team01.scheduler.gui.views to javafx.fxml;
 
     exports com.team01.scheduler.gui;
+    exports com.team01.scheduler.gui.views;
 }

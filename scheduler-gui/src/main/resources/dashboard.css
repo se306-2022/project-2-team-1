@@ -1,0 +1,26 @@
+.backgroundColorLeft {
+    -fx-background-color: linear-gradient(to left, #110036, #5a0b59);
+}
+
+.backgroundColorRight {
+    -fx-background-color: linear-gradient(to right, #110036, #5a0b59);
+}
+
+.backgroundColorMiddle {
+    -fx-background-color: #110036;
+}
+
+.buttonColor {
+    -fx-background-color: #000000;
+}
+
+.title {
+    -fx-padding: 20px 0 0 0;
+    -fx-text-fill: white;
+    -fx-font-size: 16pt;
+}
+
+.subtitle {
+    -fx-text-fill: white;
+    -fx-font-size: 10pt;
+}

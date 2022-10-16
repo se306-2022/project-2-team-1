@@ -1,8 +1,5 @@
 package com.team01.scheduler.algorithm.astar;
 
-import com.team01.scheduler.algorithm.PartialSolution;
-import com.team01.scheduler.algorithm.astar.AStarScheduler;
-
 public class ThreadPoolWorker implements Runnable {
 
     private AStarScheduler bs;
@@ -18,5 +15,9 @@ public class ThreadPoolWorker implements Runnable {
     @Override
     public void run() {
         bs.doBranchAndBoundRecursive(state, ps);
+    }
+
+    public PartialSolution getPartialSolution() {
+        return this.ps;
     }
 }

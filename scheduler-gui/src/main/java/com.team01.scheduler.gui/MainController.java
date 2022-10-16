@@ -8,20 +8,23 @@ import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBoundSerial;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.graph.models.GraphController;
-import com.team01.scheduler.gui.views.PathLengthColorStrategy;
-import com.team01.scheduler.gui.views.RadialTree;
-import com.team01.scheduler.gui.views.ScheduleView;
+import com.team01.scheduler.gui.views.*;
 import com.team01.scheduler.gui.views.Console;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,8 +91,43 @@ public class MainController {
         }
 
         // Run the task asynchronously
-        var progressView = runVisualizer.isSelected() ? addProgressView() : null;
-        taskRunner.safeRunAsync(runnable, graph, processorCount, coreCount, progressView, addResultsView());
+        boolean useVisualization = runVisualizer.isSelected();
+        var completionVisualizer = new ICompletionVisualizer() {
+            @Override
+            public void setSchedule(Schedule schedule) {
+                Platform.runLater(() -> {
+                    addResultsView(runnable).setSchedule(schedule);
+                });
+            }
+        };
+
+        runTaskWithDashboard(runnable, inputGraph, processorCount, coreCount, useVisualization, completionVisualizer);
+    }
+
+    public void runTaskWithDashboard(IRunnable runnable, String inputGraph, int processorCount, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer) {
+        URL uiPath = MainApplication.class.getClassLoader().getResource("dashboard.fxml");
+        FXMLLoader fxmlLoader = new FXMLLoader(uiPath);
+
+        // Create scene and display
+        GridPane gridPane;
+        try {
+            gridPane = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Setup Controller Properties
+        DashboardController controller = fxmlLoader.getController();
+        controller.runWithTask(runnable, inputGraph, processorCount, numCores, useVisualization, completionVisualizer);
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(gridPane);
+
+        addTab(makeTitle("Dashboard", runnable), gridPane, true);
+    }
+
+    private String makeTitle(String tabName, IRunnable runnable) {
+        return tabName + " [" + runnable.getTaskName() + "]";
     }
 
     /**
@@ -249,16 +287,10 @@ public class MainController {
         addTab(title, content, false);
     }
 
-    private IUpdateVisualizer addProgressView() {
-        var radialTree = new RadialTree<>(new PathLengthColorStrategy());
-        addTab("Progress", radialTree, true);
-        return radialTree;
-    }
-
     /**
      * Show schedule in new tab
      */
-    private ICompletionVisualizer addResultsView() {
+    private ICompletionVisualizer addResultsView(IRunnable runnable) {
         // Scheduler View is a custom control which displays a schedule
         var schedulerView = new ScheduleView();
         VBox.setVgrow(schedulerView, Priority.ALWAYS);
@@ -276,7 +308,7 @@ public class MainController {
         vbox.getChildren().addAll(toolbar, schedulerView);
 
         // Create new tab
-        addTab("Job Results", vbox);
+        addTab(makeTitle("Job Results", runnable), vbox);
 
         return schedulerView;
     }
@@ -292,8 +324,6 @@ public class MainController {
         // Add tasks
         List<IRunnable> tasks = new ArrayList<>();
 
-        tasks.add(Utils.createPrintGraphTask());
-        //tasks.add(new DepthFirstSearch());
         tasks.add(new AStarScheduler());
         tasks.add(new BranchAndBound());
         tasks.add(new BranchAndBoundSerial());

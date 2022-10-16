@@ -45,41 +45,6 @@ public class Utils {
     }
 
     /**
-     * Creates a new task to print out all the edges in the graph.
-     *
-     * @return IRunnable instance
-     */
-    public static IRunnable createPrintGraphTask() {
-        return new IRunnable() {
-            @Override
-            public String getTaskName() {
-                return "Print Graph";
-            }
-
-            @Override
-            public Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer) {
-                /*
-                for (EdgesLinkedList currentList: graph.getGraph().values()) {
-                    int listSize = currentList.size();
-
-                    for (int i = 0; i < listSize; i++) {
-                        Edge currentEdge = currentList.get(i);
-
-                        System.out.println(currentEdge.toString());
-                    }
-                }
-                 */
-                for (int i=0; i< graph.getNumberofNodes(); i++){
-                    for (int j=0; j < graph.getNumberofNodes(); j++){
-                        System.out.println(graph.getNodeById(i) + " - " + graph.getNodeById(j) + " = " + graph.getAdjacencyMatrix()[i][j]);
-                    }
-                }
-                return null;
-            }
-        };
-    }
-
-    /**
      * Helper function for reading a resource file as a string.
      *
      * @param klass Class to load the resource from

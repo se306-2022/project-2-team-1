@@ -148,14 +148,14 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
         if (this.tree == null)
             return;
 
-        gc.save();
-        gc.clearRect(0, 0, getWidth(), getHeight());
-        drawGradientBackdrop();
-        gc.restore();
+        if (this.getWidth() == 0 || this.getHeight() == 0)
+            return;
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+
+                System.out.println("Frame");
 
                 long startTime, endTime;
 
@@ -165,7 +165,7 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
 
                 gc.translate(getWidth()/2, getHeight()/2);
 
-                System.out.println("Start Render");
+                // System.out.println("Start Render");
 
                 var depth = 0;
                 var list = tree.getStartStates();
@@ -196,14 +196,14 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
 
                 gc.restore();
 
-                System.out.println("Finish Render");
-                System.out.println(" - Elapsed time: " + (endTime - startTime) / (1000f*1000f) + "ms");
+                // System.out.println("Finish Render");
+                // System.out.println(" - Elapsed time: " + (endTime - startTime) / (1000f*1000f) + "ms");
 
-                if (frameCounter > FRAME_BUDGET)
-                    System.out.println(" - Partial render (" + frameCounter + " items)");
+                // if (frameCounter > FRAME_BUDGET)
+                //    System.out.println(" - Partial render (" + frameCounter + " items)");
 
                 if (done && algorithmTerminated) {
-                    System.out.println("\nDone");
+                    System.out.println("\nVisualization Done");
                     this.stop();
                 }
             }

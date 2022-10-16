@@ -1,7 +1,6 @@
 package com.team01.scheduler.algorithm.branchandbound;
 
 import com.team01.scheduler.algorithm.*;
-import com.team01.scheduler.algorithm.branchandbound.ThreadPoolWorker;
 import com.team01.scheduler.algorithm.matrixModels.Graph;
 import com.team01.scheduler.algorithm.matrixModels.Node;
 import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
@@ -9,9 +8,6 @@ import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BranchAndBound implements IRunnable {
@@ -44,6 +40,7 @@ public class BranchAndBound implements IRunnable {
         AtomicInteger numProcessors;
         final int[][] map;
         AtomicInteger currentShortestPath;
+        AtomicInteger solutionsConsidered;
         final Graph graph;
         ScheduledTask currentShortestPathTask;
         CumulativeTree cumulativeTree;
@@ -57,6 +54,7 @@ public class BranchAndBound implements IRunnable {
             this.numProcessors = new AtomicInteger(numProcessors);
             this.map = map;
             this.currentShortestPath = new AtomicInteger(Integer.MAX_VALUE);
+            this.solutionsConsidered = new AtomicInteger(0);
             this.graph = graph;
             this.cumulativeTree = tree;
         }
@@ -179,6 +177,9 @@ public class BranchAndBound implements IRunnable {
 
                 // Notify success
                 printPath(task);
+
+                // Mark solution found
+                state.solutionsConsidered.incrementAndGet();
             }
         }
 
@@ -239,15 +240,14 @@ public class BranchAndBound implements IRunnable {
     /**
      * Run the schedule using abstract IRunnable interface
      *
-     * @param graph             The complete graph which has been deciphered from
-     *                          the dot file
-     * @param numProcessors     The number of processors that the algorithm will
-     *                          allocate to
-     *
-     * @return                  Return the optimal schedule
+     * @param graph         The complete graph which has been deciphered from
+     *                      the dot file
+     * @param numProcessors The number of processors that the algorithm will
+     *                      allocate to
+     * @return Return the optimal schedule
      */
     @Override
-    public Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer) {
+    public Schedule run(Graph graph, int numProcessors, int numCores, IUpdateVisualizer updateVisualizer, ICompletionVisualizer completionVisualizer)  {
 
         // Start Timer
         long startTime = System.nanoTime();
@@ -335,11 +335,13 @@ public class BranchAndBound implements IRunnable {
         return schedule;
     }
 
-    private static void threadSleep() {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public int getShortestPath() {
+        return state.currentShortestPath.get();
+    }
+
+    @Override
+    public int getNumberSolutions() {
+        return state.solutionsConsidered.get();
     }
 }

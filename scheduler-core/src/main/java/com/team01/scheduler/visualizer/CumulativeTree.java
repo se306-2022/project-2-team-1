@@ -33,6 +33,8 @@ public class CumulativeTree {
     // The drawing algorithm starts with the root node and draws
     // each sector, subdividing itself further for each child sector.
 
+    private final int DEPTH_LIMITER = 6;
+
 
     public static class State {
         // Drawable
@@ -107,6 +109,12 @@ public class CumulativeTree {
     }
 
     public int pushState(int depth, int pathLength, int parentSector) {
+
+        if (depth > DEPTH_LIMITER)
+            return EXIT_ID;
+
+        if (parentSector == EXIT_ID)
+            return EXIT_ID;
 
         int newSectorId;
 
