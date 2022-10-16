@@ -151,7 +151,6 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
 
                     var color = colorStrategy.getColor(childStateId, childState);
                     gc.setFill(color);
-
                     gc.fillPolygon(
                             new double[] {parentX, startXY.x, endXY.x },
                             new double[] {parentY, startXY.y, endXY.y}, 3);
@@ -188,8 +187,6 @@ public class RadialTree<ColorStrategy extends IColorStrategy> extends StackPane 
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-
-                System.out.println("Frame");
 
                 long startTime, endTime;
 

@@ -6,8 +6,8 @@ import com.team01.scheduler.algorithm.*;
 import com.team01.scheduler.algorithm.astar.AStarScheduler;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBoundSerial;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
-import com.team01.scheduler.graph.models.GraphController;
+import com.team01.scheduler.graph.model.Graph;
+import com.team01.scheduler.graph.GraphController;
 import com.team01.scheduler.gui.views.*;
 import com.team01.scheduler.gui.views.Console;
 import javafx.application.Platform;
@@ -15,18 +15,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.team01.scheduler.gui.MainApplication.runTaskWithDashboard;
 
 public class MainController {
     private TaskRunner taskRunner;
@@ -101,29 +99,8 @@ public class MainController {
             }
         };
 
-        runTaskWithDashboard(runnable, inputGraph, processorCount, coreCount, useVisualization, completionVisualizer);
-    }
-
-    public void runTaskWithDashboard(IRunnable runnable, String inputGraph, int processorCount, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer) {
-        URL uiPath = MainApplication.class.getClassLoader().getResource("dashboard.fxml");
-        FXMLLoader fxmlLoader = new FXMLLoader(uiPath);
-
-        // Create scene and display
-        GridPane gridPane;
-        try {
-            gridPane = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Setup Controller Properties
-        DashboardController controller = fxmlLoader.getController();
-        controller.runWithTask(runnable, inputGraph, processorCount, numCores, useVisualization, completionVisualizer);
-
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(gridPane);
-
-        addTab(makeTitle("Dashboard", runnable), gridPane, true);
+        var dashboard = runTaskWithDashboard(runnable, inputGraph, processorCount, coreCount, useVisualization, null, completionVisualizer);
+        addTab(makeTitle("Dashboard", runnable), dashboard, true);
     }
 
     private String makeTitle(String tabName, IRunnable runnable) {

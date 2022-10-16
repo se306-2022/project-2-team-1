@@ -4,19 +4,25 @@ import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.algorithm.ICompletionVisualizer;
 import com.team01.scheduler.algorithm.IRunnable;
 import com.team01.scheduler.algorithm.IUpdateVisualizer;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
-import com.team01.scheduler.graph.models.GraphController;
+import com.team01.scheduler.algorithm.Schedule;
+import com.team01.scheduler.graph.model.Graph;
+import com.team01.scheduler.graph.GraphController;
+import com.team01.scheduler.graph.ExportToDotFile;
 import com.team01.scheduler.gui.views.PathLengthColorStrategy;
 import com.team01.scheduler.gui.views.RadialTree;
+import com.team01.scheduler.gui.views.ScheduleView;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -62,12 +68,15 @@ public class DashboardController {
     public VBox stagesVbox;
     @FXML
     public Label timeElapsed;
+    @FXML
+    public Button showScheduleBtn;
 
     // Instance state
     private final TaskRunner taskRunner;
     private RadialTree<PathLengthColorStrategy> radialTree;
     private IRunnable runnable;
     private long startingElapsedTime;
+    private Schedule schedule = null;
 
     // Stages
     private final DashboardStage started = new DashboardStage("Started");
@@ -75,8 +84,9 @@ public class DashboardController {
     private final DashboardProgressStage algorithm = new DashboardProgressStage("Algorithm");
     private final DashboardStage finished = new DashboardStage("Finished");
     private final DashboardStage printed = new DashboardStage("Presented");
+    private final DashboardStage exported = new DashboardStage("Exported");
 
-    private final DashboardStage[] stages = {
+    private final DashboardStage[] requiredStages = {
             started,
             parsing,
             algorithm,
@@ -89,7 +99,7 @@ public class DashboardController {
     }
 
     /**
-     * Run task when a graph and algorithm is selected
+     * Run task when a graph and algorithm is selected. Do not output a file
      *
      * @param runnable              Run program
      * @param graphDescription      Description of graph
@@ -99,6 +109,21 @@ public class DashboardController {
      * @param completionVisualizer  The visualisation object
      */
     public void runWithTask(IRunnable runnable, String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer) {
+        runWithTask(runnable, graphDescription, numProcessors, numCores, useVisualization, completionVisualizer, null);
+    }
+
+    /**
+     * Run task when a graph and algorithm is selected
+     *
+     * @param runnable              Run program
+     * @param graphDescription      Description of graph
+     * @param numProcessors         The number of processors to display along with scheduled tasks
+     * @param numCores              The number of threads used to find optimal schedule
+     * @param useVisualization      Toggle visualisation
+     * @param completionVisualizer  The visualisation object
+     * @param outputFileName        File to output
+     */
+    public void runWithTask(IRunnable runnable, String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer completionVisualizer, String outputFileName) {
         performRotationAnimation();
 
         this.runnable = runnable;
@@ -121,7 +146,7 @@ public class DashboardController {
         timeline.play();
 
         try {
-            runTaskInternal(graphDescription, numProcessors, numCores, useVisualization, completionVisualizer);
+            runTaskInternal(graphDescription, numProcessors, numCores, useVisualization, completionVisualizer, outputFileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,6 +178,7 @@ public class DashboardController {
 
         // Add progress indicator only if needed
         if (stage instanceof DashboardProgressStage) {
+
             var progressStage = (DashboardProgressStage) stage;
 
             var indicator = new ProgressBar();
@@ -175,10 +201,13 @@ public class DashboardController {
     /**
      * Update status checks of dashboard
      */
-    private void runTaskInternal(String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer externalCompletion) throws IOException {
+    private void runTaskInternal(String graphDescription, int numProcessors, int numCores, boolean useVisualization, ICompletionVisualizer externalCompletion, String outputFileName) throws IOException {
 
-        for (var stage : stages)
+        for (var stage : requiredStages)
             createViewForStage(stage);
+
+        if (outputFileName != null)
+            createViewForStage(exported);
 
         startingElapsedTime = System.currentTimeMillis();
 
@@ -199,12 +228,29 @@ public class DashboardController {
 
             // Run on completion
             ICompletionVisualizer internalCompletion = schedule -> {
-                Platform.runLater(() -> algorithm.setProgress(1));
-                Platform.runLater(() -> finished.setFinished(true));
+                Platform.runLater(() -> {
+                    algorithm.setProgress(1);
+                    finished.setFinished(true);
+                    showScheduleBtn.setDisable(false);
+                });
 
-                externalCompletion.setSchedule(schedule);
+                if (externalCompletion != null)
+                    externalCompletion.setSchedule(schedule);
+                this.schedule = schedule;
 
                 Platform.runLater(() -> printed.setFinished(true));
+
+                // export to dot file
+                if (outputFileName != null) {
+                    ExportToDotFile export = new ExportToDotFile(graph, outputFileName, schedule);
+                    try {
+                        export.writeDotWithSchedule();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                Platform.runLater(() -> exported.setFinished(true));
 
                 Platform.runLater(() -> timeElapsed.setText("Time Taken: " + (System.currentTimeMillis() - startingElapsedTime) + "ms"));
             };
@@ -361,4 +407,33 @@ public class DashboardController {
             timeElapsed.setText("Elapsed Time: " + (System.currentTimeMillis() - startingElapsedTime) + "ms");
     }
 
+    public void showSchedule(MouseEvent mouseEvent) {
+        if (schedule == null)
+            return;
+
+        // Scheduler View is a custom control which displays a schedule
+        var schedulerView = new ScheduleView();
+        schedulerView.setSchedule(schedule);
+        VBox.setVgrow(schedulerView, Priority.ALWAYS);
+
+        // Add zoom controls
+        var zoomInButton = new Button("Zoom In");
+        var zoomOutButton = new Button("Zoom Out");
+        zoomInButton.setOnMouseClicked(x -> schedulerView.zoomIn());
+        zoomOutButton.setOnMouseClicked(x -> schedulerView.zoomOut());
+
+        // Add to toolbar
+        var toolbar = new ToolBar(zoomInButton, zoomOutButton);
+
+        var vbox = new VBox();
+        vbox.getChildren().addAll(toolbar, schedulerView);
+
+        // Create new tab
+        var scene = new Scene(vbox, 600, 600);
+
+        var stage = new Stage();
+        stage.setTitle("Schedule");
+        stage.setScene(scene);
+        stage.show();
+    }
 }

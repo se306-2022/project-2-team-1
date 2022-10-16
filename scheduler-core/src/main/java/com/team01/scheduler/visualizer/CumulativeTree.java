@@ -33,7 +33,7 @@ public class CumulativeTree {
     // The drawing algorithm starts with the root node and draws
     // each sector, subdividing itself further for each child sector.
 
-    private final int DEPTH_LIMITER = 6;
+    private static final int DEPTH_LIMITER = 7;
 
 
     public static class State {

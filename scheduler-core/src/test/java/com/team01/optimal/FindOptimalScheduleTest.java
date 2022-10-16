@@ -4,10 +4,10 @@ import com.team01.scheduler.TaskRunner;
 import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
 
-import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.graph.model.Graph;
 
-import com.team01.scheduler.graph.models.GraphController;
-import com.team01.scheduler.graph.util.ExportToDotFile;
+import com.team01.scheduler.graph.GraphController;
+import com.team01.scheduler.graph.ExportToDotFile;
 
 
 import org.junit.jupiter.api.Assertions;

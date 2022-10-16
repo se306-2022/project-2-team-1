@@ -1,10 +1,10 @@
 package com.team01.scheduler.algorithm.astar;
 
 import com.team01.scheduler.algorithm.ScheduledTask;
-import com.team01.scheduler.matrix.exception.NodeInvalidIDMapping;
-import com.team01.scheduler.matrix.exception.NonExistingNodeException;
-import com.team01.scheduler.algorithm.matrixModels.Node;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.graph.exceptions.NodeInvalidIDMapping;
+import com.team01.scheduler.graph.exceptions.NonExistingNodeException;
+import com.team01.scheduler.graph.model.Node;
+import com.team01.scheduler.graph.model.Graph;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

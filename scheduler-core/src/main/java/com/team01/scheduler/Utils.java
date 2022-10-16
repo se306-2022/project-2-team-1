@@ -1,9 +1,9 @@
 package com.team01.scheduler;
 
-import com.team01.scheduler.algorithm.matrixModels.Graph;
-import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.graph.model.Graph;
+import com.team01.scheduler.graph.model.Node;
 
-import com.team01.scheduler.algorithm.matrixModels.Edge;
+import com.team01.scheduler.graph.model.Edge;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

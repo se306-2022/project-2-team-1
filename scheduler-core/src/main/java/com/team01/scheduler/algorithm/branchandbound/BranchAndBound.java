@@ -1,9 +1,9 @@
 package com.team01.scheduler.algorithm.branchandbound;
 
 import com.team01.scheduler.algorithm.*;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
-import com.team01.scheduler.algorithm.matrixModels.Node;
-import com.team01.scheduler.algorithm.matrixModels.exception.NodeInvalidIDMapping;
+import com.team01.scheduler.graph.model.Graph;
+import com.team01.scheduler.graph.model.Node;
+import com.team01.scheduler.graph.exceptions.NodeInvalidIDMapping;
 import com.team01.scheduler.visualizer.CumulativeTree;
 
 import java.time.Duration;

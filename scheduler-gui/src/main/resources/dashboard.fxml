@@ -13,6 +13,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.Button?>
 <GridPane alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.team01.scheduler.gui.DashboardController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" prefWidth="275.0" />
@@ -37,8 +38,10 @@
                   </font>
                </Label>
             </VBox>
-            <Label fx:id="timeElapsed" styleClass="timeElapsed" text="Not Started" alignment="CENTER" prefWidth="Infinity"/>
+            <Button fx:id="showScheduleBtn" disable="true" text="Show Schedule" onMouseClicked="#showSchedule" styleClass="showScheduleButton" alignment="CENTER"/>
          </VBox>
+         <Label fx:id="timeElapsed" styleClass="timeElapsed" text="Not Started" AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="30"/>
+
       </AnchorPane>
       <VBox fx:id="visualizerContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="700.0" styleClass="backgroundColorMiddle" stylesheets="@dashboard.css" GridPane.columnIndex="1">
          <Label text="Solution Search Space" styleClass="title" alignment="CENTER" textAlignment="CENTER" prefWidth="Infinity"/>

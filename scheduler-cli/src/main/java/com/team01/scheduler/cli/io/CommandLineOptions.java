@@ -42,4 +42,12 @@ public class CommandLineOptions extends OptionsBase{
             defaultValue = "false"
     )
     public boolean help;
+
+    @Option(
+            name = "algorithm",
+            abbrev = 'a',
+            help = "The algorithm to use (BRANCH_AND_BOUND or A_STAR)",
+            defaultValue = "BRANCH_AND_BOUND"
+    )
+    public String algorithm;
 }

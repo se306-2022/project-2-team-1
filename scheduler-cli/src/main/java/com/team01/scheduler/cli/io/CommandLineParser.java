@@ -1,6 +1,5 @@
 package com.team01.scheduler.cli.io;
 
-import com.team01.scheduler.graph.exceptions.InvalidInputException;
 import com.google.devtools.common.options.OptionsParser;
 
 import java.util.Collections;
@@ -16,6 +15,7 @@ public class CommandLineParser{
     private int numProcessors;
     private int numCores;
     private boolean debugGui;
+    private InputController.Algorithm algorithm;
 
     /**
      * Getters for the command line arguments, so that the InputController class
@@ -41,6 +41,8 @@ public class CommandLineParser{
     public int getNumCores() {
         return numCores;
     }
+
+    public InputController.Algorithm getAlgorithm() { return algorithm; }
 
     /**
      * private constructor for singleton design pattern
@@ -114,6 +116,13 @@ public class CommandLineParser{
         }
 
         isVisualize = options.isVisualize;
+        var algorithmStr = options.algorithm;
+
+        if (algorithmStr.equals("A_STAR"))
+            algorithm = InputController.Algorithm.A_STAR;
+        else
+            algorithm = InputController.Algorithm.BRANCH_AND_BOUND;
+
     }
 
     /**
@@ -143,6 +152,4 @@ public class CommandLineParser{
     private void helpUser(OptionsParser parser){
         System.out.println(parser.describeOptions(Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
     }
-
-
 }

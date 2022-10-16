@@ -1,7 +1,7 @@
 package com.team01.scheduler.algorithm;
 
 
-import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.graph.model.Node;
 
 /**
  * Each task in this class has a processor ID associated with it as well as the node in question. Each

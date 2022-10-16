@@ -1,7 +1,7 @@
 package com.team01.scheduler.algorithm;
 
 
-import com.team01.scheduler.algorithm.matrixModels.Graph;
+import com.team01.scheduler.graph.model.Graph;
 
 public interface IRunnable {
     String getTaskName();

@@ -4,9 +4,9 @@ import com.team01.scheduler.algorithm.branchandbound.BranchAndBound;
 import com.team01.scheduler.algorithm.Schedule;
 
 
-import com.team01.scheduler.algorithm.matrixModels.Edge;
-import com.team01.scheduler.algorithm.matrixModels.Graph;
-import com.team01.scheduler.algorithm.matrixModels.Node;
+import com.team01.scheduler.graph.model.Edge;
+import com.team01.scheduler.graph.model.Graph;
+import com.team01.scheduler.graph.model.Node;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
