@@ -40,6 +40,7 @@ public class BranchAndBound implements IRunnable {
         AtomicInteger numProcessors;
         final int[][] map;
         AtomicInteger currentShortestPath;
+        AtomicInteger solutionsConsidered;
         final Graph graph;
         ScheduledTask currentShortestPathTask;
         CumulativeTree cumulativeTree;
@@ -53,6 +54,7 @@ public class BranchAndBound implements IRunnable {
             this.numProcessors = new AtomicInteger(numProcessors);
             this.map = map;
             this.currentShortestPath = new AtomicInteger(Integer.MAX_VALUE);
+            this.solutionsConsidered = new AtomicInteger(0);
             this.graph = graph;
             this.cumulativeTree = tree;
         }
@@ -175,6 +177,9 @@ public class BranchAndBound implements IRunnable {
 
                 // Notify success
                 printPath(task);
+
+                // Mark solution found
+                state.solutionsConsidered.incrementAndGet();
             }
         }
 
@@ -328,5 +333,15 @@ public class BranchAndBound implements IRunnable {
             completionVisualizer.setSchedule(schedule);
 
         return schedule;
+    }
+
+    @Override
+    public int getShortestPath() {
+        return state.currentShortestPath.get();
+    }
+
+    @Override
+    public int getNumberSolutions() {
+        return state.solutionsConsidered.get();
     }
 }

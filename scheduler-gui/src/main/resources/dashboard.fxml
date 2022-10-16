@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<GridPane alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.team01.scheduler.gui.views.DashboardController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" prefWidth="200.0" />
+      <ColumnConstraints hgrow="SOMETIMES" prefWidth="700.0" />
+      <ColumnConstraints hgrow="SOMETIMES" prefWidth="300.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="800.0" minHeight="800.0" prefHeight="800.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="801.0" prefWidth="200.0" styleClass="backgroundColorLeft" stylesheets="@dashboard.css">
+         <children>
+            <VBox alignment="CENTER" layoutY="-168.0" prefHeight="800.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-168.0">
+               <children>
+                  <Label fx:id="statusLabel1" prefHeight="100.0" prefWidth="132.0" styleClass="backgroundColorLeft" stylesheets="@dashboard.css" text="Status" textFill="#c58484" wrapText="true">
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="statusLabel" prefHeight="100.0" prefWidth="132.0" styleClass="backgroundColorLeft" stylesheets="@dashboard.css" text="Starting Algorithm" textFill="#c58484" wrapText="true">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <ProgressIndicator fx:id="progressCircle1" nodeOrientation="LEFT_TO_RIGHT" prefHeight="85.0" prefWidth="59.0">
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </ProgressIndicator>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="visualizerContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="700.0" GridPane.columnIndex="1" />
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="300.0" styleClass="backgroundColorRight" stylesheets="@dashboard.css" GridPane.columnIndex="2">
+         <children>
+            <VBox alignment="CENTER" layoutY="61.0" prefHeight="629.0" prefWidth="300.0">
+               <children>
+                  <AnchorPane prefWidth="154.0">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <children>
+                        <Circle fx:id="c1" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
+                        <Circle fx:id="c2" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
+                        <Circle fx:id="c3" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
+                        <Label fx:id="memoryNumberLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="0" textFill="WHITE">
+                           <font>
+                              <Font name="Lucida Console" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="memoryTypeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="MB" textFill="#b3b3b3" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="10.0" layoutY="212.0" prefWidth="154.0">
+                     <children>
+                        <Circle fx:id="c4" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
+                        <Circle fx:id="c5" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
+                        <Circle fx:id="c6" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
+                        <Label fx:id="shortestPath" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="numCost" textFill="WHITE">
+                           <font>
+                              <Font name="Lucida Console" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="shortestPathLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="Shortest Path" textFill="#b3b3b3" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="10.0" layoutY="99.0" prefWidth="154.0">
+                     <children>
+                        <Circle fx:id="c7" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="100.0" stroke="#ae48b5" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 21.5;" />
+                        <Circle fx:id="c8" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="84.0" stroke="#5891e2" strokeType="INSIDE" strokeWidth="6.0" style="-fx-stroke-dash-array: 36;" />
+                        <Circle fx:id="c9" fill="#00d9ff00" layoutX="150.0" layoutY="126.0" radius="66.0" stroke="#52ff91" strokeType="INSIDE" strokeWidth="5.0" style="-fx-stroke-dash-array: 35;" />
+                        <Label fx:id="numberOfSolutions" alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="89.0" prefHeight="48.0" prefWidth="125.0" text="numSolution" textFill="WHITE">
+                           <font>
+                              <Font name="Lucida Console" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="numberOfSolutionsLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="102.0" layoutY="123.0" prefHeight="48.0" prefWidth="95.0" text="Solutions Found" textFill="#b3b3b3" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </children>
+</GridPane>
