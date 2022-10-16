@@ -85,7 +85,7 @@ public class DashboardController {
 
         //Updates display every time period stated in Keyframe(DURATION)
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), ev -> {
-            displayStatistics();
+            displayMemory();
             displayNumberOfSolutionsFound();
             displayShortestPath();
         }));
@@ -175,7 +175,7 @@ public class DashboardController {
         setRotate(c9, true, 360, 10);
     }
 
-    private void displayStatistics() {
+    private void displayMemory() {
         //To stop display from jumping numbers when idle, set the lowest memory
         //identifier to be MB
         double info [] = computeMemory();
